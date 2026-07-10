@@ -1,0 +1,34 @@
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+const API_URL = import.meta.env.VITE_API_URL;
+
+const LogoutButton = () => {
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return;
+      }
+
+      const result = await response.json();
+      localStorage.removeItem("token");
+
+      navigate("/home");
+    } catch (error) {
+      toast.error("Network error during logout:", error);
+    }
+  };
+
+  return <button onClick={logout}>Logout</button>;
+};
+export default LogoutButton;

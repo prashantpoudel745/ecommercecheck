@@ -1,0 +1,61 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "nepali": "Nepali",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "submit": "Submit"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "inventory": "Inventory",
+    "accounting": "Accounting",
+    "clients": "Clients",
+    "goals": "Goals",
+    "reports": "Reports",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "investments": "Investments",
+    "attendance": "Attendance",
+    "crm": "CRM",
+    "employees": "Employees"
+  },
+  "dashboard": {
+    "total_revenue": "Total Revenue",
+    "total_sales": "Total Sales",
+    "total_customers": "Total Customers",
+    "total_products": "Total Products",
+    "expenses": "Expenses",
+    "net_profit": "Net Profit",
+    "recent_activity": "Recent Activity"
+  },
+  "inventory": {
+    "items": "Inventory Items",
+    "add_item": "Add Item",
+    "stock_in": "Stock In",
+    "stock_out": "Stock Out",
+    "low_stock": "Low Stock Alerts",
+    "category": "Category",
+    "price": "Price",
+    "quantity": "Quantity"
+  },
+  "accounting": {
+    "invoices": "Invoices",
+    "payments": "Payments",
+    "balance": "Balance",
+    "transactions": "Transactions",
+    "income": "Income",
+    "tax": "Tax"
+  },
+  "clients": {
+    "client_info": "Client Info",
+    "add_client": "Add Client",
+    "contact": "Contact Details",
+    "billing_address": "Billing Address"
+  }
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bebasthapan</title>
+
+    <!-- PWA Core -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Icons -->
+    <link rel="icon" href="/images/logo.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+    <meta
+      name="description"
+      content="Business management platform for accounting, inventory, and client operations."
+    />
+
+    <style>
+      #install-btn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+      }
+      #install-btn:hover {
+        background-color: #357ab8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <!-- Install App Button -->
+    <!-- <button id="install-btn">Install App</button> -->
+
+    <!-- React App -->
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- PWA Installation & Service Worker -->
+    <!-- <script>
+      // Register Service Worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js");
+        });
+      }
+
+      // Handle Install Prompt
+      let deferredPrompt;
+      const installBtn = document.getElementById("install-btn");
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) {
+          installBtn.style.display = "block";
+        }
+      });
+
+      installBtn?.addEventListener("click", () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            deferredPrompt = null;
+            installBtn.style.display = "none";
+          });
+        }
+      });
+    </script> -->
+  </body>
+</html>

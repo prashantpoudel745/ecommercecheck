@@ -1,0 +1,61 @@
+{
+  "common": {
+    "language": "भाषा",
+    "english": "अंग्रेजी",
+    "nepali": "नेपाली",
+    "save": "बचत गर्नुहोस्",
+    "cancel": "रद्द गर्नुहोस्",
+    "edit": "सम्पादन गर्नुहोस्",
+    "delete": "मेटाउनुहोस्",
+    "add": "थप्नुहोस्",
+    "submit": "पेश गर्नुहोस्"
+  },
+  "navigation": {
+    "dashboard": "ड्यासबोर्ड",
+    "inventory": "भण्डार (Inventory)",
+    "accounting": "लेखा (Accounting)",
+    "clients": "ग्राहकहरू",
+    "goals": "लक्ष्यहरू",
+    "reports": "रिपोर्टहरू",
+    "settings": "सेटिङहरू",
+    "profile": "प्रोफाइल",
+    "logout": "लगआउट",
+    "investments": "लगानीहरू (Investments)",
+    "attendance": "हाजिरी (Attendance)",
+    "crm": "ग्राहक व्यवस्थापन (CRM)",
+    "employees": "कर्मचारीहरू (Employees)"
+  },
+  "dashboard": {
+    "total_revenue": "कुल राजस्व",
+    "total_sales": "कुल बिक्री",
+    "total_customers": "कुल ग्राहकहरू",
+    "total_products": "कुल उत्पादनहरू",
+    "expenses": "खर्चहरू",
+    "net_profit": "खुद नाफा",
+    "recent_activity": "भर्खरको गतिविधि"
+  },
+  "inventory": {
+    "items": "भण्डारका वस्तुहरू",
+    "add_item": "वस्तु थप्नुहोस्",
+    "stock_in": "स्टक इन",
+    "stock_out": "स्टक आउट",
+    "low_stock": "कम स्टक अलर्टहरू",
+    "category": "वर्ग (Category)",
+    "price": "मूल्य",
+    "quantity": "मात्रा"
+  },
+  "accounting": {
+    "invoices": "बीजकहरू (Invoices)",
+    "payments": "भुक्तानीहरू",
+    "balance": "बाँकी रकम",
+    "transactions": "कारोबारहरू",
+    "income": "आम्दानी",
+    "tax": "कर (Tax)"
+  },
+  "clients": {
+    "client_info": "ग्राहक जानकारी",
+    "add_client": "ग्राहक थप्नुहोस्",
+    "contact": "सम्पर्क विवरण",
+    "billing_address": "बिलिङ ठेगाना"
+  }
+}

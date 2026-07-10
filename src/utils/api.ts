@@ -1,0 +1,53 @@
+import axios, { AxiosResponse } from 'axios';
+import { CurrentStatus, AttendanceStats, AttendanceRecord } from '../../types';
+const API_BASE = import.meta.env.VITE_API_URL;
+
+const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+const api = axios.create({
+  baseURL: `${API_BASE}/api/attendance`,
+
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const get = async (url: string): Promise<AxiosResponse> => {
+  return api.get(url);
+};
+
+export const getCurrentStatus = async (employeeId: string): Promise<CurrentStatus> => {
+  const response = await api.get(`/status/${employeeId}`);
+  return response.data.data;
+};
+
+export const getStats = async (employeeId: string, period: string): Promise<AttendanceStats> => {
+  const response = await api.get(`/stats/${employeeId}?period=${period}`);
+  return response.data.data;
+};
+
+export const getAttendance = async (
+  employeeId: string,
+  params: { page: number; limit: number }
+): Promise<{ data: AttendanceRecord[]; pagination: { pages: number } }> => {
+  const response = await api.get(`/employee/${employeeId}`, { params });
+  return response.data;
+};
+
+export const checkIn = async (employeeId: string, data: { location: string; coordinates?: number[]; notes?: string }) => {
+  return api.post(`/check-in/${employeeId}`, data);
+};
+
+export const checkOut = async (employeeId: string, data: { notes?: string; breaks?: { start: string; end: string }[] }) => {
+  return api.post(`/check-out/${employeeId}`, data);
+};
+
+export default api;
