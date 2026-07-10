@@ -175,10 +175,10 @@ const CustomerOverview = () => {
       });
       const data = await response.json();
       if (!data.success) {
-        console.error("Error fetching due data");
+        // console.error("Error fetching due data");
       }
     } catch (error) {
-      console.error("Error fetching due data");
+      // console.error("Error fetching due data");
     }
   }, []);
 

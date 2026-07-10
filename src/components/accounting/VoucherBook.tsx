@@ -80,7 +80,7 @@ export default function VoucherBook() {
       setPaymentVoucher(null);
       refresh();
     } catch (err: any) {
-      console.error(err);
+      // console.error(err);
     } finally {
       setPaymentLoading(false);
     }

@@ -85,7 +85,7 @@ export default function CombinedAddDialog({
         setInventoryItems(data.inventory || []);
       }
     } catch (err) {
-      console.error("Error loading inventory:", err);
+  // Intentionally ignore errors.
     } finally {
       setIsLoadingInventory(false);
     }
@@ -96,7 +96,7 @@ export default function CombinedAddDialog({
       const data = await accountingService.getAccounts();
       setAccounts(data || []);
     } catch (err) {
-      console.error("Error loading accounts:", err);
+        // Intentionally ignore errors.
     }
   };
 
@@ -105,7 +105,7 @@ export default function CombinedAddDialog({
       const data = await accountingService.getAccountGroups();
       setAccountGroups(data || []);
     } catch (err) {
-      console.error("Error loading groups:", err);
+  // Intentionally ignore errors.
     }
   };
 
@@ -114,7 +114,7 @@ export default function CombinedAddDialog({
       const data = await accountingService.getCustomers();
       setCustomers(data || []);
     } catch (err) {
-      console.error("Error loading customers:", err);
+  // Intentionally ignore errors.
     }
   };
 

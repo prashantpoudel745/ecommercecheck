@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null);
       }
     } catch (error) {
-      console.error("Error checking auth status:", error);
+      // console.error("Error checking auth status:", error);
       setUser(null);
     } finally {
       setLoading(false);

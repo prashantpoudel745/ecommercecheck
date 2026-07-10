@@ -49,7 +49,7 @@ export default function FinancialReports() {
       // if (tab === "health") res = await getAccountingHealth();
       setData(res);
     } catch (error) {
-      console.error("Error fetching report:", error);
+      // console.error("Error fetching report:", error);
       setData(null);
     } finally {
       setLoading(false);

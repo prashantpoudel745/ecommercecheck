@@ -22,7 +22,7 @@ export default function VoucherEntry({ onVoucherAdded }: { onVoucherAdded?: () =
   });
 
   useEffect(() => {
-    getAccounts().then(setAccounts).catch(console.error);
+    getAccounts().then(setAccounts);
   }, []);
 
   const addRow = () => {

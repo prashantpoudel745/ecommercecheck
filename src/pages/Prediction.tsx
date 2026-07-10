@@ -183,7 +183,7 @@ export default function UnifiedDashboard() {
       setInventoryValue(totalValue);
       setLowStockItems(lowStock);
     } catch (err) {
-      console.error("Failed to fetch inventory:", err);
+      // console.error("Failed to fetch inventory:", err);
       setProducts([]);
       setInventoryValue(0);
       setLowStockItems(0);

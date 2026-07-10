@@ -31,7 +31,7 @@ const AttendanceHistory: React.FC<AttendanceHistoryProps> = ({
         setRecords(response.data);
         setTotalPages(response.pagination.pages);
       } catch (error) {
-        console.error("Failed to load attendance:", error);
+        // console.error("Failed to load attendance:", error);
       } finally {
         setLoading(false);
       }

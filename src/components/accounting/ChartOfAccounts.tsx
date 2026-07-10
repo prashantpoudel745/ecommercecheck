@@ -64,7 +64,7 @@ export default function ChartOfAccounts() {
       setAccounts(accData || []);
       setGroups(groupData || []);
     } catch (error) {
-      console.error("Failed to fetch data", error);
+  // Intentionally ignore errors.
     } finally {
       setLoading(false);
     }

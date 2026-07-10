@@ -71,7 +71,7 @@ export function useTransactionForm(onSuccess?: () => void) {
       resetForm();
       return response;
     } catch (err: any) {
-      console.error("Transaction submission error:", err);
+      // console.error("Transaction submission error:", err);
       setError(err.response?.data?.message || err.message || "Submission failed");
       throw err;
     } finally {

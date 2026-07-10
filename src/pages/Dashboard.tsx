@@ -97,7 +97,7 @@ export default function Dashboard() {
       }));
     } catch (error) {
       toast.error("Failed to load transactions");
-      console.error("Error fetching transactions:", error);
+      // console.error("Error fetching transactions:", error);
     }
   };
 

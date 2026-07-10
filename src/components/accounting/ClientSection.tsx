@@ -56,7 +56,7 @@ export default function ClientSection() {
         const groupData = await getAccountGroups();
         setGroups(groupData || []);
       } catch (error) {
-        console.error("Failed to fetch groups", error);
+  // Intentionally ignore errors.
       }
     };
     fetchGroups();
@@ -72,7 +72,6 @@ export default function ClientSection() {
       setNewParty({ code: "", name: "", accountGroup: "", openingBalance: 0, description: "" });
       if (refresh) refresh();
     } catch (error) {
-      console.error("Failed to create party", error);
       toast.error("Failed to create party");
     } finally {
       setIsSubmitting(false);

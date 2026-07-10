@@ -21,7 +21,7 @@ export function useAccounting() {
       setVouchers(vouchersData);
       setAccounts(accountsData);
     } catch (err: any) {
-      console.error("Error fetching accounting data:", err);
+      // console.error("Error fetching accounting data:", err);
       setError(err.message || "Failed to fetch accounting data");
     } finally {
       setLoading(false);

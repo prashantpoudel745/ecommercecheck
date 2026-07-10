@@ -18,6 +18,9 @@ export default defineConfig(({ mode }): UserConfig => {
         },
       },
     },
+     esbuild: {
+    drop: ["console", "debugger"],
+  },
     plugins: [
       react(),
       removeConsole(),

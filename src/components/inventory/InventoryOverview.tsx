@@ -75,7 +75,7 @@ export function InventoryOverview() {
       setError(
         err instanceof Error ? err.message : "Failed to fetch inventory data"
       );
-      console.error("Failed to fetch inventory data:", err);
+      // console.error("Failed to fetch inventory data:", err);
     } finally {
       setLoading(false);
     }
@@ -110,7 +110,7 @@ export function InventoryOverview() {
         }
       }
     } catch (error) {
-      console.error("Error checking stock notifications:", error);
+      // console.error("Error checking stock notifications:", error);
     }
   };
 

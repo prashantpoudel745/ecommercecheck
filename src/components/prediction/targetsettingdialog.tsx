@@ -190,7 +190,7 @@ const TargetSettingsDialog: React.FC<TargetSettingsDialogProps> = ({
         setYearlyCustom(buildYearlyTargets(currentYear, 1));
       }
     } catch (err) {
-      console.error('Failed to fetch targets:', err);
+      // console.error('Failed to fetch targets:', err);
       toast.error('Failed to load current targets');
       setMonthlyMode('uniform');
       setYearlyMode('uniform');

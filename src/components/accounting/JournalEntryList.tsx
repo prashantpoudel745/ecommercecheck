@@ -58,7 +58,7 @@ export default function JournalEntryList() {
       setEntries(fetchedEntries);
       setAccounts(fetchedAccounts);
     } catch (error) {
-      console.error("Failed to fetch data", error);
+      // console.error("Failed to fetch data", error);
       const friendlyMessage = getUserFriendlyErrorMessage(error);
       toast.error(friendlyMessage);
     } finally {
