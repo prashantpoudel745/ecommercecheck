@@ -50,12 +50,9 @@ export default function LoginPage() {
       if (!data.success) {
         throw new Error("Login failed: Unexpected response format");
       }
-      // Success case
       toast.success("Login successful!");
-      localStorage.setItem("user", JSON.stringify(data.user));
-      // Store user data in AuthContext
-      if (data.user && data.user._id) {
-        login(data.user, data.user.token);
+      if (data.user && (data.user._id || data.user.id)) {
+        login(data.user);
       }
       // Redirect to dashboard
       navigate("/");

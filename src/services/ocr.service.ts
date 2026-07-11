@@ -44,18 +44,15 @@ const fileToBase64 = (file: File): Promise<string> => {
 export const extractBillData = async (imageFile: File): Promise<BillData> => {
   const base64Image = await fileToBase64(imageFile);
 
-  const token = localStorage.getItem("token");
-
   const response = await axios.post<BillData>(
     `${API_URL}/api/ocr/extract`,
     { image: base64Image },
     {
       headers: {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
       },
       withCredentials: true,
-      timeout: 120000, // 120s — Cloudinary upload + OCR + LLM can take time
+      timeout: 120000,
     }
   );
 

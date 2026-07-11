@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UpdateInventoryProps } from "types";
+import { UpdateInventoryProps } from "../../../types";
+import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
+
 const Api = import.meta.env.VITE_API_URL;
 
 export function UpdateInventory({
@@ -121,7 +123,7 @@ export function UpdateInventory({
               name="price"
               type="number"
               step="0.01"
-              value={formData.price}
+              value={formatCurrencyValue(formData.price)}
               onChange={handleChange}
               required
             />

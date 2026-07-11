@@ -17,6 +17,7 @@ import {
 } from "@/skeleton/dashboardSkeleton/dashboardSkeleton";
 import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
 import { useGlobalDataStore } from "@/store/GlobalDataStore";
+import { useAuth } from "@/context/AuthContext";
 const API_BASE = import.meta.env.VITE_API_URL;
 
 const FinancialOverviewPage = lazy(
@@ -31,6 +32,7 @@ const RecentActivity = lazy(
 
 export default function Dashboard() {
   const { state, setDashboard } = useGlobalDataStore();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,9 +105,7 @@ export default function Dashboard() {
 
   const products = dashboardState.products;
   const clientId = dashboardState.clientId;
-  const user = localStorage.getItem("user");
-  const parsedUser = user ? JSON.parse(user) : {};
-  const userId = parsedUser?._id || parsedUser?.companyId;
+  const userId = user?._id || user?.id || user?.companyId;
   const sstats = dashboardState.inventoryStats;
 
   const fetchInventory = async () => {
@@ -120,8 +120,6 @@ export default function Dashboard() {
       const Invdata = await response.json();
       const data = Invdata.inventory;
 
-      const user = localStorage.getItem("user");
-      const userId = user ? JSON.parse(user)._id : "";
       setDashboard((previous) => ({
         ...previous,
         clientId: userId,
@@ -142,16 +140,6 @@ export default function Dashboard() {
       console.error("Failed to fetch inventory data:", err);
     }
   };
-
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const parsed = JSON.parse(user);
-      if (parsed?.plan) {
-        localStorage.setItem("plan", parsed.plan);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     let isMounted = true;

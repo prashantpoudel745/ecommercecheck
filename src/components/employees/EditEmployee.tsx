@@ -61,13 +61,10 @@ const EditEmployeeForm = ({ onSuccess }) => {
     setIsError(false);
 
     try {
-      const token = localStorage.getItem("token");
-
       const res = await fetch(`${API_URL}/api/employee/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
         body: JSON.stringify(formData),

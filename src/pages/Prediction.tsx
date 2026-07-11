@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 import { Product, Transaction } from "../../types";
 import TargetSettingsDialog from "@/components/prediction/targetsettingdialog";
+import { useAuth } from "@/context/AuthContext";
 
 // ✅ Recharts imports
 import {
@@ -54,13 +55,11 @@ export default function UnifiedDashboard() {
   const [timeframe, setTimeframe] = useState<"month" | "year">("month");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const[clients,setClients]=useState([]);
-  const user = localStorage.getItem("user");
-  const userId = user
-    ? JSON.parse(user)._id || JSON.parse(user).companyId
-    : null;
+  const { user } = useAuth();
+  const userId = user?._id || user?.id || user?.companyId || null;
 
   const resolveTargetMetric = (
-    targetSection: any,
+    targetSection,
     period: "month" | "year"
   ) => {
     const fallback = {
@@ -85,7 +84,7 @@ export default function UnifiedDashboard() {
 
     if (period === "year" && mode === "custom" && Array.isArray(targetSection?.yearlyTargets)) {
       const nowYear = new Date().getFullYear();
-      const yearTarget = targetSection.yearlyTargets.find((entry: any) => Number(entry?.year) === nowYear);
+      const yearTarget = targetSection.yearlyTargets.find((entry) => Number(entry?.year) === nowYear);
       return {
         sales: Number(yearTarget?.sales ?? fallback.sales),
         inventory: Number(yearTarget?.inventory ?? fallback.inventory),
@@ -176,9 +175,7 @@ export default function UnifiedDashboard() {
         (p) => typeof p.quantity === "number" && p.quantity < 30
       ).length;
 
-      const user = localStorage.getItem("user");
-      const userId = user ? JSON.parse(user)._id : "";
-      setClientId(userId);
+      setClientId(userId || "");
       setProducts(products);
       setInventoryValue(totalValue);
       setLowStockItems(lowStock);
@@ -287,14 +284,35 @@ export default function UnifiedDashboard() {
 
   // === EFFECTS ===
   useEffect(() => {
-    if (user) {
-      const parsed = JSON.parse(user);
-      localStorage.setItem("plan", parsed.plan || "");
+    let isMounted = true;
+
+    if (!userId) {
+      setLoading(false);
+      return () => {
+        isMounted = false;
+      };
     }
-    Promise.all([fetchTransactions(), fetchInventory(), fetchPerformanceData(),fetchClients()]).finally(() =>
-      setLoading(false)
-    );
-  }, []);
+
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.allSettled([
+        fetchTransactions(),
+        fetchInventory(),
+        fetchPerformanceData(),
+        fetchClients(),
+      ]);
+
+      if (isMounted) {
+        setLoading(false);
+      }
+    };
+
+    void loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId]);
 
   // === HELPERS ===
 
@@ -360,8 +378,31 @@ export default function UnifiedDashboard() {
   // === RENDER ===
   if (loading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 backdrop-blur-sm">
-        <ClipLoader color="#6366f1" size={40} />
+      <div className="p-1 sm:p-4 space-y-5">
+        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div className="space-y-2">
+              <div className="h-6 w-40 animate-pulse rounded bg-slate-200" />
+              <div className="h-4 w-64 animate-pulse rounded bg-slate-100" />
+            </div>
+            <div className="h-10 w-28 animate-pulse rounded-lg bg-slate-200" />
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="h-4 w-24 animate-pulse rounded bg-slate-200" />
+              <div className="mt-4 h-8 w-32 animate-pulse rounded bg-slate-100" />
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-center py-16">
+            <ClipLoader color="#6366f1" size={32} />
+          </div>
+        </div>
       </div>
     );
   }

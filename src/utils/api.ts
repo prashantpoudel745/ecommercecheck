@@ -2,10 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { CurrentStatus, AttendanceStats, AttendanceRecord } from '../../types';
 const API_BASE = import.meta.env.VITE_API_URL;
 
-const token = sessionStorage.getItem("token") || localStorage.getItem("token");
 const api = axios.create({
   baseURL: `${API_BASE}/api/attendance`,
-
   headers: {
     'Content-Type': 'application/json',
   },
@@ -13,10 +11,6 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
   return config;
 });
 

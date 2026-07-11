@@ -34,13 +34,12 @@ export function Header() {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout: contextLogout } = useAuth();
+  const { user, logout: contextLogout, refreshUser } = useAuth();
   const [company, setCompany] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("/images/default-profile.png");
-
   useEffect(() => {
     if (user) {
-      setCompany(user.companyName || user.companyname || user.fullName || "");
+      setCompany(user.companyName || user.fullName || "");
       setImageUrl(
         user.profileImage || user.companyprofileImage || "/images/default-profile.png"
       );
@@ -52,7 +51,7 @@ export function Header() {
       await contextLogout();
       navigate("/home");
       toast.success("Logged out successfully");
-    } catch (error) {
+    } catch {
       toast.error("Error during logout");
     }
   };
@@ -91,13 +90,7 @@ export function Header() {
 
         setImageUrl(newImage);
 
-        const updatedUser = {
-          ...user,
-          profileImage: newImage,
-        };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        localStorage.setItem("profile", newImage);
-        setUser(updatedUser);
+        await refreshUser();
         toast.success("Profile image updated");
       };
     } catch (err) {
@@ -174,7 +167,7 @@ export function Header() {
                   >
                     <img src={imageUrl} alt="User" className="h-9 w-9 rounded-full border object-cover" />
                     <div className="text-left">
-                      <p className="text-sm font-semibold text-slate-800">{company || localStorage.getItem("companyname")}</p>
+                      <p className="text-sm font-semibold text-slate-800">{company || user?.companyName || user?.fullName || "User"}</p>
                       <p className="text-sm font-medium text-slate-700">{user?.name}</p>
                       <p className="text-xs text-slate-500">{user?.email || "No email"}</p>
                     </div>

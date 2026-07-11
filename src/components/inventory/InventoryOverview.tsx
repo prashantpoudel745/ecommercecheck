@@ -20,8 +20,10 @@ import { UpdateInventory } from "./UpdateInventory";
 import { DeleteInventory } from "./DeleteInventory";
 import DownloadInventoryCSVButton from "./DownloadInventorycsv";
 import { Product, InventoryStats } from "../../../types";
-import AddInventoryButton from "./AddInventory";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
+import { useAuth } from "@/context/AuthContext";
+import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
+
 const Api = import.meta.env.VITE_API_URL;
 
 export function InventoryOverview() {
@@ -37,10 +39,10 @@ export function InventoryOverview() {
   const [error, setError] = useState<string | null>(null);
   const [emailSending, setEmailSending] = useState(false);
   const [lastEmailCheck, setLastEmailCheck] = useState<Date | null>(null);
+  const {user}= useAuth();
   const [emailNotificationEnabled, setEmailNotificationEnabled] =
     useState(true);
 
-  const user = JSON.parse(localStorage.getItem("user"));
   const calculateProductStatus = (
     quantity: number
   ): "in-stock" | "low-stock" | "out-of-stock" => {
@@ -155,9 +157,8 @@ export function InventoryOverview() {
     const lowStockItems = products.filter(
       (p) => p.status === "low-stock" || p.status === "out-of-stock"
     ).length;
-    const inventoryValue = products.reduce(
-      (sum, product) => sum + product.price * product.quantity,
-      0
+    const inventoryValue = Number(
+      products.reduce((sum, product) => sum + product.price * product.quantity, 0).toFixed(2)
     );
 
     return {
@@ -370,7 +371,7 @@ export function InventoryOverview() {
         />
         <StatCard
           title="Inventory Value"
-          value={`${CURRENCY_SYMBOL} ${stats.inventoryValue.toLocaleString()}`}
+          value={`${CURRENCY_SYMBOL} ${formatCurrencyValue(stats.inventoryValue)}`}
           change={{
             value: stats.inventoryValueChange,
             type: stats.inventoryValueChange >= 0 ? "increase" : "decrease",
@@ -386,7 +387,7 @@ export function InventoryOverview() {
                   <div key={product._id} className="flex justify-between">
                     <span className="truncate">{product.name}</span>
                     <span className="text-emerald-500">
-                      {CURRENCY_SYMBOL}{(product.price * product.quantity).toLocaleString()}
+                      {CURRENCY_SYMBOL}{formatCurrencyValue(product.price * product.quantity)}
                     </span>
                   </div>
                 ))}

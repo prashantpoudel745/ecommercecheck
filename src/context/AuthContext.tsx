@@ -5,66 +5,64 @@ interface User {
   id?: string;
   name?: string;
   fullName?: string;
-  email: string;
-  role: string;
+  email?: string;
+  role?: string;
   companyName?: string;
   profileImage?: string;
   companyprofileImage?: string;
   signature?: string;
   selectedPlan?: string;
+  companyId?: string;
+  plan?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (userData: User, token?: string) => void;
+  login: (userData: User) => void;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// In production, VITE_API_URL is intentionally empty so requests like
-// /api/getme go through Vercel's rewrite proxy (defined in vercel.json)
-// In development, it points to http://localhost:5000
 const API_BASE = import.meta.env.VITE_API_URL || "";
-
+const PUBLIC_PATHS = ["/home", "/contact-sales", "/login", "/employeelogin", "/signup", "/forgetpassword", "/forgetpasswordemployee", "/reset-password", "/reset-password-employee", "/payment/success", "/payment-failure", "/superadminlogin--34567", "/superadmincreate--34567"];
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const refreshUser = async () => {
-    try {
-      const savedToken = sessionStorage.getItem("token") || localStorage.getItem("token");
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-      if (savedToken) {
-        headers["Authorization"] = `Bearer ${savedToken}`;
-      }
+    const pathname = window.location.pathname;
+    const isPublicPath = PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
+    if (isPublicPath) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
       const response = await fetch(`${API_BASE}/api/getme`, {
-        method: "POST", // Note: route is defined as router.post("/getme") in backend
-        headers,
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
       });
+
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.user) {
           setUser(data.user);
-          if (data.token) {
-            sessionStorage.setItem("token", data.token);
-            localStorage.setItem("token", data.token);
-          }
         } else {
           setUser(null);
         }
       } else {
         setUser(null);
       }
-    } catch (error) {
-      // console.error("Error checking auth status:", error);
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);
@@ -72,16 +70,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    refreshUser();
+    void refreshUser();
   }, []);
 
-  const login = (userData: User, token?: string) => {
-    setUser(userData);
-    const actualToken = token || userData.token || (userData as any).token;
-    if (actualToken) {
-      sessionStorage.setItem("token", actualToken);
-      localStorage.setItem("token", actualToken);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as Window & { __AUTH_USER__?: User | null }).__AUTH_USER__ = user;
     }
+  }, [user]);
+
+  const login = (userData: User) => {
+    setUser(userData);
   };
 
   const logout = async () => {
@@ -93,12 +92,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
         credentials: "include",
       });
-    } catch (error) {
-      console.error("Error logging out:", error);
+    } catch {
+      // Ignore network errors and clear the UI session locally.
     } finally {
       setUser(null);
-      sessionStorage.removeItem("token");
-      localStorage.removeItem("token");
     }
   };
 

@@ -7,6 +7,7 @@ import { PageSkeleton } from "@/skeleton/investmentSkeleton/pageSkeleton";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { useGlobalDataStore } from "@/store/GlobalDataStore";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
+import { useAuth } from "@/context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -47,6 +48,7 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 
 const InvestmentPage = () => {
   const { state, setInvestment } = useGlobalDataStore();
+  const { user } = useAuth();
   const [investments, setInvestments] = useState(state.investment.investments);
   const [loading, setLoading] = useState(state.investment.lastFetched === 0);
   const [dataLoaded, setDataLoaded] = useState(state.investment.lastFetched > 0);
@@ -56,22 +58,21 @@ const InvestmentPage = () => {
 
   const initializeUser = async () => {
     try {
-      const userData = localStorage.getItem("user");
-      if (!userData) {
+      if (!user) {
         setError("User not authenticated");
         setLoading(false);
         return;
       }
 
-      const parsedUser = JSON.parse(userData);
-      setUserRole(parsedUser.role);
+      const nextRole = user.role || null;
+      setUserRole(nextRole);
       setInvestment((previous) => ({
         ...previous,
-        userRole: parsedUser.role,
+        userRole: nextRole,
       }));
 
-      if (parsedUser._id) {
-        await fetchInvestments(parsedUser._id);
+      if (user._id || user.id) {
+        await fetchInvestments(user._id || user.id || "");
         setDataLoaded(true);
       } else {
         setError("User ID not found");

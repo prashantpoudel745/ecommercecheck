@@ -1,25 +1,11 @@
 // AttendanceApp.tsx - Main component with role-based routing
-import React, { useState, useEffect } from "react";
-import { Employee, CurrentStatus, AttendanceStats, AttendUser } from "types";
+import React from "react";
 import EmployeeAttendanceView from "./EmployeeAttendanceView";
 import AdminAttendanceView from "./AdminAttendanceview";
+import { useAuth } from "@/context/AuthContext";
 
 const AttendanceApp: React.FC = () => {
-  const [user, setUser] = useState<AttendUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      try {
-        const parsedUser: AttendUser = JSON.parse(userData);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-    setLoading(false);
-  }, []);
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (

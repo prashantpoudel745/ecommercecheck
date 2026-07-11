@@ -34,14 +34,12 @@ export default function ChangeSignature() {
       const reader = new FileReader();
       reader.onloadend = async () => {
         if (typeof reader.result === "string") {
-          const token = localStorage.getItem("token");
-
           const response = await fetch("/api/changesignature", {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
+            credentials: "include",
             body: JSON.stringify({ signature: reader.result }),
           });
 

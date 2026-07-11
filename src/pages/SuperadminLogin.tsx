@@ -47,9 +47,9 @@ export default function AdminLoginPage() {
       }
       // Success case
       toast.success("Login successful!");
-      // Store user data in AuthContext
+      // Restore user data from the authenticated session
       if (data.user && data.user._id) {
-        login(data.user, data.user.token);
+        login(data.user);
       }
       // Redirect to dashboard
       navigate("/superadminaccess");

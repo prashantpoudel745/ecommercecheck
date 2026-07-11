@@ -20,8 +20,7 @@ const LogoutButton = () => {
         return;
       }
 
-      const result = await response.json();
-      localStorage.removeItem("token");
+      await response.json();
 
       navigate("/home");
     } catch (error) {

@@ -49,10 +49,8 @@ export default function EmployeeLoginPage() {
         throw new Error(data.message || "Login failed");
       }
 
-      // Success case
-      // Store user data in AuthContext
       if (data.employee && data.employee.id) {
-        login(data.employee, data.token);
+        login(data.employee);
       } else {
         throw new Error("Invalid response from server");
       }

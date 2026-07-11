@@ -1,20 +1,12 @@
 import { useState, useEffect } from "react";
 import EmployeeOverview from "@/components/employees/EmployeeOverview";
+import { useAuth } from "@/context/AuthContext";
 
 export default function EmployeePage() {
-  const [role, setRole] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, loading } = useAuth();
+  const role = user?.role;
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      setRole(parsedUser.role);
-    }
-    setIsLoading(false);
-  }, []);
-
-  if (isLoading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
 
   if (role !== "admin") {
     return (

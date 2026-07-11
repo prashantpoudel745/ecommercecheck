@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import AddInvestmentForm from "./AddnewInvestment";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { useAuth } from "@/context/AuthContext";
 
 const InvestmentsTable = () => {
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const user = localStorage.getItem("user");
-  const userId = JSON.parse(user)._id;
+  const { user } = useAuth();
+  const userId = user?._id || user?.id;
   const API = import.meta.env.VITE_API_URL;
   // Function to fetch investments
   const fetchInvestments = async () => {

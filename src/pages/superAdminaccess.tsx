@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Trash, Check } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -19,12 +20,13 @@ export default function AdminStatusManager() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [loadingAdmins, setLoadingAdmins] = useState(true);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user } = useAuth();
+  const userId = user?._id || user?.id;
   // Fetch admins
   const fetchAdmins = async () => {
     setLoadingAdmins(true);
     try {
-      const res = await fetch(`${API_BASE}/api/getalladmin/${user._id}`, {
+      const res = await fetch(`${API_BASE}/api/getalladmin/${userId}`, {
         method: "GET",
         credentials: "include",
       });

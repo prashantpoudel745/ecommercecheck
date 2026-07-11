@@ -1,26 +1,17 @@
 
 export const getEmployeeId = (): string => {
-  const employee = localStorage.getItem('user');
-  if (!employee) {
-    throw new Error('No user found in localStorage');
+  const authWindow = window as Window & { __AUTH_USER__?: { id?: string; _id?: string } };
+  const authUser = authWindow.__AUTH_USER__;
+
+  if (!authUser?.id && !authUser?._id) {
+    throw new Error('No authenticated user available in memory');
   }
-  try {
-    const parsed = JSON.parse(employee);
-    if (!parsed.id) {
-      throw new Error('Invalid user data: missing id');
-    }
-    return parsed.id;
-  } catch (error) {
-    throw new Error('Failed to parse user data from localStorage');
-  }
+
+  return authUser.id || authUser._id || '';
 };
 
 export const getAuthToken = (): string => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No auth token found in localStorage');
-  }
-  return token;
+  throw new Error('JWT is stored in an HttpOnly cookie and is not accessible from JavaScript');
 };
 
 export const formatDuration = (checkIn: string, checkOut?: string): string => {

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import AddInvestmentForm from "./AddnewInvestment";
+import { useAuth } from "@/context/AuthContext";
 const ClientStatus = () => {
   const [open, setOpen] = useState(false);
-  const user = localStorage.getItem("user");
-  const userId = JSON.parse(user)._id;
+  const { user } = useAuth();
+  const userId = user?._id || user?.id;
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-8">
       <div className="flex justify-between items-center mb-4">
