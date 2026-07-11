@@ -1,9 +1,10 @@
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+const API_BASE = import.meta.env.VITE_API_URL || "";
 
 const fetchUser = async () => {
-  const res = await axios.get("/api/getme", { withCredentials: true });
+  const res = await axios.get(`${API_BASE}/api/getme`, { withCredentials: true });
   return res.data;
 };
 
