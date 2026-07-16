@@ -49,11 +49,6 @@ export default function ChartOfAccounts() {
     nature: "ASSET" as "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE",
     description: ""
   });
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -69,6 +64,12 @@ export default function ChartOfAccounts() {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
 
   const handleSeed = async () => {
     if(!confirm("Seed default groups and chart of accounts?")) return;

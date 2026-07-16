@@ -1,7 +1,6 @@
 // AdminAttendanceView.tsx - Admin view for all employees attendance
 import React, { useState, useEffect, useCallback } from "react";
-import { Employee, AttendanceRecord } from "types";
-import AttendanceFilterComponent from "./AttendanceFilter";
+import  AttendanceFilter  from "./AttendanceFilter";
 import api from "@/utils/api";
 import AdminHeader from "./AdminHeader";
 import AttendanceDashboard from "./AttendanceDashboard";
@@ -11,7 +10,7 @@ import {
   AttendanceData,
   DashboardData,
   AttendUser,
-} from "types";
+} from "../../../types";
 
 interface AdminAttendanceViewProps {
   user: AttendUser;
@@ -195,7 +194,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
 
         {activeTab === "attendance" && (
           <div className="space-y-6">
-            <AttendanceFilterComponent
+            <AttendanceFilter
               filters={filters}
               onFilterChange={handleFilterChange}
               onClearFilters={() =>

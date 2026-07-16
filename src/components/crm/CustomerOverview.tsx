@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Database, Globe, Users, Edit, ChevronDown, ChevronRight, Clock, FileText, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -251,7 +250,7 @@ const CustomerOverview = () => {
         setClientHistory([]);
       }
     } catch (err) {
-      console.error("Error fetching client history:", err);
+      // console.error("Error fetching client history:", err);
       setClientHistory([]);
     } finally {
       setHistoryLoading(false);
@@ -307,7 +306,7 @@ const CustomerOverview = () => {
         alert(result.message || "Failed to update client");
       }
     } catch (err) {
-      console.error("Update error:", err);
+      // console.error("Update error:", err);
       alert("Failed to update client. Please try again.");
     } finally {
       setSaving(false);

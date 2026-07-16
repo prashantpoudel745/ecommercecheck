@@ -1,6 +1,6 @@
 // AttendanceFilters.tsx - Filters component for admin attendance view
 import React, { useState } from "react";
-import type { AttendanceFilters } from "types";
+import type { AttendanceFilters } from "../../../types";
 
 interface AttendanceFiltersProps {
   filters: AttendanceFilters;
