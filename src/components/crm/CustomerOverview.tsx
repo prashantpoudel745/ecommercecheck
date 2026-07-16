@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Database, Globe, Users, Edit, ChevronDown, ChevronRight, Clock, FileText, RefreshCw } from "lucide-react";
+import { Database, Globe, Users, Edit, ChevronDown, ChevronRight, Clock, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -155,11 +155,11 @@ const CustomerOverview = () => {
         setReconcileMsg(`✅ ${data.message}`);
         fetchClients();
       } else {
-        setReconcileMsg(`❌ ${data.message || "Failed to reconcile"}`);
+        setReconcileMsg(` ${data.message || "Failed to reconcile"}`);
       }
     } catch (err) {
       console.error("Reconcile error:", err);
-      setReconcileMsg("❌ Failed to reconcile. Check console.");
+      setReconcileMsg(" Failed to reconcile. Check console.");
     } finally {
       setReconciling(false);
       setTimeout(() => setReconcileMsg(null), 5000);

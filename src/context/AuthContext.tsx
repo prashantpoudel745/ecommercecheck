@@ -24,23 +24,52 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
 }
 
+const AUTH_STORAGE_KEY = "auth-user-cache";
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const API_BASE = import.meta.env.VITE_API_URL || "";
-const PUBLIC_PATHS = ["/home", "/contact-sales", "/login", "/employeelogin", "/signup", "/forgetpassword", "/forgetpasswordemployee", "/reset-password", "/reset-password-employee", "/payment/success", "/payment-failure", "/superadminlogin--34567", "/superadmincreate--34567"];
+
+const readPersistedUser = (): User | null => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const cached = window.sessionStorage.getItem(AUTH_STORAGE_KEY);
+    if (!cached) return null;
+
+    const parsed = JSON.parse(cached) as User | null;
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+const writePersistedUser = (userData: User | null) => {
+  if (typeof window === "undefined") return;
+
+  try {
+    if (userData) {
+      window.sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
+    } else {
+      window.sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  } catch {
+    // Ignore storage errors and continue with in-memory auth state.
+  }
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => readPersistedUser());
   const [loading, setLoading] = useState<boolean>(true);
 
-  const refreshUser = async () => {
-    const pathname = window.location.pathname;
-    const isPublicPath = PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+  const setAuthUser = (userData: User | null) => {
+    setUser(userData);
+    writePersistedUser(userData);
+  };
 
-    if (isPublicPath) {
-      setUser(null);
-      setLoading(false);
-      return;
+  const refreshUser = async () => {
+    const persistedUser = readPersistedUser();
+    if (persistedUser) {
+      setAuthUser(persistedUser);
     }
 
     try {
@@ -55,15 +84,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.user) {
-          setUser(data.user);
+          setAuthUser(data.user);
         } else {
-          setUser(null);
+          setAuthUser(null);
         }
+      } else if (response.status === 401 || response.status === 403) {
+        setAuthUser(null);
+      } else if (persistedUser) {
+        setAuthUser(persistedUser);
       } else {
-        setUser(null);
+        setAuthUser(null);
       }
     } catch {
-      setUser(null);
+      if (!persistedUser) {
+        setAuthUser(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -80,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   const login = (userData: User) => {
-    setUser(userData);
+    setAuthUser(userData);
   };
 
   const logout = async () => {
@@ -95,7 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch {
       // Ignore network errors and clear the UI session locally.
     } finally {
-      setUser(null);
+      setAuthUser(null);
     }
   };
 

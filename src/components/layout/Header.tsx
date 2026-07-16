@@ -10,13 +10,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import ChangeSignature from "@/lib/Changesignature";
-import { LogOut, Globe } from "lucide-react";
+import { BellRing, LogOut, Globe } from "lucide-react";
 import toast from "react-hot-toast";
 import { InstallButton } from "../pwa/InstallButton";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import RecentActivity from "@/components/dashboard/RecentActivity";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const sectionLabels: Record<string, string> = {
@@ -37,6 +45,7 @@ export function Header() {
   const { user, logout: contextLogout, refreshUser } = useAuth();
   const [company, setCompany] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("/images/default-profile.png");
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   useEffect(() => {
     if (user) {
       setCompany(user.companyName || user.fullName || "");
@@ -72,7 +81,7 @@ export function Header() {
         const base64Image = reader.result;
         if (typeof base64Image !== "string") return;
 
-        const response = await fetch("/api/changeprofile", {
+        const response = await fetch(`${API_URL}/api/changeprofile`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -129,6 +138,31 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <Dialog open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white/80 p-0 hover:bg-slate-50"
+                title="Notifications"
+              >
+                <BellRing className="h-4 w-4 text-slate-600" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[88vh] w-[95vw] max-w-2xl overflow-hidden rounded-[24px] border-slate-200 p-0 shadow-[0_24px_80px_rgba(15,23,42,0.16)]">
+              <DialogHeader className="border-b border-slate-200 px-6 py-5">
+                <DialogTitle className="text-lg font-semibold tracking-tight text-slate-950">
+                  Notifications
+                </DialogTitle>
+                <p className="text-sm text-slate-500">
+                  Recent activities and updates from your workspace.
+                </p>
+              </DialogHeader>
+              <div className="max-h-[70vh] overflow-y-auto px-6 py-4">
+                <RecentActivity userId={user?._id || user?.id || user?.companyId || ""} />
+              </div>
+            </DialogContent>
+          </Dialog>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
