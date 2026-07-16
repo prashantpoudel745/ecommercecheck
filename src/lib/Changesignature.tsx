@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Upload, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+const API_BASE = import.meta.env.VITE_API_URL
 export default function ChangeSignature() {
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
   const [signaturePreview, setSignaturePreview] = useState<string | null>(null);
@@ -34,14 +34,14 @@ export default function ChangeSignature() {
       const reader = new FileReader();
       reader.onloadend = async () => {
         if (typeof reader.result === "string") {
-          const response = await fetch("/api/changesignature", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({ signature: reader.result }),
-          });
+          const response = await fetch(`${API_BASE}/api/changesignature`, {
+  method: "PUT",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ signature: reader.result }),
+});
 
           const data = await response.json();
           if (response.ok && data.success) {
