@@ -309,15 +309,14 @@ export default function ClientSection() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div className=" mx-3 flex justify-between items-center sticky top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
-            <Users className="w-8 h-8 text-indigo-600" />
+          <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent flex items-center gap-3">
+            <Users className="w-8 h-8 text-black" />
             Party Ledgers
           </h2>
-          <p className="text-muted-foreground">Manage your relationships and track segmented payments.</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100">
+        <Button onClick={() => setShowForm(!showForm)} className="bg-black hover:bg-gray-700 shadow-lg shadow-indigo-100">
           <Plus className="w-4 h-4 mr-2" /> {showForm ? "Cancel" : "Add New Party"}
         </Button>
       </div>

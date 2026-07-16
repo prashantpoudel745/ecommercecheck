@@ -95,9 +95,11 @@ export function Header() {
         }
 
         const data = await response.json();
-        const newImage = data.data.profileImage;
+        const newImage = data?.data?.profileImage || data?.profileImage || data?.user?.profileImage;
 
-        setImageUrl(newImage);
+        if (newImage) {
+          setImageUrl(newImage);
+        }
 
         await refreshUser();
         toast.success("Profile image updated");
@@ -128,12 +130,7 @@ export function Header() {
         </div>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-600">
-            Live sync
-          </div>
-          <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-600">
-            Secure session
-          </div>
+          
           <InstallButton />
         </div>
 

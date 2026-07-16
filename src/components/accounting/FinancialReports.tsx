@@ -80,46 +80,47 @@ export default function FinancialReports() {
     const accountGroupKeys = ["ASSET", "LIABILITY", "EQUITY", "REVENUE", "EXPENSE"];
     
     return (
-      <div className="space-y-4 animate-in fade-in duration-500">
-        <div className="rounded-xl border border-slate-100 overflow-hidden shadow-sm bg-white">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b">
-              <tr>
-                <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Account Ledger</th>
-                <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Group</th>
-                <th className="px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Debit</th>
-                <th className="px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Credit</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {accountGroupKeys.map((key) => {
-                const accounts = data?.[key];
-                if (!Array.isArray(accounts) || accounts.length === 0) return null;
-                return accounts.map((acc: TBAccount, i: number) => (
-                  <tr key={`${key}-${i}`} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4 font-semibold text-slate-900">{acc.name}</td>
-                    <td className="px-6 py-4 text-xs text-slate-400 font-medium lowercase">{key}</td>
-                    <td className="px-6 py-4 text-right">
-                      {acc.debit > 0 ? <Currency value={acc.debit} /> : "-"}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      {acc.credit > 0 ? <Currency value={acc.credit} /> : "-"}
-                    </td>
-                  </tr>
-                ));
-              })}
-              <tr className="bg-slate-900 text-white font-bold">
-                <td colSpan={2} className="px-6 py-4 text-right uppercase tracking-widest text-xs">Total Trial Balance</td>
-                <td className="px-6 py-4 text-right"><Currency value={data?.totalDebit || 0} className="text-white" /></td>
-                <td className="px-6 py-4 text-right"><Currency value={data?.totalCredit || 0} className="text-white" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <div className="space-y-4 animate-in fade-in duration-500">
+    <div className="rounded-xl border border-slate-100 overflow-hidden shadow-sm bg-white relative isolate">
+      <div className="max-h-[600px] overflow-y-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr>
+              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Account Ledger</th>
+              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Group</th>
+              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Debit</th>
+              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Credit</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {accountGroupKeys.map((key) => {
+              const accounts = data?.[key];
+              if (!Array.isArray(accounts) || accounts.length === 0) return null;
+              return accounts.map((acc: TBAccount, i: number) => (
+                <tr key={`${key}-${i}`} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="px-6 py-4 font-semibold text-slate-900">{acc.name}</td>
+                  <td className="px-6 py-4 text-xs text-slate-400 font-medium lowercase">{key}</td>
+                  <td className="px-6 py-4 text-right">
+                    {acc.debit > 0 ? <Currency value={acc.debit} /> : "-"}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    {acc.credit > 0 ? <Currency value={acc.credit} /> : "-"}
+                  </td>
+                </tr>
+              ));
+            })}
+            <tr className="sticky bottom-0 z-10 bg-slate-900 text-white font-bold">
+              <td colSpan={2} className="px-6 py-4 text-right uppercase tracking-widest text-xs">Total Trial Balance</td>
+              <td className="px-6 py-4 text-right"><Currency value={data?.totalDebit || 0} className="text-white" /></td>
+              <td className="px-6 py-4 text-right"><Currency value={data?.totalCredit || 0} className="text-white" /></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    );
+    </div>
+  </div>
+);
   };
-
   const renderPL = () => {
     if (!data) return <div className="text-center py-12 text-slate-400 italic">No P&L data found.</div>;
     return (
@@ -233,28 +234,30 @@ export default function FinancialReports() {
         </Card>
 
         <div className="rounded-xl border border-slate-100 overflow-hidden shadow-sm bg-white">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b">
-              <tr>
-                <th className="px-5 py-3 text-left text-[10px] uppercase text-slate-500">Voucher</th>
-                <th className="px-5 py-3 text-left text-[10px] uppercase text-slate-500">Party</th>
-                <th className="px-5 py-3 text-right text-[10px] uppercase text-slate-500">Taxable</th>
-                <th className="px-5 py-3 text-right text-[10px] uppercase text-slate-500">Output VAT</th>
-                <th className="px-5 py-3 text-right text-[10px] uppercase text-slate-500">Input VAT</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {(data.vouchers || []).slice(0, 30).map((voucher: any) => (
-                <tr key={`${voucher.voucherNumber}-${voucher.date}`} className="hover:bg-slate-50">
-                  <td className="px-5 py-3 font-semibold">{voucher.voucherNumber}</td>
-                  <td className="px-5 py-3 text-slate-500">{voucher.partyName || "-"}</td>
-                  <td className="px-5 py-3 text-right"><Currency value={voucher.taxableAmount || 0} /></td>
-                  <td className="px-5 py-3 text-right"><Currency value={voucher.outputVat || 0} /></td>
-                  <td className="px-5 py-3 text-right"><Currency value={voucher.inputVat || 0} /></td>
+          <div className="max-h-[600px] overflow-y-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr>
+                  <th className="sticky top-0 z-10 bg-slate-50 border-b px-5 py-3 text-left text-[10px] uppercase text-slate-500">Voucher</th>
+                  <th className="sticky top-0 z-10 bg-slate-50 border-b px-5 py-3 text-left text-[10px] uppercase text-slate-500">Party</th>
+                  <th className="sticky top-0 z-10 bg-slate-50 border-b px-5 py-3 text-right text-[10px] uppercase text-slate-500">Taxable</th>
+                  <th className="sticky top-0 z-10 bg-slate-50 border-b px-5 py-3 text-right text-[10px] uppercase text-slate-500">Output VAT</th>
+                  <th className="sticky top-0 z-10 bg-slate-50 border-b px-5 py-3 text-right text-[10px] uppercase text-slate-500">Input VAT</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {(data.vouchers || []).slice(0, 30).map((voucher: any) => (
+                  <tr key={`${voucher.voucherNumber}-${voucher.date}`} className="hover:bg-slate-50">
+                    <td className="px-5 py-3 font-semibold">{voucher.voucherNumber}</td>
+                    <td className="px-5 py-3 text-slate-500">{voucher.partyName || "-"}</td>
+                    <td className="px-5 py-3 text-right"><Currency value={voucher.taxableAmount || 0} /></td>
+                    <td className="px-5 py-3 text-right"><Currency value={voucher.outputVat || 0} /></td>
+                    <td className="px-5 py-3 text-right"><Currency value={voucher.inputVat || 0} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
@@ -360,9 +363,9 @@ export default function FinancialReports() {
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h2 className="text-4xl font-semibold tracking-tighter bg-clip-text text-transparent" style={{color:"#6A3EE7"}}>
+      <div className="sticky top-5 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+        <div className="ml-3">
+          <h2 className="text-4xl font-semibold tracking-tighter bg-clip-text text-black">
             Financial Reporting
           </h2>
           <p className="text-muted-foreground flex items-center gap-2 mt-1">

@@ -43,7 +43,8 @@ export default function RecentTransactions({
 
   return (
     <Card>
-      <CardHeader>
+      {/* Sticky header: title, filters, and action buttons stay pinned while the table scrolls */}
+      <CardHeader className="sticky top-5 z-10 bg-white border-b border-gray-100">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <CardTitle>Recent Transactions</CardTitle>
@@ -52,7 +53,7 @@ export default function RecentTransactions({
               {filteredTransactions.length > 10 && (
                 <button
                   onClick={() => setShowAll(!showAll)}
-                  className="text-sm font-bold text-blue-600 hover:underline"
+  className="text-sm font-bold text-blue-600 hover:underline whitespace-nowrap"
                 >
                   {showAll ? "View Less" : "View All"}
                 </button>

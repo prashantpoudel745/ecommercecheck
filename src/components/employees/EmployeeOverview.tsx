@@ -13,7 +13,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { StatCard } from "../dashboard/StatCard";
 import { Users } from "lucide-react"; // Assuming you're using lucide-react for icons
-const API_URL = import.meta.env.VITE_API_URL ;
+const API_URL = import.meta.env.VITE_API_URL;
+
 const EmployeeOverview = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +41,7 @@ const EmployeeOverview = () => {
           "Content-Type": "application/json",
         },
         withCredentials: true,
-      });      
+      });
       if (response.data.employees) {
         const formattedEmployees = response.data.employees.map((emp) => ({
           id: emp._id,
@@ -151,25 +152,23 @@ const EmployeeOverview = () => {
     <div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-3">
         <StatCard
-          // className="bg-blue-300 text-blue-500 dark:bg-blue-900 dark:text-blue-500 p-3"
           title="Total Employees"
           value={totalEmployees.toString()}
           icon={<Users size={18} />}
         />
         <StatCard
-          // className="bg-green-300 text-green-500 dark:bg-green-900 dark:text-green-500 p-3"
           title="Total Salaries"
           value={formatSalary(totalSalaries)}
           icon={<Users size={18} />}
         />
       </div>
-      <div className="bg-white rounded-lg shadow overflow-hidden mb-8 w-full">
-        {/* Header */}
-        <div className="p-4 border-b">
+
+      {/* Card wrapper - no overflow-hidden, no max-height, natural page scroll */}
+      <div className="bg-white rounded-lg shadow mb-8 w-full">
+        {/* Sticky header block - sticks to top of nearest scrolling ancestor (usually the page) */}
+        <div className="p-4 border-b sticky -top-8 z-10 bg-white rounded-t-lg">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h3 className="text-lg font-semibold">Employee Overview</h3>
-            {/* StatCards */}
-            {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <select
                 value={filterRole}
@@ -230,7 +229,7 @@ const EmployeeOverview = () => {
           </div>
         ) : (
           <>
-            {/* Table */}
+            {/* Table - horizontal scroll only, no vertical clipping */}
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -341,7 +340,9 @@ const EmployeeOverview = () => {
             <div className="px-6 py-3 bg-gray-50 border-t flex flex-col sm:flex-row items-center justify-between">
               <div className="text-sm text-gray-700 mb-2 sm:mb-0">
                 Showing{" "}
-                <span className="font-medium">{filteredEmployees.length}</span>{" "}
+                <span className="font-medium">
+                  {filteredEmployees.length}
+                </span>{" "}
                 of <span className="font-medium">{employees.length}</span>{" "}
                 employees
               </div>

@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Upload, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-const API_BASE = import.meta.env.VITE_API_URL
+import { useAuth } from "@/context/AuthContext";
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export default function ChangeSignature() {
+  const { refreshUser } = useAuth();
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
   const [signaturePreview, setSignaturePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -45,6 +48,7 @@ export default function ChangeSignature() {
 
           const data = await response.json();
           if (response.ok && data.success) {
+            await refreshUser();
             setMessage("✅ Signature uploaded successfully.");
           } else {
             setMessage(data.message || "❌ Upload failed.");

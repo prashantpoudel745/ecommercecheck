@@ -126,9 +126,10 @@ export default function ChartOfAccounts() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+      {/* Sticky page header: title + Seed/Add Group/Add Ledger buttons */}
+      <div className="sticky top-5 z-30  backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-3 border-b border-gray-100">
+        <div className="mx-5">
+          <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent">
             Chart of Accounts
           </h2>
           <p className="text-muted-foreground">Manage your ledger accounts and financial structure.</p>
@@ -280,7 +281,8 @@ export default function ChartOfAccounts() {
       )}
 
       <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-xl">
-        <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 pb-4 gap-3">
+        {/* Sticky search/filter bar — sits below the page header above */}
+        <CardHeader className="sticky top-[92px] z-20 bg-white/95 backdrop-blur-sm flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 pb-4 gap-3 rounded-t-xl">
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -307,57 +309,61 @@ export default function ChartOfAccounts() {
           </Button>
         </CardHeader>
         <CardContent>
+          {/* Table gets its own scroll container so the column headers can stick
+              independently, without stacking math against the page header above */}
           <div className="rounded-xl border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50/50 border-b">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Account Code</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Ledger Name</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Group</th>
-                  <th className="px-6 py-4 text-right font-semibold text-gray-600">Current Balance</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {loading ? (
+            <div className=" overflow-y-auto">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 z-10 bg-gray-50 border-b shadow-sm">
                   <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
-                      <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 opacity-20" />
-                      Loading accounts...
-                    </td>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-600">Account Code</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-600">Ledger Name</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-600">Group</th>
+                    <th className="px-6 py-4 text-right font-semibold text-gray-600">Current Balance</th>
                   </tr>
-                ) : filteredAccounts.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
-                      No accounts found.
-                    </td>
-                  </tr>
-                ) : (
-                  filteredAccounts.map((account) => (
-                    <tr key={account._id} className="hover:bg-blue-50/30 transition-colors group">
-                      <td className="px-6 py-4 font-mono text-xs text-blue-600 bg-blue-50/10">{account.code}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{account.name}</td>
-                      <td className="px-6 py-4">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                          {account.accountGroup?.name || 'Uncategorized'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex flex-col items-end">
-                          <span className={`font-bold text-base ${account.currentBalance >= 0 ? "text-green-600" : "text-red-600"}`}>
-                            {formatCurrency(Math.abs(account.currentBalance))}
-                          </span>
-                          <span className="text-[10px] uppercase font-bold text-gray-400">
-                            {["ASSET", "EXPENSE"].includes(account.type) 
-                              ? (account.currentBalance >= 0 ? "Debit" : "Credit") 
-                              : (account.currentBalance >= 0 ? "Credit" : "Debit")}
-                          </span>
-                        </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
+                        <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 opacity-20" />
+                        Loading accounts...
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : filteredAccounts.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
+                        No accounts found.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredAccounts.map((account) => (
+                      <tr key={account._id} className="hover:bg-blue-50/30 transition-colors group">
+                        <td className="px-6 py-4 font-mono text-xs text-blue-600 bg-blue-50/10">{account.code}</td>
+                        <td className="px-6 py-4 font-medium text-gray-900">{account.name}</td>
+                        <td className="px-6 py-4">
+                          <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                            {account.accountGroup?.name || 'Uncategorized'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex flex-col items-end">
+                            <span className={`font-bold text-base ${account.currentBalance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                              {formatCurrency(Math.abs(account.currentBalance))}
+                            </span>
+                            <span className="text-[10px] uppercase font-bold text-gray-400">
+                              {["ASSET", "EXPENSE"].includes(account.type) 
+                                ? (account.currentBalance >= 0 ? "Debit" : "Credit") 
+                                : (account.currentBalance >= 0 ? "Credit" : "Debit")}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </CardContent>
       </Card>

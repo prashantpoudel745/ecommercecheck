@@ -5,7 +5,6 @@ import FinancialReports from "./FinancialReports";
 import ClientSection from "./ClientSection";
 import { LayoutDashboard, FileText, BookOpen, PieChart, Users } from "lucide-react";
 import AccountingDashboard from "./AccountingDashboard";
-
 import ErrorBoundary from "./ErrorBoundary";
 
 export default function AccountingOverview() {
@@ -27,8 +26,8 @@ export default function AccountingOverview() {
 
   return (
     <div className="space-y-6">
-        {/* Navigation Tabs */}
-        <div className="flex space-x-2 bg-white p-2 rounded-lg shadow-sm border border-gray-100 overflow-x-auto">
+        {/* Sticky Navigation Tabs */}
+        <div className="sticky -top-8 z-10 flex space-x-2 bg-white p-2 rounded-lg shadow-sm border border-gray-100 overflow-x-auto">
             <TabButton id="dashboard" label="Overview" icon={LayoutDashboard} />
             <TabButton id="coa" label="Chart of Accounts" icon={FileText} />
             <TabButton id="vouchers" label="Voucher Book" icon={BookOpen} />
@@ -36,7 +35,7 @@ export default function AccountingOverview() {
             <TabButton id="reports" label="Financial Reports" icon={PieChart} />
         </div>
 
-        {/* Content Area wrapped in ErrorBoundary */}
+        {/* Content Area — scrolls normally underneath the sticky nav */}
         <ErrorBoundary key={activeTab}>
           {activeTab === "dashboard" && <AccountingDashboard />}
           {activeTab === "coa" && <ChartOfAccounts />}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 
 interface User {
   _id?: string;
@@ -61,15 +61,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => readPersistedUser());
   const [loading, setLoading] = useState<boolean>(true);
 
-  const setAuthUser = (userData: User | null) => {
+  const setAuthUser = useCallback((userData: User | null) => {
     setUser(userData);
     writePersistedUser(userData);
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     const persistedUser = readPersistedUser();
     if (persistedUser) {
       setAuthUser(persistedUser);
+      setLoading(false);
     }
 
     try {
@@ -84,29 +85,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.user) {
-          setAuthUser(data.user);
+          const mergedUser = {
+            ...(persistedUser ?? {}),
+            ...data.user,
+            _id: data.user._id ?? data.user.id ?? persistedUser?._id ?? persistedUser?.id,
+            id: data.user.id ?? data.user._id ?? persistedUser?.id ?? persistedUser?._id,
+          } as User;
+          setAuthUser(mergedUser);
+        } else if (persistedUser) {
+          setAuthUser(persistedUser);
         } else {
           setAuthUser(null);
         }
       } else if (response.status === 401 || response.status === 403) {
-        setAuthUser(null);
+        if (persistedUser) {
+          setAuthUser(persistedUser);
+        } else {
+          setAuthUser(null);
+        }
       } else if (persistedUser) {
         setAuthUser(persistedUser);
       } else {
         setAuthUser(null);
       }
     } catch {
-      if (!persistedUser) {
+      if (persistedUser) {
+        setAuthUser(persistedUser);
+      } else {
         setAuthUser(null);
       }
     } finally {
       setLoading(false);
     }
-  };
+  }, [setAuthUser]);
 
   useEffect(() => {
     void refreshUser();
-  }, []);
+  }, [refreshUser]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

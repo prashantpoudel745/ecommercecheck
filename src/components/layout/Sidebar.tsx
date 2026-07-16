@@ -140,36 +140,6 @@ export function Sidebar() {
           ))}
         </ul>
       </nav>
-      <div className="border-t border-slate-800/80 p-4">
-        <TooltipProvider delayDuration={0} disableHoverableContent={!collapsed}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "flex w-full items-center justify-start gap-3 rounded-2xl px-3 py-3 text-slate-300 hover:bg-white/5 hover:text-white",
-                  collapsed && "justify-center px-2"
-                )}
-              >
-                <Globe size={20} />
-                {!collapsed && <span>Region Settings</span>}
-              </Button>
-            </TooltipTrigger>
-            {collapsed && (
-              <TooltipContent side="right">Region Settings</TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
-
-        {!collapsed && (
-          <div className="mt-0 rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-xs text-slate-300">
-            <p className="font-semibold text-white">System status</p>
-            <p className="mt-0 leading-5 text-slate-400">
-              All core modules connected. Sync latency is within normal range.
-            </p>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

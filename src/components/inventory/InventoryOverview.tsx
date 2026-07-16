@@ -397,7 +397,8 @@ export function InventoryOverview() {
       </div>
 
       <Card>
-        <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+      <CardHeader className="sticky flex flex-row items-center justify-between -top-7 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 ">
           <CardTitle className="font-bold text-4xl ">Inventory Status</CardTitle>
           <div className="flex flex-col md:flex-row  items-center gap-2">
             <div className="bg-gray-50 p-2 rounded-md">

@@ -370,11 +370,11 @@ export default function Insights() {
     <div className="mx-auto max-w-[1520px] space-y-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
+          {/* <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
             <BrainCircuit className="h-4 w-4 text-indigo-600" />
             Business intelligence
-          </div>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">Dashboards and Insights</h1>
+          </div> */}
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 ">Dashboards and Insights</h1>
         </div>
         <p className="text-xs text-slate-500">
           Updated{" "}

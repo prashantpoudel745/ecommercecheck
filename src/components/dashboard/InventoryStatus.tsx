@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -53,6 +53,74 @@ const MONTH_NAMES_FULL = [
 
 const formatCount = (value: number) =>
   new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
+
+// ---------------------------------------------------------------------------
+// CSV helpers
+// ---------------------------------------------------------------------------
+
+const escapeCsvValue = (value: string | number) => {
+  const str = String(value);
+  if (/[",\n]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+};
+
+const buildInventoryCsv = (rows: InventoryStatusData[]) => {
+  const header = [
+    "category",
+    "totalItems",
+    "inStock",
+    "mediumStock",
+    "lowStock",
+    "itemName",
+    "itemQuantity",
+    "itemStatus",
+  ];
+
+  const lines: string[] = [header.join(",")];
+
+  rows.forEach((row) => {
+    if (row.items && row.items.length > 0) {
+      row.items.forEach((item) => {
+        lines.push(
+          [
+            row.category,
+            row.totalItems,
+            row.inStock,
+            row.mediumStock,
+            row.lowStock,
+            item.name,
+            item.quantity,
+            item.status,
+          ]
+            .map(escapeCsvValue)
+            .join(",")
+        );
+      });
+    } else {
+      lines.push(
+        [row.category, row.totalItems, row.inStock, row.mediumStock, row.lowStock, "", "", ""]
+          .map(escapeCsvValue)
+          .join(",")
+      );
+    }
+  });
+
+  return lines.join("\n");
+};
+
+const downloadCsv = (csvContent: string, filename: string) => {
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
 
 // ---------------------------------------------------------------------------
 // Tooltip
@@ -204,6 +272,47 @@ const StatusList = ({
 );
 
 // ---------------------------------------------------------------------------
+// Header action buttons (Bulk Upload / Download CSV)
+// ---------------------------------------------------------------------------
+
+const HeaderActions = ({
+  onDownloadCsv,
+  onBulkUploadClick,
+  uploading,
+  disabled,
+}: {
+  onDownloadCsv: () => void;
+  onBulkUploadClick: () => void;
+  uploading: boolean;
+  disabled: boolean;
+}) => (
+  <div className="flex items-center gap-2">
+    <button
+      type="button"
+      onClick={onBulkUploadClick}
+      disabled={uploading}
+      className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+    >
+      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14" />
+      </svg>
+      {uploading ? "Uploading..." : "Bulk Upload"}
+    </button>
+    <button
+      type="button"
+      onClick={onDownloadCsv}
+      disabled={disabled}
+      className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+    >
+      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14" />
+      </svg>
+      Download CSV
+    </button>
+  </div>
+);
+
+// ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
 
@@ -218,6 +327,9 @@ export function InventoryStatusChart({
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
@@ -311,6 +423,53 @@ export function InventoryStatusChart({
     );
   }, [data]);
 
+  // -- CSV download ---------------------------------------------------------
+  const handleDownloadCsv = useCallback(() => {
+    if (!data.length) return;
+    const csv = buildInventoryCsv(data);
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadCsv(csv, `inventory-status-${stamp}.csv`);
+  }, [data]);
+
+  // -- Bulk upload ------------------------------------------------------------
+  const handleBulkUploadClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleBulkUploadChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      e.target.value = ""; // allow re-selecting the same file later
+      if (!file || !userId) return;
+
+      try {
+        setUploading(true);
+        setUploadError(null);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(`${API_BASE}/api/inventory/bulk-upload/${userId}`, {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Bulk upload failed: ${response.status}`);
+        }
+
+        // Refresh the chart with newly uploaded data
+        await fetchInventoryStatus(userId);
+      } catch (err) {
+        setUploadError("Failed to upload CSV. Please check the file and try again.");
+      } finally {
+        setUploading(false);
+      }
+    },
+    [userId, fetchInventoryStatus]
+  );
+
   const SyncBadge = () =>
     financialContextLabel ? (
       <span className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
@@ -319,17 +478,45 @@ export function InventoryStatusChart({
       </span>
     ) : null;
 
+  // Shared sticky header, used in every render branch ----------------------
+  const StickyHeader = ({ showHint = false }: { showHint?: boolean }) => (
+    <div className="sticky top-0 z-20 -mx-1 mb-5 flex flex-col gap-3 bg-white/95 px-1 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-slate-950/95 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center gap-3">
+        <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
+          Inventory status
+        </h3>
+        <SyncBadge />
+      </div>
+      <div className="flex flex-col items-start gap-1.5 sm:items-end">
+        <div className="flex items-center gap-3">
+          {showHint && (
+            <span className="text-[11px] text-slate-400">Click a bar to view details</span>
+          )}
+          <HeaderActions
+            onDownloadCsv={handleDownloadCsv}
+            onBulkUploadClick={handleBulkUploadClick}
+            uploading={uploading}
+            disabled={data.length === 0}
+          />
+        </div>
+        {uploadError && <p className="text-[11px] text-rose-600 dark:text-rose-400">{uploadError}</p>}
+      </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".csv"
+        className="hidden"
+        onChange={handleBulkUploadChange}
+      />
+    </div>
+  );
+
   // Loading / error / empty ---------------------------------------------
 
   if (loading || error || data.length === 0) {
     return (
       <div className="flex h-full w-full flex-col">
-        <div className="mb-5 flex items-center justify-between">
-          <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
-            Inventory status
-          </h3>
-          <SyncBadge />
-        </div>
+        <StickyHeader />
         <div className="flex h-[280px] items-center justify-center sm:h-[320px]">
           {loading ? (
             <SkeletonLoader />
@@ -361,15 +548,7 @@ export function InventoryStatusChart({
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
-          Inventory status
-        </h3>
-        <div className="flex items-center gap-2">
-          <SyncBadge />
-          <span className="text-[11px] text-slate-400">Click a bar to view details</span>
-        </div>
-      </div>
+      <StickyHeader showHint />
 
       {/* KPI summary strip */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

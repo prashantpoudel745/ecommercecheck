@@ -6,13 +6,9 @@ import VoucherEntry from "./VoucherEntry";
 import { 
   Plus, 
   X, 
-  FileText, 
   DollarSign, 
   Eye, 
   Calendar,
-  ArrowUpRight,
-  ArrowDownRight,
-  Receipt,
   Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -118,38 +114,41 @@ export default function VoucherBook() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">
-            Voucher Book
-          </h2>
-          <p className="text-muted-foreground">Digital day book and transaction journal.</p>
+      {/* STICKY HEADER GROUP: title, new voucher button, search, status filter */}
+<div className="sticky top-5 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+        <div className=" mx-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="mx-4">
+            <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent">
+              Voucher Book
+            </h2>
+            <p className="text-muted-foreground">Digital day book and transaction journal.</p>
+          </div>
+          <Button onClick={() => setShowEntry(true)} className="shadow-lg">
+            <Plus className="w-4 h-4 mr-2" /> New Voucher
+          </Button>
         </div>
-        <Button onClick={() => setShowEntry(true)} className="shadow-lg">
-          <Plus className="w-4 h-4 mr-2" /> New Voucher
-        </Button>
-      </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input 
-            placeholder="Search vouchers..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-white border-none shadow-sm focus-visible:ring-indigo-500"
-          />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input 
+              placeholder="Search vouchers..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-white border-none shadow-sm focus-visible:ring-indigo-500"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="ALL">All Status</option>
+            <option value="PAID">Paid</option>
+            <option value="PARTIAL">Partial</option>
+            <option value="UNPAID">Unpaid</option>
+          </select>
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="ALL">All Status</option>
-          <option value="PAID">Paid</option>
-          <option value="PARTIAL">Partial</option>
-          <option value="UNPAID">Unpaid</option>
-        </select>
       </div>
 
       <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-xl transition-all duration-300">

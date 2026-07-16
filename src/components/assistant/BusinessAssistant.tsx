@@ -299,18 +299,13 @@ export function BusinessAssistant() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        {!open && (
-            
-            <Button
-            className="fixed bottom-0 right-1 z-[60] h-14 rounded-full bg-slate-950 px-5 text-white shadow-[0_20px_60px_rgba(15,23,42,0.35)] hover:bg-slate-800"
+    <Button
+  className="fixed bottom-10 right-10 z-[60] h-14 rounded-full bg-slate-950 px-5 text-white shadow-[0_20px_60px_rgba(15,23,42,0.35)] hover:bg-slate-800"
 >
-          <Bot className="h-5 w-5 " />
-          Business AI
-          <Sparkles className="h-4 w-4 text-amber-300" />
-        </Button>
-)}
-      </SheetTrigger>
+  <Bot className="h-5 w-5" />
+  Business AI
+  <Sparkles className="h-4 w-4 text-amber-300" />
+</Button>
 
       <SheetContent side="right" className="w-full overflow-hidden border-slate-800 bg-slate-950 p-0 text-white sm:max-w-2xl">
         <div className="flex h-full flex-col bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.16),_transparent_34%),radial-gradient(circle_at_90%_10%,_rgba(168,85,247,0.12),_transparent_28%),linear-gradient(180deg,#020617_0%,#0f172a_100%)]">
