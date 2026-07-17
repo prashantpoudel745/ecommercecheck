@@ -8,11 +8,11 @@ import {
   Boxes,
   Users,
   Wallet,
+  ArrowDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/formatCurrency";
 import toast from "react-hot-toast";
@@ -126,6 +126,10 @@ const metricTiles = (snapshot?: Snapshot) => [
   },
 ];
 
+// Distance (px) from the bottom of the scroll container within which
+// we still consider the user "at the bottom" and safe to auto-scroll.
+const AUTO_SCROLL_THRESHOLD = 80;
+
 export function BusinessAssistant() {
   const [open, setOpen] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
@@ -134,7 +138,13 @@ export function BusinessAssistant() {
   const [input, setInput] = useState("");
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>(starterMessages);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+
   const scrollAnchorRef = useRef<HTMLDivElement | null>(null);
+  // Direct ref to the native scrollable element -- no querySelector,
+  // no dependency on Radix's internal viewport markup or mount timing.
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const shouldAutoScrollRef = useRef(true);
   const snapshotLoadedRef = useRef(false);
 
   const latestSnapshotLabel = useMemo(() => {
@@ -147,9 +157,37 @@ export function BusinessAssistant() {
     })}`;
   }, [snapshot]);
 
+  // Only auto-scroll to the bottom when the user is already near it.
+  // This runs on every message update (including streamed chunks), but
+  // it won't yank the view down if the user has scrolled up to read
+  // earlier messages.
   useEffect(() => {
-    scrollAnchorRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (shouldAutoScrollRef.current) {
+      viewportRef.current?.scrollTo({
+        top: viewportRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, [messages, open]);
+
+  const handleViewportScroll = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const distanceFromBottom =
+      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight;
+    const atBottom = distanceFromBottom < AUTO_SCROLL_THRESHOLD;
+    shouldAutoScrollRef.current = atBottom;
+    setShowJumpToLatest(!atBottom);
+  };
+
+  const jumpToLatest = () => {
+    shouldAutoScrollRef.current = true;
+    setShowJumpToLatest(false);
+    viewportRef.current?.scrollTo({
+      top: viewportRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  };
 
   const loadSnapshot = async () => {
     if (snapshotLoadedRef.current) return;
@@ -181,6 +219,8 @@ export function BusinessAssistant() {
   // Reset the "loaded" flag on close so reopening fetches fresh data.
   useEffect(() => {
     if (open) {
+      shouldAutoScrollRef.current = true;
+      setShowJumpToLatest(false);
       loadSnapshot();
     } else {
       snapshotLoadedRef.current = false;
@@ -190,6 +230,11 @@ export function BusinessAssistant() {
   const sendMessage = async (prompt?: string) => {
     const content = (prompt ?? input).trim();
     if (!content || sending) return;
+
+    // Re-pin to the bottom whenever a new exchange starts, so the user's
+    // own message and the streaming reply are visible by default.
+    shouldAutoScrollRef.current = true;
+    setShowJumpToLatest(false);
 
     setInput("");
     const userMessageId = crypto.randomUUID();
@@ -327,8 +372,15 @@ export function BusinessAssistant() {
             </div>
           </SheetHeader>
 
-          <div className="flex-1 overflow-hidden px-2 py-2 sm:px-3">
-            <ScrollArea className="h-full pr-3">
+          <div className="relative flex-1 overflow-hidden px-2 py-2 sm:px-3">
+            {/* Plain native scroll container -- we own scrollTop directly via
+                viewportRef, so there's no dependency on Radix's internal
+                viewport element or mount timing. */}
+            <div
+              ref={viewportRef}
+              onScroll={handleViewportScroll}
+              className="h-full overflow-y-auto pr-3 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.15)_transparent]"
+            >
               <div className="space-y-4 pb-6">
                 {messages.map((message) => (
                   <div
@@ -355,7 +407,18 @@ export function BusinessAssistant() {
 
                 <div ref={scrollAnchorRef} />
               </div>
-            </ScrollArea>
+            </div>
+
+            {showJumpToLatest && (
+              <Button
+                type="button"
+                onClick={jumpToLatest}
+                className="absolute bottom-4 left-1/2 z-10 h-9 -translate-x-1/2 rounded-full border border-white/10 bg-slate-900/90 px-4 text-xs text-white shadow-[0_10px_30px_rgba(15,23,42,0.4)] hover:bg-slate-800"
+              >
+                <ArrowDown className="mr-1.5 h-3.5 w-3.5" />
+                Jump to latest
+              </Button>
+            )}
           </div>
 
           <div className="border-t border-white/10 bg-slate-950/70 px-4 py-4 backdrop-blur sm:px-6">
