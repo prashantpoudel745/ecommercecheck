@@ -82,7 +82,7 @@ const starterMessages: ChatMessage[] = [
     id: "welcome",
     role: "assistant",
     content:
-      "Ask about today’s earnings, inventory status, customer dues, team health, investments, or how to improve profit. I answer from live business data.",
+      "Ask about today's earnings, inventory status, customer dues, team health, investments, or how to improve profit. I answer from live business data.",
   },
 ];
 
@@ -152,7 +152,7 @@ export function BusinessAssistant() {
   }, [messages, open]);
 
   const loadSnapshot = async () => {
-    if (!open || snapshotLoadedRef.current) return;
+    if (snapshotLoadedRef.current) return;
 
     setLoadingSnapshot(true);
     try {
@@ -176,10 +176,16 @@ export function BusinessAssistant() {
       setLoadingSnapshot(false);
     }
   };
-  useEffect(() => {
 
-  loadSnapshot();
-});
+  // Load the snapshot only when the sheet is opened.
+  // Reset the "loaded" flag on close so reopening fetches fresh data.
+  useEffect(() => {
+    if (open) {
+      loadSnapshot();
+    } else {
+      snapshotLoadedRef.current = false;
+    }
+  }, [open]);
 
   const sendMessage = async (prompt?: string) => {
     const content = (prompt ?? input).trim();
@@ -299,13 +305,13 @@ export function BusinessAssistant() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-    <Button
-  className="fixed bottom-10 right-10 z-[60] h-14 rounded-full bg-slate-950 px-5 text-white shadow-[0_20px_60px_rgba(15,23,42,0.35)] hover:bg-slate-800"
->
-  <Bot className="h-5 w-5" />
-  Business AI
-  <Sparkles className="h-4 w-4 text-amber-300" />
-</Button>
+      <SheetTrigger asChild>
+        <Button className="fixed bottom-10 right-10 z-[60] h-14 rounded-full bg-slate-950 px-5 text-white shadow-[0_20px_60px_rgba(15,23,42,0.35)] hover:bg-slate-800">
+          <Bot className="h-5 w-5" />
+          Business AI
+          <Sparkles className="h-4 w-4 text-amber-300" />
+        </Button>
+      </SheetTrigger>
 
       <SheetContent side="right" className="w-full overflow-hidden border-slate-800 bg-slate-950 p-0 text-white sm:max-w-2xl">
         <div className="flex h-full flex-col bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.16),_transparent_34%),radial-gradient(circle_at_90%_10%,_rgba(168,85,247,0.12),_transparent_28%),linear-gradient(180deg,#020617_0%,#0f172a_100%)]">
@@ -369,17 +375,17 @@ export function BusinessAssistant() {
 
             <div className="space-y-3">
               <Textarea
-  value={input}
-  onChange={(event) => setInput(event.target.value)}
-  onKeyDown={(event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      void sendMessage();
-    }
-  }}
-  placeholder="Ask a question like: How much do I earn today?"
-  className="min-h-[92px] resize-none border-white/10 bg-white/5 text-white placeholder:text-slate-500 focus-visible:ring-emerald-400"
-/>
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    void sendMessage();
+                  }
+                }}
+                placeholder="Ask a question like: How much do I earn today?"
+                className="min-h-[92px] resize-none border-white/10 bg-white/5 text-white placeholder:text-slate-500 focus-visible:ring-emerald-400"
+              />
               <div className="flex items-center justify-between gap-3">
                 <p className="text-[11px] text-slate-400">
                   Answers are generated from your live company data, not generic guesses.
