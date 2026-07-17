@@ -287,7 +287,7 @@ const HeaderActions = ({
   disabled: boolean;
 }) => (
   <div className="flex items-center gap-2">
-    <button
+    {/* <button
       type="button"
       onClick={onBulkUploadClick}
       disabled={uploading}
@@ -297,7 +297,7 @@ const HeaderActions = ({
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14" />
       </svg>
       {uploading ? "Uploading..." : "Bulk Upload"}
-    </button>
+    </button> */}
     <button
       type="button"
       onClick={onDownloadCsv}
@@ -480,7 +480,7 @@ export function InventoryStatusChart({
 
   // Shared sticky header, used in every render branch ----------------------
   const StickyHeader = ({ showHint = false }: { showHint?: boolean }) => (
-    <div className="sticky top-0 z-20 -mx-1 mb-5 flex flex-col gap-3 bg-white/95 px-1 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-slate-950/95 sm:flex-row sm:items-center sm:justify-between">
+    <div className=" mb-5 flex flex-col gap-3 bg-white/95 px-1 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-slate-950/95 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
           Inventory status

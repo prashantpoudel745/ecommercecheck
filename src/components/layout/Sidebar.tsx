@@ -6,7 +6,6 @@ import {
   BrainCircuit,
   Database,
   LayoutDashboard,
-  Globe,
   Upload,
   ChartSpline,
   UserPlus,
@@ -55,49 +54,48 @@ export function Sidebar() {
     <div
       className={cn(
         "relative flex h-screen flex-col border-r border-slate-800/80 bg-slate-950 text-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        collapsed ? "w-28" : "w-64"
       )}
     >
-      <div className="border-b border-slate-800/80 px-4 py-4">
-        <div className={cn("flex items-center gap-3", collapsed && "justify-center") }>
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500 to-blue-700 text-sm font-semibold text-white shadow-lg shadow-sky-950/30">
-            B
-          </div>
-          {!collapsed && (
-            <div>
-              <h2 className="text-[15px] font-semibold tracking-wide text-white">Bebasthapan</h2>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">Operations console</p>
-            </div>
-          )}
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "absolute right-3 top-3 text-slate-300 hover:bg-slate-800 hover:text-white",
-            collapsed && "right-1/2 translate-x-1/2"
-          )}
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {collapsed ? (
-              <path d="m9 18 6-6-6-6" />
-            ) : (
-              <path d="m15 18-6-6 6-6" />
-            )}
-          </svg>
-        </Button>
+  <div className="relative flex items-center justify-between border-b border-slate-800/80 px-3 py-4">
+  <div className={cn("flex min-w-0 items-center gap-3", collapsed && "gap-0")}>
+    <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
+      <img src="/images/logo.png" alt="Logo" className="h-9 w-9 object-contain" />
+    </div>
+
+    {!collapsed && (
+      <div className="min-w-0">
+        <h2 className="truncate text-[15px] font-semibold tracking-wide text-white">
+          Bebasthapan
+        </h2>
+        {/* <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">
+          Executive Dashboard
+        </p> */}
       </div>
+    )}
+  </div>
+
+  <Button
+    variant="ghost"
+    size="icon"
+    className="shrink-0 text-slate-300 hover:bg-slate-800 hover:text-white"
+    onClick={() => setCollapsed(!collapsed)}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {collapsed ? <path d="m9 18 6-6-6-6" /> : <path d="m15 18-6-6 6-6" />}
+    </svg>
+  </Button>
+</div>
 
       <nav className="flex-1 py-4">
         <div className="px-4 pb-3 text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-500">

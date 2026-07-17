@@ -113,11 +113,11 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1520px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-4">
-          <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
+          {/* <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
             <img src="/images/logo.png" alt="Logo" className="h-9 w-9 object-contain" />
-          </div>
+          </div> */}
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex itemps-center gap-2">
               <h1 className="truncate text-[15px] font-semibold tracking-tight text-slate-950">Bebesthapan</h1>
               <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:inline-flex">
                 Enterprise
