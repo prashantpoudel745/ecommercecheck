@@ -16,6 +16,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/formatCurrency";
 import toast from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -382,25 +384,52 @@ export function BusinessAssistant() {
               className="h-full overflow-y-auto pr-3 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.15)_transparent]"
             >
               <div className="space-y-4 pb-6">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={cn(
-                      "max-w-[92%] rounded-3xl px-4 py-3 text-sm leading-6 shadow-sm",
-                      message.role === "user"
-                        ? "ml-auto bg-sky-500 text-white"
-                        : "bg-white/6 border border-white/10 text-slate-100"
-                    )}
-                  >
-                    <p className="whitespace-pre-line">{message.content}</p>
-                  </div>
-                ))}
+                {messages.map((message) => {
+                  const isLastAssistant =
+                    message.role === "assistant" &&
+                    message.id === messages[messages.length - 1]?.id;
+                  const isStreaming = sending && streamStarted && isLastAssistant;
+
+                  return (
+                    <div
+                      key={message.id}
+                      className={cn(
+                        "max-w-[92%] rounded-3xl px-4 py-3 text-sm leading-6 shadow-sm transition-all duration-300",
+                        message.role === "user"
+                          ? "ml-auto bg-sky-500 text-white"
+                          : "bg-white/6 border border-white/10 text-slate-100"
+                      )}
+                    >
+                      <p className="whitespace-pre-line">
+                          <div className="prose prose-invert max-w-none">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {message.content}
+                          </ReactMarkdown>
+                        </div>
+                        {isStreaming && (
+                          <span className="inline-block h-4 w-1.5 animate-pulse bg-amber-300 align-text-bottom ml-0.5 rounded-sm" />
+                        )}
+                      </p>
+                    </div>
+                  );
+                })}
 
                 {sending && !streamStarted && (
-                  <div className="max-w-[92%] rounded-3xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-slate-300 shadow-sm">
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Checking live numbers...
+                  <div className="max-w-[92%] rounded-3xl border border-white/10 bg-white/5 px-4 py-3 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/10">
+                        <Sparkles className="h-4 w-4 animate-pulse text-amber-300" />
+                      </div>
+                      <div className="flex flex-col">
+                        {/* <span className="text-xs font-medium text-slate-200">
+                          Analyzing live data...
+                        </span> */}
+                        <div className="mt-1 flex items-center gap-1.5">
+                          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.3s]" />
+                          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.15s]" />
+                          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
