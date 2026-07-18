@@ -127,7 +127,7 @@ export default function ChartOfAccounts() {
   return (
     <div className="space-y-6">
       {/* Sticky page header: title + Seed/Add Group/Add Ledger buttons */}
-      <div className="sticky top-5 z-30  backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-3 border-b border-gray-100">
+      <div className="sticky lg:top-5 md:top-10 sm:top-10 z-30  backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-3 border-b border-gray-100">
         <div className="mx-5">
           <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent">
             Chart of Accounts

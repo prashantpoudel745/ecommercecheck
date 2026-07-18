@@ -44,7 +44,7 @@ export default function RecentTransactions({
   return (
     <Card>
       {/* Sticky header: title, filters, and action buttons stay pinned while the table scrolls */}
-      <CardHeader className="sticky top-5 z-10 bg-white border-b border-gray-100">
+      <CardHeader className="sticky lg:top-5 md:top-10 sm:top-10 z-10 bg-white border-b border-gray-100">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <CardTitle>Recent Transactions</CardTitle>

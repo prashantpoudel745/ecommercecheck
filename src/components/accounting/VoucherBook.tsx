@@ -115,7 +115,7 @@ export default function VoucherBook() {
   return (
     <div className="space-y-6">
       {/* STICKY HEADER GROUP: title, new voucher button, search, status filter */}
-<div className="sticky top-5 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+<div className="sticky lg:top-5 md:top-10 sm:top-10 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div className=" mx-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="mx-4">
             <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent">

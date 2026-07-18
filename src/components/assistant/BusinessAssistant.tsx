@@ -136,6 +136,7 @@ export function BusinessAssistant() {
   const [open, setOpen] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [sending, setSending] = useState(false);
+  const sendingRef = useRef(false);
   const [streamStarted, setStreamStarted] = useState(false); // Track if streaming has begun
   const [input, setInput] = useState("");
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
@@ -256,9 +257,10 @@ export function BusinessAssistant() {
 
   const sendMessage = async (prompt?: string) => {
     const content = (prompt ?? input).trim();
-    if (!content || sending) return;
+    if (!content || sendingRef.current) return;
 
-    // Re-pin to the bottom whenever a new exchange starts, so the user's
+    sendingRef.current = true;
+    setSending(true);
     // own message and the streaming reply are visible by default.
     shouldAutoScrollRef.current = true;
     setShowJumpToLatest(false);
@@ -351,6 +353,7 @@ export function BusinessAssistant() {
         return updated;
       });
     } finally {
+      sendingRef.current = false;
       setSending(false);
       setStreamStarted(false);
     }

@@ -309,16 +309,47 @@ export default function ClientSection() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-<div className=" mx-3 flex justify-between items-center sticky top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+<div className=" mx-3 flex lg:flex-col justify-between items-center sticky lg:top-6 md:top-10 sm:top-10 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+        <div className="flex flex-col">
+
         <div>
           <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent flex items-center gap-3">
             <Users className="w-8 h-8 text-black" />
             Party Ledgers
           </h2>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="bg-black hover:bg-gray-700 shadow-lg shadow-indigo-100">
+        <Button onClick={() => setShowForm(!showForm)} className="bg-black hover:bg-gray-700 mt-2 shadow-lg shadow-indigo-100">
           <Plus className="w-4 h-4 mr-2" /> {showForm ? "Cancel" : "Add New Party"}
         </Button>
+        <div>
+           <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 pb-4 gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            <div className="relative w-full max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input 
+              placeholder="Search clients or vendors..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-slate-50 border-none focus-visible:ring-indigo-500"
+            />
+          </div>
+            <div className="relative w-full sm:w-52">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as "all" | "Customer" | "Vendor" | "Lead/Guest")}
+                className="h-10 w-full rounded-md border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="all">All Types</option>
+                <option value="Customer">Customer</option>
+                <option value="Vendor">Vendor</option>
+                <option value="Lead/Guest">Lead/Guest</option>
+              </select>
+            </div>
+          </div>
+        </CardHeader>
+        </div>
+        </div>
       </div>
 
       {showForm && (
@@ -397,37 +428,9 @@ export default function ClientSection() {
       )}
 
       <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-xl">
-        <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 pb-4 gap-3">
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
-            <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input 
-              placeholder="Search clients or vendors..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-slate-50 border-none focus-visible:ring-indigo-500"
-            />
-          </div>
-            <div className="relative w-full sm:w-52">
-              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value as "all" | "Customer" | "Vendor" | "Lead/Guest")}
-                className="h-10 w-full rounded-md border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="all">All Types</option>
-                <option value="Customer">Customer</option>
-                <option value="Vendor">Vendor</option>
-                <option value="Lead/Guest">Lead/Guest</option>
-              </select>
-            </div>
-          </div>
-          <Button variant="ghost" size="icon" onClick={() => refresh && refresh()} className={loading ? "animate-spin" : "hover:bg-indigo-50 text-indigo-600"}>
-            <RefreshCw className="w-4 h-4" />
-          </Button>
-        </CardHeader>
+       
         <CardContent>
-          <div className="rounded-xl border overflow-hidden shadow-sm">
+          <div className="rounded-xl border overflow-x-auto shadow-sm">
             <table className="w-full text-sm">
               <thead className="bg-slate-50/50 border-b">
                 <tr>

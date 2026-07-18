@@ -86,10 +86,10 @@ export default function FinancialReports() {
         <table className="w-full text-sm">
           <thead>
             <tr>
-              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Account Ledger</th>
-              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Group</th>
-              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Debit</th>
-              <th className="sticky top-5 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Credit</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Account Ledger</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Group</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Debit</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Credit</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -363,7 +363,7 @@ export default function FinancialReports() {
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="sticky top-5 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+      <div className="sticky lg:top-5 md:top-10 sm:top-10 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div className="ml-3">
           <h2 className="text-4xl font-semibold tracking-tighter bg-clip-text text-black">
             Financial Reporting
