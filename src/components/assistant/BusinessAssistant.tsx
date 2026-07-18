@@ -207,7 +207,32 @@ export function BusinessAssistant() {
 
       const data = await summaryResponse.json();
       setSnapshot(data.snapshot || null);
-      setMessages(starterMessages);
+      
+      // Fetch chat history so messages persist even if they close the sidebar or refresh
+      try {
+        const historyResponse = await fetch(`${API_BASE}/api/insights/messages?limit=50`, {
+          method: "GET",
+          credentials: "include",
+        });
+        
+        if (historyResponse.ok) {
+          const historyData = await historyResponse.json();
+          if (historyData.success && historyData.messages?.length > 0) {
+            const formattedMessages = historyData.messages.map((m: any) => ({
+              id: m._id || crypto.randomUUID(),
+              role: m.role as ChatRole,
+              content: m.content || "",
+              createdAt: m.createdAt,
+            }));
+            setMessages([...starterMessages, ...formattedMessages]);
+          } else {
+            // Only reset to starter if we didn't already have messages
+            setMessages((prev) => prev.length > starterMessages.length ? prev : starterMessages);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch history:", err);
+      }
 
       snapshotLoadedRef.current = true;
     } catch (error) {
@@ -271,9 +296,6 @@ export function BusinessAssistant() {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
-      const WORDS_PER_SECOND = 15;
-      const MS_PER_WORD = 1000 / WORDS_PER_SECOND; // ~66ms per word
-      let lastDisplayTime = Date.now();
 
       if (!reader) throw new Error("Response body is not readable");
 
@@ -295,22 +317,6 @@ export function BusinessAssistant() {
                 if (!streamStarted) {
                   setStreamStarted(true);
                 }
-
-                // Calculate word count for timing
-                const words = data.content.split(/(\s+)/).filter((w: string) => w.length > 0);
-                const wordCount = words.filter((w: string) => w.trim().length > 0).length;
-                const delayMs = wordCount * MS_PER_WORD;
-
-                // Wait for the appropriate time based on word count
-                const now = Date.now();
-                const timeSinceLastDisplay = now - lastDisplayTime;
-                if (timeSinceLastDisplay < delayMs) {
-                  await new Promise((resolve) =>
-                    setTimeout(resolve, delayMs - timeSinceLastDisplay)
-                  );
-                }
-
-                lastDisplayTime = Date.now();
 
                 // Add the chunk to the message
                 setMessages((current) => {
@@ -369,7 +375,7 @@ export function BusinessAssistant() {
                   <Sparkles className="h-3.5 w-3.5 text-amber-300" />
                   Live business assistant
                 </div>
-                <SheetTitle className="text-2xl font-semibold tracking-tight text-white">Ask the numbers</SheetTitle>
+                {/* <SheetTitle className="text-2xl font-semibold tracking-tight text-white">Ask the numbers</SheetTitle> */}
               </div>
             </div>
           </SheetHeader>
@@ -400,16 +406,23 @@ export function BusinessAssistant() {
                           : "bg-white/6 border border-white/10 text-slate-100"
                       )}
                     >
-                      <p className="whitespace-pre-line">
-                          <div className="prose prose-invert max-w-none">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <div className="relative">
+                        <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0">
+                          <ReactMarkdown 
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              table: ({node, ...props}) => <div className="overflow-x-auto my-4"><table className="w-full text-left border-collapse border border-slate-700" {...props} /></div>,
+                              th: ({node, ...props}) => <th className="border border-slate-700 px-4 py-2 bg-slate-800 font-semibold" {...props} />,
+                              td: ({node, ...props}) => <td className="border border-slate-700 px-4 py-2" {...props} />
+                            }}
+                          >
                             {message.content}
                           </ReactMarkdown>
                         </div>
                         {isStreaming && (
                           <span className="inline-block h-4 w-1.5 animate-pulse bg-amber-300 align-text-bottom ml-0.5 rounded-sm" />
                         )}
-                      </p>
+                      </div>
                     </div>
                   );
                 })}
