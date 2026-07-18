@@ -309,30 +309,30 @@ export default function ClientSection() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-<div className=" mx-3 flex lg:flex-col justify-between items-center sticky lg:top-6 md:top-10 sm:top-10 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
-        <div className="flex flex-col">
-
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent flex items-center gap-3">
-            <Users className="w-8 h-8 text-black" />
-            Party Ledgers
-          </h2>
-        </div>
-        <Button onClick={() => setShowForm(!showForm)} className="bg-black hover:bg-gray-700 mt-2 shadow-lg shadow-indigo-100">
-          <Plus className="w-4 h-4 mr-2" /> {showForm ? "Cancel" : "Add New Party"}
-        </Button>
-        <div>
-           <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 pb-4 gap-3">
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
-            <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input 
-              placeholder="Search clients or vendors..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-slate-50 border-none focus-visible:ring-indigo-500"
-            />
+      <div className="sticky top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-2 pb-4 mb-6 border-b border-gray-100">
+        <div className="flex flex-col space-y-4 px-3">
+          {/* Title and Button Row */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent flex items-center gap-3">
+              <Users className="w-8 h-8 text-black" />
+              Party Ledgers
+            </h2>
+            <Button onClick={() => setShowForm(!showForm)} className="bg-black hover:bg-gray-700 shadow-lg shadow-indigo-100 w-full sm:w-auto">
+              <Plus className="w-4 h-4 mr-2" /> {showForm ? "Cancel" : "Add New Party"}
+            </Button>
           </div>
+          
+          {/* Search and Filter Row */}
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="relative w-full max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input 
+                placeholder="Search clients or vendors..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-white border-slate-200 focus-visible:ring-indigo-500 shadow-sm h-10"
+              />
+            </div>
             <div className="relative w-full sm:w-52">
               <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <select
@@ -347,8 +347,6 @@ export default function ClientSection() {
               </select>
             </div>
           </div>
-        </CardHeader>
-        </div>
         </div>
       </div>
 
