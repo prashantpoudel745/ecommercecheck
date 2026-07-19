@@ -1,6 +1,6 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 const API_URL = import.meta.env.VITE_API_URL;
@@ -94,3 +94,4 @@ export default function ResetPassword() {
     </div>
   );
 }
+

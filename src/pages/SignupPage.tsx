@@ -8,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [signatureFile, setSignatureFile] = useState(null);
   const [companyName, setCompanyName] = useState("");
   const [password, setPassword] = useState("");
@@ -95,6 +96,7 @@ export default function SignupPage() {
         body: JSON.stringify({
           name,
           email,
+          phone,
           companyName,
           password,
           selectedPlan,
@@ -321,6 +323,19 @@ export default function SignupPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 shadow-sm focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-500 transition-all duration-200"
                   placeholder="name@company.com"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 shadow-sm focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-500 transition-all duration-200"
+                  placeholder="+977 9800000000"
                 />
               </div>
 

@@ -1,6 +1,6 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import Authsidebar from "@/components/authcomponents/authsidebar";
 import { useAuth } from "@/context/AuthContext";
@@ -265,3 +265,4 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+

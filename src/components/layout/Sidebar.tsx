@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
 import {
   ChartBar,
   BrainCircuit,
@@ -25,6 +26,7 @@ export function Sidebar() {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
 
   const menuItems = [
     { label: t("navigation.dashboard", "Dashboard"), icon: <LayoutDashboard size={20} />, path: "/" },
@@ -35,11 +37,13 @@ export function Sidebar() {
       label: t("navigation.investments", "Investments"),
       icon: <ChartSpline size={20} />,
       path: "/investments",
+      roles: ["admin", "superadmin"],
     },
     {
       label: t("navigation.attendance", "Attendance"),
       icon: <CheckCheck size={20} />,
       path: "/attendance",
+      roles: ["admin", "hr", "employee", "superadmin"],
     },
     { label: t("navigation.crm", "CRM"), icon: <Database size={20} />, path: "/crm" },
     {
@@ -49,6 +53,10 @@ export function Sidebar() {
     },
     { label: t("navigation.inventory", "Inventory"), icon: <Upload size={20} />, path: "/inventory" },
   ];
+
+  const allowedMenuItems = menuItems.filter((item) => 
+    !item.roles || item.roles.includes(user?.role || "")
+  );
 
   return (
     <div
@@ -102,7 +110,7 @@ export function Sidebar() {
           {!collapsed ? "Workspace" : ""}
         </div>
         <ul className="space-y-1 px-2">
-          {menuItems.map((item) => (
+          {allowedMenuItems.map((item) => (
             <li key={item.path}>
               <TooltipProvider
                 delayDuration={0}

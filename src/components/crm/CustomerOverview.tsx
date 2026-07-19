@@ -474,11 +474,11 @@ const CustomerOverview = () => {
                           </div>
                         </TableCell>
                         <TableCell>{client.updatedBy || "-"}</TableCell>
-                        <TableCell>
+                        <TableCell className="min-w-[300px] max-w-[350px]">
                           {client.items && client.items.length > 0 ? (
                             <div className="flex flex-col gap-1">
                               {client.items.map((item) => (
-                                <span key={item._id} className="text-sm">
+                                <span key={item._id} className="text-sm break-words">
                                   {item.itemName} (Qty: {item.quantity}, Price:{" "}
                                   {formatCurrency(item.price)})
                                 </span>

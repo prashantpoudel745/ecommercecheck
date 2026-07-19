@@ -125,6 +125,10 @@ export interface AttendanceRecord {
     end: string;
     duration: number;
   }>;
+  employeeName?: string;
+  employeeEmail?: string;
+  department?: string;
+  hoursWorked?: number;
 }
 
 export interface AttendanceStats {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getAccounts, createVoucher } from "../../services/accounting.service";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 import { Plus, Trash2, Save, AlertCircle, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -72,7 +73,7 @@ export default function VoucherEntry({ onVoucherAdded }: { onVoucherAdded?: () =
         ]
       });
     } catch (err: any) {
-      console.error(err);
+      toast.error(err?.response?.data?.message || err?.message || "Failed to save voucher");
     } finally {
       setIsSubmitting(false);
     }

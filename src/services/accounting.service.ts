@@ -213,6 +213,11 @@ export const deleteVoucher = async (id: string) => {
   return response.data;
 };
 
+export const sendInvoice = async (id: string, data?: { email?: string, paymentTermsDays?: number, taxRate?: number, currencySymbol?: string }) => {
+  const response = await api.post(`/erp/vouchers/${id}/send-invoice`, data || {});
+  return response.data;
+};
+
 // Unified Transaction
 export const createTransactionWithVoucher = async (data: any) => {
   const response = await api.post("/erp/transactions", data);

@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+﻿import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -31,3 +31,4 @@ const LogoutButton = () => {
   return <button onClick={logout}>Logout</button>;
 };
 export default LogoutButton;
+

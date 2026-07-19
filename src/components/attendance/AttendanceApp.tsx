@@ -3,6 +3,7 @@ import React from "react";
 import EmployeeAttendanceView from "./EmployeeAttendanceView";
 import AdminAttendanceView from "./AdminAttendanceview";
 import { useAuth } from "@/context/AuthContext";
+import { AttendUser } from "../../../types";
 
 const AttendanceApp: React.FC = () => {
   const { user, loading } = useAuth();
@@ -23,11 +24,15 @@ const AttendanceApp: React.FC = () => {
     );
   }
 
+  // After the null-check above, we know the user is authenticated.
+  // Cast to AttendUser since the required fields are guaranteed at runtime.
+  const attendUser = user as unknown as AttendUser;
+
   // Render based on user role
   if (user.role === "admin") {
-    return <AdminAttendanceView user={user} />;
+    return <AdminAttendanceView user={attendUser} />;
   } else {
-    return <EmployeeAttendanceView user={user} />;
+    return <EmployeeAttendanceView user={attendUser} />;
   }
 };
 

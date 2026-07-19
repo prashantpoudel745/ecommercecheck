@@ -1,4 +1,3 @@
-import { Toaster } from "react-hot-toast";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -48,14 +47,15 @@ const App = () => {
       { id: "employees", paths: ["/employees"], render: () => <EmployeePage /> },
       { id: "accounting", paths: ["/accounting"], render: () => <Accounting /> },
       { id: "prediction", paths: ["/prediction"], render: () => <Prediction /> },
-      { id: "attendance", paths: ["/attendance"], render: () => <Attendance /> },
+      { id: "attendance", paths: ["/attendance"], render: () => <Attendance />, roles: ["admin", "hr", "employee", "superadmin"] },
       { id: "crm", paths: ["/crm"], render: () => <CRM /> },
       { id: "inventory", paths: ["/inventory"], render: () => <Inventory /> },
-      { id: "investments", paths: ["/investments"], render: () => <Investmentpage /> },
+      { id: "investments", paths: ["/investments"], render: () => <Investmentpage />, roles: ["admin", "superadmin"] },
       {
         id: "superadminaccess",
         paths: ["/superadminaccess"],
         render: () => <AdminStatusManager />,
+        roles: ["superadmin"]
       },
     ],
     []
@@ -69,7 +69,6 @@ const App = () => {
       <GlobalDataStoreProvider>
         <AuthProvider>
           <TooltipProvider>
-            <Toaster />
             <Sonner />
           <BrowserRouter>
             <Suspense fallback={<div className="flex h-screen w-screen items-center justify-center">Loading...</div>}>
@@ -223,7 +222,7 @@ const App = () => {
             />
             </Routes>
             </Suspense>
-            <Toaster position="top-center" />
+            <Sonner position="top-center" />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Database, Upload, BarChart3, Mail, AlertTriangle } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import SearchComponent from "../Search";
 import BulkUpload from "./BulkUpload";
 import { UpdateInventory } from "./UpdateInventory";
@@ -531,3 +531,4 @@ export function InventoryOverview() {
     </div>
   );
 }
+

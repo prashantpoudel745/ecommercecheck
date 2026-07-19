@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 const InvestmentDistributionChart = ({ investments }) => {
   const chartRef = useRef(null);
@@ -110,14 +111,7 @@ const InvestmentDistributionChart = ({ investments }) => {
                     const label = context.label || "";
                     const amount = context.raw;
                     const percentage = Math.round((Number(amount) / totalAmount) * 100);
-                    return `${label}: ${percentage}% (${new Intl.NumberFormat(
-                      "en-US",
-                      {
-                        style: "currency",
-                        currency: "USD",
-                        maximumFractionDigits: 0
-                      }
-                    ).format(Number(amount))})`;
+                    return `${label}: ${percentage}% (${formatCurrency(Number(amount))})`;
                   },
                 },
               },

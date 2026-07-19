@@ -5,6 +5,7 @@ interface User {
   id?: string;
   name?: string;
   fullName?: string;
+  phone?:string;
   email?: string;
   role?: string;
   companyName?: string;
@@ -14,6 +15,7 @@ interface User {
   selectedPlan?: string;
   companyId?: string;
   plan?: string;
+  currencySymbol?: string;
 }
 
 interface AuthContextType {

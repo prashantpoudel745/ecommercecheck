@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { PlusCircle, ScanLine } from "lucide-react";
 import {
   Dialog,
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CardTitle } from "@/components/ui/card";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import BillScanner from "../accounting/BillScanner";
 import type { BillData } from "@/services/ocr.service";
 
@@ -260,3 +260,4 @@ const AddInventoryButton = ({ onInventoryAdded }: AddInventoryButtonProps) => {
 };
 
 export default AddInventoryButton;
+

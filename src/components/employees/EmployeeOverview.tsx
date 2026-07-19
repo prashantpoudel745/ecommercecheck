@@ -91,7 +91,7 @@ const EmployeeOverview = () => {
   const handleDelete = async (id, employeeName) => {
     if (window.confirm(`Are you sure you want to delete ${employeeName}?`)) {
       try {
-        await fetch(`${API_URL}/api/employee/${id}`, {
+        await fetch(`${API_URL}/api/employee/delete/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

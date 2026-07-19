@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChartBar,
   CreditCard,
   Database,
@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { useEffect, useState, useCallback, lazy, Suspense } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { ClipLoader } from "react-spinners";
 import { Transaction } from "../../types";
 import {
@@ -18,6 +18,7 @@ import {
 import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
 import { useGlobalDataStore } from "@/store/GlobalDataStore";
 import { useAuth } from "@/context/AuthContext";
+import { getDashboardStats } from "@/services/accounting.service";
 const API_BASE = import.meta.env.VITE_API_URL;
 
 const FinancialOverviewPage = lazy(
@@ -38,7 +39,7 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const dashboardState = state.dashboard;
 
-  // Financial overview view state – lifted so InventoryStatusChart can sync
+  // Financial overview view state â€“ lifted so InventoryStatusChart can sync
   const [financialViewMode, setFinancialViewMode] = useState<"year" | "month" | "day">("year");
   const [financialSelectedYear, setFinancialSelectedYear] = useState<string | null>(null);
   const [financialSelectedMonth, setFinancialSelectedMonth] = useState<string | null>(null);
@@ -52,54 +53,23 @@ export default function Dashboard() {
     []
   );
 
-  const transactions = dashboardState.transactions;
   const stats = dashboardState.stats;
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/accounting`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch transactions");
-      }
-
-      const data = await response.json();
-      const account = data.account || [];
-
-      let totalRevenue = 0;
-      let totalExpenses = 0;
-
-      account.forEach((transaction: Transaction) => {
-        if (
-          transaction.type === "sales" ||
-          transaction.category.toLowerCase() === "sales"
-        ) {
-          totalRevenue += Math.abs(transaction.amount);
-        } else if (
-          transaction.type === "expenses" ||
-          transaction.category.toLowerCase() === "expenses"
-        ) {
-          totalExpenses += Math.abs(transaction.amount);
-        }
-      });
-
-      const netProfit = totalRevenue - totalExpenses;
+      const statsData = await getDashboardStats();
 
       setDashboard((previous) => ({
         ...previous,
-        transactions: account,
+        transactions: [], // Not used for rendering in the dashboard
         stats: {
-          totalRevenue,
-          totalExpenses,
-          netProfit,
+          totalRevenue: statsData.revenue,
+          totalExpenses: statsData.expenses,
+          netProfit: statsData.netProfit,
         },
       }));
     } catch (error) {
       toast.error("Failed to load transactions");
-      // console.error("Error fetching transactions:", error);
     }
   };
 
@@ -224,7 +194,7 @@ export default function Dashboard() {
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
           title="Inventory Value"
-          value={formatCurrencyShort(products.reduce((sum, product) => sum + product.price * product.quantity, 0))}
+          value={formatCurrency(products.reduce((sum, product) => sum + product.price * product.quantity, 0))}
           icon={<ChartBar className="text-purple-500" size={20} />}
         />
         <StatCard
@@ -260,3 +230,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

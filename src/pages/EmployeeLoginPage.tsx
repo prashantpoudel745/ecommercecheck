@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   ArrowRight,
   Eye,
@@ -6,7 +6,7 @@ import {
   Loader2,
   LockKeyhole,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import Authsidebar from "@/components/authcomponents/authsidebar";
 import { useAuth } from "@/context/AuthContext";
@@ -243,3 +243,4 @@ export default function EmployeeLoginPage() {
     </div>
   );
 }
+

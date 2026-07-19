@@ -1,6 +1,6 @@
-// src/components/Dashboard/AddnewInvestment.jsx
+﻿// src/components/Dashboard/AddnewInvestment.jsx
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { createInvestment } from "@/services/investmentService";
 
 const AddInvestmentForm = ({ onAddInvestment, userId }) => {

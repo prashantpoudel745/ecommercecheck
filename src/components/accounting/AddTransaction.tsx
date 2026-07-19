@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
 import { Plus, Trash2, ScanLine } from "lucide-react";
@@ -19,7 +19,7 @@ import {
   CombinedDialogProps,
 } from "../../../types";
 import { Badge } from "@/components/ui/badge";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { useTransactionForm } from "@/hooks/useTransactionForm";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import * as accountingService from "@/services/accounting.service";
@@ -262,7 +262,7 @@ export default function CombinedAddDialog({
     }, 200);
   };
 
-  // ─── Handle OCR Bill Data ───
+  // â”€â”€â”€ Handle OCR Bill Data â”€â”€â”€
   const handleBillDataExtracted = (data: BillData) => {
     // Auto-fill form fields from extracted bill data
     const extractedItems = data.items.length > 0
@@ -616,3 +616,4 @@ export default function CombinedAddDialog({
     </>
   );
 }
+

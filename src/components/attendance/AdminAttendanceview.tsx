@@ -47,7 +47,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
       const response = await api.get(`/dashboard`);
       setDashboardData(response.data.data);
     } catch (err) {
-      setError(err.message || "Failed to load dashboard data");
+      setError("Failed to load dashboard data");
     }
   }, []);
 

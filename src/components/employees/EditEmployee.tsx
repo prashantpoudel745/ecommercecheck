@@ -61,7 +61,7 @@ const EditEmployeeForm = ({ onSuccess }) => {
     setIsError(false);
 
     try {
-      const res = await fetch(`${API_URL}/api/employee/${id}`, {
+      const res = await fetch(`${API_URL}/api/employee/update/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

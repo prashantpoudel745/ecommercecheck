@@ -11,7 +11,7 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { ClipLoader } from 'react-spinners';
 const API_BASE = import.meta.env.VITE_API_URL;
 

@@ -18,13 +18,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ChangeSignature from "@/lib/Changesignature";
-import { BellRing, LogOut, Globe } from "lucide-react";
-import toast from "react-hot-toast";
+import { BellRing, LogOut, Globe, DollarSign, UserPen, KeyRound } from "lucide-react";
+import { toast } from "sonner";
 import { InstallButton } from "../pwa/InstallButton";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import RecentActivity from "@/components/dashboard/RecentActivity";
+import EditProfileModal from "@/components/profile/EditProfileModal";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const sectionLabels: Record<string, string> = {
@@ -46,6 +47,8 @@ export function Header() {
   const [company, setCompany] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("/images/default-profile.png");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [profileModalTab, setProfileModalTab] = useState<"profile" | "password">("profile");
   useEffect(() => {
     if (user) {
       setCompany(user.companyName || user.fullName || "");
@@ -67,6 +70,27 @@ export function Header() {
 
   const changeLanguage = (langCode: string) => {
     i18n.changeLanguage(langCode);
+  };
+
+  const changeCurrency = async (symbol: string) => {
+    try {
+      const response = await fetch(`${API_URL}/api/changecurrency`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ currencySymbol: symbol }),
+      });
+      if (response.ok) {
+        toast.success("Currency updated");
+        await refreshUser();
+        // optionally window.location.reload() if UI doesn't react fully:
+        window.location.reload();
+      } else {
+        toast.error("Failed to update currency");
+      }
+    } catch (err) {
+      toast.error("Error updating currency");
+    }
   };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,6 +134,7 @@ export function Header() {
   };
 
   return (
+    <>
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1520px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-4">
@@ -175,6 +200,25 @@ export function Header() {
               <DropdownMenuItem onClick={() => changeLanguage("np")}>{t("common.nepali")}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          {user?.role === "admin" && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="h-10 w-10 rounded-full border border-slate-200 bg-white/80 p-0 hover:bg-slate-50"
+                  title="Change Currency"
+                >
+                  <DollarSign className="h-5 w-5 text-slate-600" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => changeCurrency("रु")}>NPR (रु)</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeCurrency("₹")}>INR (₹)</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeCurrency("$")}>USD ($)</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeCurrency("€")}>EUR (€)</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -193,8 +237,9 @@ export function Header() {
               <DropdownMenuLabel>
                 <div className="flex flex-col items-start space-y-2">
                   <div
-                    className="flex cursor-pointer items-center gap-3"
-                    onClick={() => document.getElementById("fileInput")?.click()}
+                    className="flex items-center gap-3"
+                    onClick={() => user?.role === "admin" && document.getElementById("fileInput")?.click()}
+                    style={{ cursor: user?.role === "admin" ? "pointer" : "default" }}
                   >
                     <img src={imageUrl} alt="User" className="h-9 w-9 rounded-full border object-cover" />
                     <div className="text-left">
@@ -219,10 +264,21 @@ export function Header() {
               <DropdownMenuSeparator />
 
               {user?.role === "admin" && (
-                <div className="p-2">
-                  <ChangeSignature />
-                </div>
+                <>
+                  <div className="p-2">
+                    <ChangeSignature />
+                  </div>
+                  <DropdownMenuSeparator />
+                </>
               )}
+
+              <DropdownMenuItem
+                className="flex cursor-pointer items-center gap-2 text-slate-700 hover:text-slate-900"
+                onClick={() => { setProfileModalTab("password"); setIsProfileModalOpen(true); }}
+              >
+                <KeyRound className="h-4 w-4 text-amber-500" />
+                Change Password
+              </DropdownMenuItem>
 
               <DropdownMenuSeparator />
 
@@ -238,5 +294,7 @@ export function Header() {
         </div>
       </div>
     </header>
+    <EditProfileModal open={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} defaultTab={profileModalTab} />
+    </>
   );
 }

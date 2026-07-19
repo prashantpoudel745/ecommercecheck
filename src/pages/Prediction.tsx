@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import { formatCurrencyShort } from "@/utils/formatCurrency";
 import { Target } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { ClipLoader } from "react-spinners";
 import { Product, Transaction } from "../../types";
 import TargetSettingsDialog from "@/components/prediction/targetsettingdialog";
 import { useAuth } from "@/context/AuthContext";
 
-// ✅ Recharts imports
+// âœ… Recharts imports
 import {
   LineChart,
   Line,
@@ -103,7 +103,7 @@ export default function UnifiedDashboard() {
     return fallback;
   };
 
-  // === HELPER: Aggregate daily → monthly ===
+  // === HELPER: Aggregate daily â†’ monthly ===
   const aggregateDailyToMonthly = (dailyData: { date: string; sales: number }[]) => {
     const monthlyMap: Record<string, number> = {};
     dailyData.forEach((entry) => {
@@ -207,7 +207,7 @@ export default function UnifiedDashboard() {
       const monthlyMetric = resolveTargetMetric(targetData.monthly, "month");
       const yearlyMetric = resolveTargetMetric(targetData.yearly, "year");
 
-      // ✅ SET TARGETS STATE FROM API
+      // âœ… SET TARGETS STATE FROM API
       setTargets({
         monthly: {
           sales: monthlyMetric.sales,
@@ -459,7 +459,7 @@ export default function UnifiedDashboard() {
           Revenue trend with {timeframe === "month" ? "monthly" : "yearly"} target line
         </p>
 
-        {/* ✅ RECHARTS LINE CHART */}
+        {/* âœ… RECHARTS LINE CHART */}
         <div className="h-80 mb-1 p-3 rounded-lg bg-slate-50/60">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -560,3 +560,4 @@ export default function UnifiedDashboard() {
     </div>
   );
 }
+

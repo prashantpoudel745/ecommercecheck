@@ -17,6 +17,7 @@ import {
   ChevronRight,
   Info
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,8 +59,8 @@ export default function ChartOfAccounts() {
       ]);
       setAccounts(accData || []);
       setGroups(groupData || []);
-    } catch (error) {
-  // Intentionally ignore errors.
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to load chart of accounts");
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAccounting } from "@/hooks/useAccounting";
 import { CURRENCY_SYMBOL, formatCurrency } from "@/utils/formatCurrency";
-import { recordPayment, Voucher } from "../../services/accounting.service";
+import { recordPayment, sendInvoice, Voucher } from "../../services/accounting.service";
 import VoucherEntry from "./VoucherEntry";
 import { 
   Plus, 
@@ -9,8 +9,11 @@ import {
   DollarSign, 
   Eye, 
   Calendar,
-  Search
+  Search,
+  Mail,
+  Loader2
 } from "lucide-react";
+import {toast }from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,6 +49,25 @@ export default function VoucherBook() {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [sendingInvoice, setSendingInvoice] = useState(false);
+
+  const handleSendInvoice = async () => {
+    if (!selectedVoucher) return;
+    
+    // Check if the voucher has a linked party to use for email
+    const emailPrompt = prompt("Enter client email address to send invoice:");
+    if (!emailPrompt) return;
+
+    setSendingInvoice(true);
+    try {
+      await sendInvoice(selectedVoucher._id, { email: emailPrompt, currencySymbol: CURRENCY_SYMBOL });
+      toast.success("Invoice generated and sent successfully!");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to send invoice");
+    } finally {
+      setSendingInvoice(false);
+    }
+  };
 
   const openPaymentModal = (voucher: Voucher) => {
     setPaymentVoucher(voucher);
@@ -318,6 +340,17 @@ export default function VoucherBook() {
             </CardContent>
             <div className="flex justify-end gap-3 p-4 border-t bg-gray-50/50">
               <Button variant="outline" onClick={() => setSelectedVoucher(null)}>Close</Button>
+              {selectedVoucher.type === "SALES" && (
+                <Button 
+                  variant="secondary" 
+                  onClick={handleSendInvoice}
+                  disabled={sendingInvoice}
+                  className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                >
+                  {sendingInvoice ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
+                  {sendingInvoice ? "Sending..." : "Email Invoice"}
+                </Button>
+              )}
               {selectedVoucher.paymentStatus !== "PAID" && (
                 <Button onClick={() => { setSelectedVoucher(null); openPaymentModal(selectedVoucher); }} className="bg-green-600">
                   Record Payment
