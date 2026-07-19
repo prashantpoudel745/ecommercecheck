@@ -1,10 +1,12 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 type KeepAlivePage = {
   id: string;
   paths: string[];
   render: () => ReactNode;
+  roles?: string[];
 };
 
 type ProtectedKeepAliveRouterProps = {
@@ -22,6 +24,7 @@ export function ProtectedKeepAliveRouter({
   fallback,
 }: ProtectedKeepAliveRouterProps) {
   const location = useLocation();
+  const { user } = useAuth();
   const cacheRef = useRef<Record<string, ReactNode>>({});
   const [, setVersion] = useState(0);
 
@@ -34,7 +37,6 @@ export function ProtectedKeepAliveRouter({
       ),
     [pages, pathname]
   );
-
   useEffect(() => {
     if (!activePage) return;
 
@@ -43,6 +45,11 @@ export function ProtectedKeepAliveRouter({
       setVersion((value) => value + 1);
     }
   }, [activePage]);
+
+  if (activePage && activePage.roles && user && !activePage.roles.includes(user.role || "")) {
+    return <Navigate to={user.role === "employee" ? "/attendance" : "/"} replace />;
+  }
+
 
   if (!activePage) {
     return <>{fallback}</>;

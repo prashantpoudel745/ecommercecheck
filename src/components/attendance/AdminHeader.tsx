@@ -1,6 +1,6 @@
 // AdminHeader.tsx - Header component for admin view
 import React from "react";
-import { AttendUser } from "types";
+import { AttendUser } from "../../../types";
 
 interface AdminHeaderProps {
   user: AttendUser;

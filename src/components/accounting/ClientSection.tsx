@@ -40,7 +40,7 @@ export default function ClientSection() {
   const [typeFilter, setTypeFilter] = useState<"all" | "Customer" | "Vendor" | "Lead/Guest">("all");
   const [selectedParty, setSelectedParty] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [groups, setGroups] = useState<any[]>([]);
+  const [groups, setGroups] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newParty, setNewParty] = useState({
     code: "",

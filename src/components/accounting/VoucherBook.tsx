@@ -62,7 +62,7 @@ export default function VoucherBook() {
     try {
       await sendInvoice(selectedVoucher._id, { email: emailPrompt, currencySymbol: CURRENCY_SYMBOL });
       toast.success("Invoice generated and sent successfully!");
-    } catch (err: any) {
+    } catch (err) {
       toast.error(err.response?.data?.message || "Failed to send invoice");
     } finally {
       setSendingInvoice(false);
@@ -97,7 +97,7 @@ export default function VoucherBook() {
       setShowPaymentModal(false);
       setPaymentVoucher(null);
       refresh();
-    } catch (err: any) {
+    } catch (err) {
       // console.error(err);
     } finally {
       setPaymentLoading(false);
@@ -315,7 +315,7 @@ export default function VoucherBook() {
                         <tr key={idx}>
                           <td className="px-4 py-3">
                             <span className="font-bold text-gray-800">
-                              {typeof entry.account === 'object' ? (entry.account as any).name : entry.account}
+                              {typeof entry.account === 'object' ? entry.account.name : entry.account}
                             </span>
                             <p className="text-[10px] text-gray-500 italic mt-0.5">{entry.description}</p>
                           </td>
@@ -390,7 +390,7 @@ export default function VoucherBook() {
                   className="w-full border rounded-md p-2 h-10 text-sm"
                 >
                   <option value="">Select Account</option>
-                  {cashBankAccounts.map((acc: any) => (
+                  {cashBankAccounts.map((acc) => (
                     <option key={acc._id} value={acc._id}>{acc.name} ({acc.code})</option>
                   ))}
                 </select>

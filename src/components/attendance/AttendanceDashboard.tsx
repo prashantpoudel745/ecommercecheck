@@ -1,6 +1,6 @@
 // AttendanceDashboard.tsx
 import React from "react";
-import { DashboardData } from "types";
+import { DashboardData } from "../../../types";
 interface AttendanceDashboardProps {
   data: DashboardData | null;
   loading: boolean;

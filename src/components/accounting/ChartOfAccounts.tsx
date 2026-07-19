@@ -30,8 +30,8 @@ import {
 } from "@/components/ui/card";
 
 export default function ChartOfAccounts() {
-  const [accounts, setAccounts] = useState<any[]>([]);
-  const [groups, setGroups] = useState<any[]>([]);
+  const [accounts, setAccounts] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showGroupForm, setShowGroupForm] = useState(false);
@@ -59,7 +59,7 @@ export default function ChartOfAccounts() {
       ]);
       setAccounts(accData || []);
       setGroups(groupData || []);
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to load chart of accounts");
     } finally {
       setLoading(false);
@@ -77,7 +77,7 @@ export default function ChartOfAccounts() {
     try {
         await seedDefaults();
         fetchData();
-    } catch(e: any) { 
+    } catch(e) { 
         console.error(e);
     }
   };

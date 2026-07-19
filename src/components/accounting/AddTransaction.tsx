@@ -125,7 +125,7 @@ export default function CombinedAddDialog({
     });
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -148,7 +148,7 @@ export default function CombinedAddDialog({
     setShowClientDropdown(false);
   };
 
-  const handleItemFieldChange = (e: any, index: number) => {
+  const handleItemFieldChange = (e, index: number) => {
     const { name, value } = e.target;
     const newItems = [...formData.items];
     const updatedItem = { ...newItems[index], [name]: value };
@@ -163,7 +163,7 @@ export default function CombinedAddDialog({
     setFormData({...formData, items: newItems});
   };
 
-  const handleItemSearchChange = (e: any, index: number) => {
+  const handleItemSearchChange = (e, index: number) => {
     const value = e.target.value;
     const newSearchTerms = [...itemSearchTerms];
     newSearchTerms[index] = value;

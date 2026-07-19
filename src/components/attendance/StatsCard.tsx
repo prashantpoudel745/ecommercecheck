@@ -7,7 +7,7 @@ import {
   Timer,
   BarChart3,
 } from "lucide-react";
-import { AttendanceStats } from "types";
+import { AttendanceStats } from "../../../types";
 
 interface StatsCardsProps {
   stats: AttendanceStats;

@@ -46,7 +46,7 @@ export default function BillScanner({ open, onOpenChange, onDataExtracted }: Bil
         await videoRef.current.play();
       }
       setIsCameraActive(true);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Camera error:", err);
       setError("Could not access camera. Please check permissions or use the upload option.");
       setStep("choose");
@@ -134,7 +134,7 @@ export default function BillScanner({ open, onOpenChange, onDataExtracted }: Bil
         setError(data.error || "Failed to extract data from the bill.");
         setStep("preview");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("OCR error:", err);
       const message =
         err.response?.data?.message ||

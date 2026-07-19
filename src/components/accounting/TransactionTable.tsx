@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Transaction } from "types";
+import { Transaction } from "../../../types";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Hash, User, Tag, Receipt, Trash2, AlertCircle, X, CheckCircle2 } from "lucide-react";
@@ -46,7 +46,7 @@ export default function TransactionTable({
         setDeletingId(null);
         if (onTransactionDeleted) onTransactionDeleted();
       }, 1500);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.response?.data?.message || "Failed to delete transaction");
     } finally {
       setIsDeleting(false);
