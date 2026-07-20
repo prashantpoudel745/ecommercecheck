@@ -228,7 +228,7 @@ export function Header() {
               >
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={imageUrl} alt="User" />
-                  <AvatarFallback>{imageUrl}</AvatarFallback>
+                  {/* <AvatarFallback>{imageUrl}</AvatarFallback> */}
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
