@@ -38,7 +38,7 @@ const Sales = lazy(() => import("./pages/Sales"));
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [userData, setUserData] = useState(null);
+  // const [userData, setUserData] = useState(null);
 
   const protectedKeepAlivePages = useMemo(
     () => [
@@ -61,9 +61,9 @@ const App = () => {
     []
   );
 
-  const handlePaymentSuccess = (data) => {
-    setUserData(data);
-  };
+  // const handlePaymentSuccess = (data) => {
+  //   setUserData(data);
+  // };
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalDataStoreProvider>
@@ -181,7 +181,7 @@ const App = () => {
                         </PublicRoute>
                       }
                     />
-                    <Route
+                    {/* <Route
                       path="/payment/success"
                       element={
                         <PublicRoute>
@@ -191,7 +191,7 @@ const App = () => {
                           />
                         </PublicRoute>
                       }
-                    />
+                    /> */}
                     <Route
                       path="/payment-failure"
                       element={
