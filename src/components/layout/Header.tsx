@@ -227,8 +227,8 @@ export function Header() {
                 className="relative h-10 w-10 rounded-full border border-slate-200 bg-white/80 p-0 hover:bg-slate-50"
               >
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={imageUrl} alt="User" />
-                  {/* <AvatarFallback>{imageUrl}</AvatarFallback> */}
+                  <AvatarImage src={imageUrl} />
+                  <AvatarFallback>{imageUrl}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
