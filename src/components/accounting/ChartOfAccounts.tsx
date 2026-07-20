@@ -136,9 +136,9 @@ export default function ChartOfAccounts() {
           <p className="text-muted-foreground">Manage your ledger accounts and financial structure.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleSeed} className="flex items-center gap-2">
+          {/* <Button variant="outline" size="sm" onClick={handleSeed} className="flex items-center gap-2">
             <Database className="w-4 h-4" /> Seed Logic
-          </Button>
+          </Button> */}
           <Button 
             variant="outline" 
             onClick={() => {
