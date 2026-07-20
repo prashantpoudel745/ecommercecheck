@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Activity } from "../../../types";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL||"";
 
 // ---------------------------------------------------------------------------
 // Design tokens — shared semantics with the financial overview and inventory

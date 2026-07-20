@@ -16,7 +16,7 @@ import type { TooltipProps } from "recharts";
 import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
 import { InventoryStatusData } from "../../../types";
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL||"";
 
 interface InventoryStatusChartProps {
   userId: string;

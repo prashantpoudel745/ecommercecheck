@@ -8,7 +8,7 @@ import { User, Lock, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL||"";
 
 interface EditProfileModalProps {
   open: boolean;

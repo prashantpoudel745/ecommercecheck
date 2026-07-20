@@ -12,7 +12,7 @@ const InvestmentsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useAuth();
   const userId = user?._id || user?.id;
-  const API = import.meta.env.VITE_API_URL;
+  const API = import.meta.env.VITE_API_URL||"";
   // Function to fetch investments
   const fetchInvestments = async () => {
     setLoading(true);

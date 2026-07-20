@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Authsidebar from "@/components/authcomponents/authsidebar";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL||"";
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

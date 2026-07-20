@@ -9,7 +9,7 @@ import { useGlobalDataStore } from "@/store/GlobalDataStore";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 import { useAuth } from "@/context/AuthContext";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL||"";
 
 // Lazy load components
 const InvestmentDistributionChart = lazy(

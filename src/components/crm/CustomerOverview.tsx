@@ -25,7 +25,7 @@ import SearchComponent from "../Search";
 import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
 import RecentClients from "./RecentClients";
 
-const Api_Url = import.meta.env.VITE_API_URL;
+const Api_Url = import.meta.env.VITE_API_URL||"";
 
 interface Client {
   _id: string;

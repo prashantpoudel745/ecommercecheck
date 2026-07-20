@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { UpdateInventoryProps } from "../../../types";
 import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
 
-const Api = import.meta.env.VITE_API_URL;
+const Api = import.meta.env.VITE_API_URL||"";
 
 export function UpdateInventory({
   productId,

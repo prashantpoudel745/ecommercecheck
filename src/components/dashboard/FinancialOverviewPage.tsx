@@ -17,7 +17,7 @@ import { useScreenSize } from "@/hooks/use-mobile";
 import { FinancialDataItem, BackendDataItem } from "../../../types";
 import { CURRENCY_SYMBOL, getCurrencySymbol } from "@/utils/formatCurrency";
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL||"";
 
 interface FinancialOverviewPageProps {
   userId: string;

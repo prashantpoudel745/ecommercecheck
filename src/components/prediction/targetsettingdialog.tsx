@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { ClipLoader } from 'react-spinners';
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL||"";
 
 type TargetMode = 'uniform' | 'custom';
 

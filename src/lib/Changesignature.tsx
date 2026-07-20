@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Upload, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL||"";
 
 export default function ChangeSignature() {
   const { refreshUser } = useAuth();

@@ -3,7 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Authsidebar from "@/components/authcomponents/authsidebar";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL||"";
 export default function AdminSignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

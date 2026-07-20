@@ -27,7 +27,7 @@ import BillScanner from "./BillScanner";
 import type { BillData } from "@/services/ocr.service";
 import { formatCurrency } from "@/utils/formatCurrency";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL|| "";
 
 export default function CombinedAddDialog({
   onClientAdded,

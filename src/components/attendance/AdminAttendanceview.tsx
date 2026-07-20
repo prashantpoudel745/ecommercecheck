@@ -16,7 +16,7 @@ interface AdminAttendanceViewProps {
   user: AttendUser;
 }
 
-const API_URL = import.meta.env.VITE_API_URL ;
+const API_URL = import.meta.env.VITE_API_URL ||"";
 
 const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
   const [activeTab, setActiveTab] = useState<"dashboard" | "attendance">(

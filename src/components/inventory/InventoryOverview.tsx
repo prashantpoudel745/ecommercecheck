@@ -24,7 +24,7 @@ import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 import { useAuth } from "@/context/AuthContext";
 import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
 
-const Api = import.meta.env.VITE_API_URL;
+const Api = import.meta.env.VITE_API_URL||"";
 
 export function InventoryOverview() {
   const [products, setProducts] = useState<Product[]>([]);

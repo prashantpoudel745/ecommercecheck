@@ -13,7 +13,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { StatCard } from "../dashboard/StatCard";
 import { Users } from "lucide-react"; // Assuming you're using lucide-react for icons
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL||"";
 
 const EmployeeOverview = () => {
   const [employees, setEmployees] = useState([]);

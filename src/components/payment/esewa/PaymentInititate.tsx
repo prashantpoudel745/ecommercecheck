@@ -8,7 +8,7 @@ const PaymentInitiate = ({ userData, onSuccess, onFailure }) => {
   const [formData, setFormData] = useState(null);
   const [actionUrl, setActionUrl] = useState("");
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL||"";
   const initiatePayment = async () => {
     setIsLoading(true);
     setError("");

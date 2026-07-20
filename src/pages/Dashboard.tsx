@@ -19,7 +19,7 @@ import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
 import { useGlobalDataStore } from "@/store/GlobalDataStore";
 import { useAuth } from "@/context/AuthContext";
 import { getDashboardStats } from "@/services/accounting.service";
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL||"";
 
 const FinancialOverviewPage = lazy(
   () => import("@/components/dashboard/FinancialOverviewPage")

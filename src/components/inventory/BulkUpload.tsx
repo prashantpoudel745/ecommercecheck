@@ -5,7 +5,7 @@ const allowedTypes = [
   "application/vnd.ms-excel", // .xls
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
 ];
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL||"";
 
 const BulkUpload: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);

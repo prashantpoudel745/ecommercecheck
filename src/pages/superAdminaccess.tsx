@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Trash, Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL||"";
 
 export default function AdminStatusManager() {
   const [admins, setAdmins] = useState([]);

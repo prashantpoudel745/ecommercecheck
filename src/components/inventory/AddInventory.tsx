@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import BillScanner from "../accounting/BillScanner";
 import type { BillData } from "@/services/ocr.service";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL||"";
 
 interface InventoryItem {
   id: string;
