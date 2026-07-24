@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { CurrentStatus, AttendanceStats, AttendanceRecord } from '../../types';
+import { attachAuthHeader } from './authToken';
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
 const api = axios.create({
@@ -10,9 +11,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.request.use((config) => {
-  return config;
-});
+api.interceptors.request.use((config) => attachAuthHeader(config));
 
 export const get = async (url: string): Promise<AxiosResponse> => {
   return api.get(`/attendance/${url}`);

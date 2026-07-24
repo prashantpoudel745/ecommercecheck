@@ -52,7 +52,7 @@ export default function LoginPage() {
       }
       toast.success("Login successful!");
       if (data.user && (data.user._id || data.user.id)) {
-        login(data.user);
+        login(data.user, data.token);
       }
       // Redirect to dashboard
       navigate("/");

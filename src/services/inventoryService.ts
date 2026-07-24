@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { InventoryItem,InventoryStats ,InventoryStatusData ,InventoryFormData } from 'types';
+import { attachAuthHeader } from '@/utils/authToken';
 
-axios.interceptors.request.use((config) => {
-  return config;
-});
+axios.interceptors.request.use((config) => attachAuthHeader(config));
 
 // Get all inventory items
 export const getInventories = async (): Promise<InventoryItem[]> => {

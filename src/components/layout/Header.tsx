@@ -241,9 +241,9 @@ export function Header() {
                     onClick={() => user?.role === "admin" && document.getElementById("fileInput")?.click()}
                     style={{ cursor: user?.role === "admin" ? "pointer" : "default" }}
                   >
-                    <img src={imageUrl} alt="User" className="h-9 w-9 rounded-full border object-cover" />
+                    {/* <img src={imageUrl} alt="User" className="h-9 w-9 rounded-full border object-cover" /> */}
                     <div className="text-left">
-                      <p className="text-sm font-semibold text-slate-800">{company || user?.companyName || user?.fullName || "User"}</p>
+                      <p className="text-sm font-semibold text-slate-800">Company : {company || user?.companyName || user?.fullName || "User"}</p>
                       <p className="text-sm font-medium text-slate-700">{user?.name}</p>
                       <p className="text-xs text-slate-500">{user?.email || "No email"}</p>
                     </div>

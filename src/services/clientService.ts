@@ -1,10 +1,5 @@
-import axios from 'axios';
 import api from '@/utils/api';
 import { Investment, InvestmentFormData } from '../vite-env';
-
-axios.interceptors.request.use((config) => {
-  return config;
-});
 
 export const getInvestments = async (): Promise<Investment[]> => {
   const response = await api.get('/investment');

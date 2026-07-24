@@ -1,6 +1,7 @@
 import { AccountGroup,Account, AccountingHealth, VatReport, Voucher, AccountingStats } from '../../types/accounting.types';
 import axios from "axios";
 import Decimal from 'decimal.js';
+import { attachAuthHeader } from '@/utils/authToken';
 
 const API_URL = import.meta.env.VITE_API_URL||"";
 const api = axios.create({
@@ -11,9 +12,7 @@ const api = axios.create({
   },
 });
 
-api.interceptors.request.use((config) => {
-  return config;
-});
+api.interceptors.request.use((config) => attachAuthHeader(config));
 
 import { Transaction } from "../../types/index";
 import { toDecimal } from '@/utils/helpers/decimalhelper';
@@ -154,6 +153,25 @@ export const getVatReport = async (params?: { startDate?: string; endDate?: stri
   const response = await api.get("/erp/reports/vat", { params });
   console.log("vat report : ",response.data)
   return response.data;
+};
+
+export const downloadAccountingReport = async (
+  type: "trial-balance" | "balance-sheet" | "vat",
+  params?: { startDate?: string; endDate?: string }
+) => {
+  const response = await api.get(`/erp/reports/download/${type}`, {
+    params,
+    responseType: "blob",
+  });
+  const url = window.URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+  const suffix = [params?.startDate, params?.endDate].filter(Boolean).join("_to_") || "all";
+  link.href = url;
+  link.download = `${type}-${suffix}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
 };
 
 export const getAccountingHealth = async (): Promise<AccountingHealth> => {

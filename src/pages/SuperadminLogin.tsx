@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
       toast.success("Login successful!");
       // Restore user data from the authenticated session
       if (data.user && data.user._id) {
-        login(data.user);
+        login(data.user, data.token);
       }
       // Redirect to dashboard
       navigate("/superadminaccess");

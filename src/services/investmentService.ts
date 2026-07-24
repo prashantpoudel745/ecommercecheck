@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { Investment, InvestmentFormData } from '../vite-env';
+import { attachAuthHeader } from '@/utils/authToken';
 
-axios.interceptors.request.use((config) => {
-  return config;
-});
+axios.interceptors.request.use((config) => attachAuthHeader(config));
 
 export const getInvestments = async (): Promise<Investment[]> => {
   const response = await axios.get('/api/investment',{

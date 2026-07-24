@@ -33,14 +33,6 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export function Sidebar() {
   const { t } = useTranslation();
@@ -48,7 +40,6 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-
   const handleQuickCreate = (itemPath: string, e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
@@ -132,7 +123,6 @@ export function Sidebar() {
   const allowedMenuItems = menuItems.filter((item) => 
     !item.roles || item.roles.includes(user?.role || "")
   );
-
   return (
     <div
       className={cn(
@@ -277,8 +267,8 @@ export function Sidebar() {
                {user?.name?.charAt(0) || "U"}
              </div>
              <div className="min-w-0 flex-1">
-               <p className="text-sm font-medium text-white truncate">{user?.fullName || "guest user"}</p>
-               <p className="text-sm font-medium text-white truncate">{user?.email || "guestuser123@gmail.com"}</p>
+               <p className="text-sm font-medium text-white truncate">{user.fullName || "guest user"}</p>
+               <p className="text-sm font-medium text-white truncate">{user.email || "guestuser123@gmail.com"}</p>
              </div>
            </div>
         </div>

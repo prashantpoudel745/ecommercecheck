@@ -50,7 +50,7 @@ export default function EmployeeLoginPage() {
       }
 
       if (data.employee && data.employee.id) {
-        login(data.employee);
+        login(data.employee, data.token);
       } else {
         throw new Error("Invalid response from server");
       }

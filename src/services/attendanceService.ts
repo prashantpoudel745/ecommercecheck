@@ -52,14 +52,18 @@
 
 import axios, { AxiosResponse } from 'axios';
 import { CurrentStatus, AttendanceStats, AttendanceRecord } from '../../types';
+import { attachAuthHeader } from '@/utils/authToken';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://ecommercebackend-black.vercel.app';
 const api = axios.create({
-  baseURL: 'https://ecommercebackend-black.vercel.app/api/inventory',
+  baseURL: `${API_URL}/api/attendance`,
   headers: {
     'Content-Type': 'application/json',
   },
   withCredentials:true,
 });
+
+api.interceptors.request.use((config) => attachAuthHeader(config));
 
 export const get = async (url: string): Promise<AxiosResponse> => {
   return api.get(url);
@@ -92,7 +96,7 @@ export const checkOut = async (employeeId: string, data: { notes?: string; break
 };
 
 export const getAttendanceDashboard = async (): Promise<void> => {
-  await axios.delete(`/dashboard`);
+  await api.delete(`/dashboard`);
 };
 
 export default api;

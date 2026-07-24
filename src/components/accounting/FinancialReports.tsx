@@ -9,6 +9,7 @@ import {
   getVatReport,
   getAgingReportAR,
   getAgingReportAP,
+  downloadAccountingReport,
   seedDefaults 
 } from "../../services/accounting.service";
 import { 
@@ -22,7 +23,7 @@ import {
   AlertTriangle,
   ChevronDown,
   X,
-  Filter
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -120,6 +121,20 @@ export default function FinancialReports() {
       await fetchReport(activeTab);
     } catch (e: any) {
       console.error("Failed to seed defaults", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownload = async (type: "trial-balance" | "balance-sheet" | "vat") => {
+    setLoading(true);
+    try {
+      await downloadAccountingReport(type, {
+        startDate: startDate || initial.startDate,
+        endDate: endDate || initial.endDate,
+      });
+    } catch (e) {
+      console.error("Failed to download accounting report", e);
     } finally {
       setLoading(false);
     }
@@ -546,6 +561,18 @@ export default function FinancialReports() {
             <Button variant={activeTab === "aging-ap" ? "default" : "ghost"} onClick={() => setActiveTab("aging-ap")} className="rounded-xl h-10 px-5 font-bold">AP Aging</Button>
           </div>
 
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex gap-1 bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
+              <Button variant="ghost" onClick={() => handleDownload("trial-balance")} className="rounded-xl h-10 px-3 font-bold text-xs">
+                <Download className="w-4 h-4 mr-1" /> Trial
+              </Button>
+              <Button variant="ghost" onClick={() => handleDownload("balance-sheet")} className="rounded-xl h-10 px-3 font-bold text-xs">
+                <Download className="w-4 h-4 mr-1" /> Balance
+              </Button>
+              <Button variant="ghost" onClick={() => handleDownload("vat")} className="rounded-xl h-10 px-3 font-bold text-xs">
+                <Download className="w-4 h-4 mr-1" /> VAT
+              </Button>
+            </div>
           <div className="relative">
             <Button
               variant="outline"
@@ -646,6 +673,7 @@ export default function FinancialReports() {
                 </div>
               </div>
             )}
+          </div>
           </div>
         </div>
       </div>

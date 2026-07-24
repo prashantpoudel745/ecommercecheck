@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { clearAuthToken, setAuthToken } from "@/utils/authToken";
 
 interface User {
   _id?: string;
@@ -21,7 +22,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (userData: User) => void;
+  login: (userData: User, token?: string) => void;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -131,7 +132,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  const login = (userData: User) => {
+  const login = (userData: User, token?: string) => {
+    if (token) {
+      setAuthToken(token);
+    }
     setAuthUser(userData);
   };
 
@@ -147,6 +151,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch {
       // Ignore network errors and clear the UI session locally.
     } finally {
+      clearAuthToken();
       setAuthUser(null);
     }
   };
