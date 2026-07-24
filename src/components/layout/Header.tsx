@@ -143,7 +143,7 @@ export function Header() {
           </div> */}
           <div className="min-w-0">
             <div className="flex itemps-center gap-2">
-              <h1 className="truncate text-[15px] font-semibold tracking-tight text-slate-950">Bebesthapan</h1>
+              <h1 className="truncate text-[15px] font-semibold tracking-tight text-slate-950">Bebasthapan</h1>
               <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:inline-flex">
                 Enterprise
               </span>

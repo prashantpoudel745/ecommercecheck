@@ -33,10 +33,10 @@ export default defineConfig(({ mode }): UserConfig => {
           'apple-touch-icon.png'
         ],
         manifest: {
-          name: 'Business Management App',
-          short_name: 'BizManager',
-          description: 'Manage inventory, accounting, clients, employees & more.',
-          start_url: '/',
+          name: 'Bebasthapan ERP - Business Management Platform',
+          short_name: 'Bebasthapan',
+          description: 'Business ERP system for accounting, inventory, sales, purchase, CRM, HR, attendance, and business insights.',
+          start_url: '/home',
           scope: '/',
           display: 'standalone',
           orientation: 'portrait',

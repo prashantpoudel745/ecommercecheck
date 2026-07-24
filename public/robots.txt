@@ -12,3 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://bebasthapan.com/sitemap.xml
+Host: https://bebasthapan.com

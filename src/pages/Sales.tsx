@@ -2,11 +2,18 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, ArrowLeft, Send, Sparkles, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { setPageSeo } from "@/utils/seo";
 
 export default function Sales() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setPageSeo({
+      title: "Contact Bebasthapan ERP | Business ERP Software Demo",
+      description:
+        "Contact Bebasthapan for business ERP software covering accounting, inventory, sales, purchase, CRM, HR, attendance, and business insights.",
+      canonicalPath: "/contact-sales",
+    });
     document.body.style.backgroundColor = '#f7f9fc';
     return () => {
       document.body.style.backgroundColor = '';
@@ -25,8 +32,8 @@ export default function Sales() {
               B
             </div>
             <div>
-              <p className="text-[15px] font-semibold tracking-tight text-slate-950">Bebesthapan</p>
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Enterprise operations platform</p>
+              <p className="text-[15px] font-semibold tracking-tight text-slate-950">Bebasthapan ERP</p>
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Business ERP system</p>
             </div>
           </div>
 
@@ -53,11 +60,11 @@ export default function Sales() {
           </div>
 
           <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl lg:leading-[1.05]">
-            Let's build something incredible together.
+            Talk to Bebasthapan about business ERP software.
           </h1>
 
           <p className="mt-6 text-base leading-7 text-slate-600 sm:text-lg">
-            Ready to upgrade your business management? Get in touch with our sales team to discuss custom pricing, enterprise solutions, or to schedule a personalized demo.
+            Ready to connect accounting, inventory, sales, purchase, CRM, HR, attendance, and business insights? Contact Bebasthapan to discuss ERP software for your business.
           </p>
         </motion.div>
 

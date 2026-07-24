@@ -1,13 +1,37 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createCustomerPayment } from "@/services/sales.service";
+import { getAccounts } from "@/services/accounting.service";
 
 export default function CreateCustomerPaymentPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const [accounts, setAccounts] = useState<any[]>([]);
+
+  useEffect(() => {
+    getAccounts()
+      .then((data) => setAccounts(data || []))
+      .catch(() => setAccounts([]));
+  }, []);
+
+  const cashBankAccounts = useMemo(
+    () =>
+      accounts.filter((account) => {
+        const groupName = account.accountGroup?.name?.toLowerCase?.() || "";
+        const accountName = account.name?.toLowerCase?.() || "";
+        return (
+          account.type === "ASSET" &&
+          (groupName.includes("cash") ||
+            groupName.includes("bank") ||
+            accountName.includes("cash") ||
+            accountName.includes("bank"))
+        );
+      }),
+    [accounts]
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,6 +69,23 @@ export default function CreateCustomerPaymentPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Payment Amount</label>
               <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Deposit To</label>
+              <select
+                name="paymentAccountId"
+                required
+                onChange={(e) => setFormData({ ...formData, paymentAccountId: e.target.value })}
+                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                defaultValue=""
+              >
+                <option value="" disabled>Select cash/bank account</option>
+                {cashBankAccounts.map((account) => (
+                  <option key={account._id} value={account._id}>
+                    {account.name} {account.code ? `(${account.code})` : ""}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           

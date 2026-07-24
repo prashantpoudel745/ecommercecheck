@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, BarChart3, Users, Package, Clock, ShieldCheck, Zap, Layers, Sparkles, ChevronRight } from "lucide-react";
+import { setPageSeo } from "@/utils/seo";
 
 const features = [
   {
@@ -30,6 +31,12 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setPageSeo({
+      title: "Bebasthapan ERP | Business ERP, Accounting, Inventory, CRM & HR Software",
+      description:
+        "Bebasthapan ERP is a business management platform for accounting, inventory, sales, purchase, CRM, HR, attendance, financial reports, and AI-powered insights.",
+      canonicalPath: "/home",
+    });
     document.body.style.backgroundColor = '#f7f9fc';
     return () => {
       document.body.style.backgroundColor = '';
@@ -45,8 +52,8 @@ export default function Home() {
               B
             </div>
             <div>
-              <p className="text-[15px] font-semibold tracking-tight text-slate-950">Bebesthapan</p>
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Enterprise operations platform</p>
+              <p className="text-[15px] font-semibold tracking-tight text-slate-950">Bebasthapan ERP</p>
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Business ERP system</p>
             </div>
           </div>
 
@@ -82,11 +89,11 @@ export default function Home() {
             </div>
 
             <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-7xl lg:leading-[1.02]">
-              Run finance, inventory, CRM, and HR from one control center.
+              Business ERP software for accounting, inventory, sales, purchase, CRM, and HR.
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-              Bebesthapan replaces disconnected admin tools with one structured workspace, clearer hierarchy, and reporting your team can trust.
+              Bebasthapan ERP replaces disconnected spreadsheets and admin tools with one structured business management platform for financial reports, stock control, customer dues, supplier payments, attendance, and AI-powered business insights.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -108,9 +115,9 @@ export default function Home() {
 
             <div className="mt-10 grid gap-3 sm:grid-cols-3">
               {[
-                ["7 modules", "Connected workflows"],
-                ["Live sync", "Consistent reporting"],
-                ["Role-based", "Secure access control"],
+                ["7 modules", "Accounting to operations"],
+                ["ERP reports", "Sales, purchase, and finance"],
+                ["AI insights", "Faster business decisions"],
               ].map(([value, label]) => (
                 <div key={label} className="metric-card">
                   <div className="text-lg font-semibold text-slate-950">{value}</div>
@@ -157,7 +164,7 @@ export default function Home() {
                   Controlled workspace
                 </div>
                 <p className="mt-3 text-sm leading-6 text-slate-300">
-                  Admin and employee journeys are separated, every module is visible from one shell, and the interface is designed for operational clarity first.
+                  Admin and employee journeys are separated, accounting and inventory stay connected to sales and purchase activity, and every business module is visible from one secure ERP workspace.
                 </p>
               </div>
             </div>
@@ -169,14 +176,14 @@ export default function Home() {
             <div>
               <div className="enterprise-kicker">
                 <Layers className="h-3.5 w-3.5" />
-                Core modules
+                ERP software modules
               </div>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                Clear structure, fewer distractions.
+                One connected system for daily business operations.
               </h2>
             </div>
             <p className="hidden max-w-xl text-sm leading-6 text-slate-600 lg:block">
-              Every module is arranged to reduce scanning time and make important actions easy to understand at a glance.
+              Bebasthapan connects accounting, inventory, CRM, HR, sales, purchase, attendance, and reporting so growing teams can manage operations from one business ERP system.
             </p>
           </div>
 

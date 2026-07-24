@@ -1,13 +1,37 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createSupplierPayment } from "@/services/purchase.service";
+import { getAccounts } from "@/services/accounting.service";
 
 export default function CreateSupplierPaymentPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<any>({ paymentMethod: "BANK_TRANSFER" });
+  const [accounts, setAccounts] = useState<any[]>([]);
+
+  useEffect(() => {
+    getAccounts()
+      .then((data) => setAccounts(data || []))
+      .catch(() => setAccounts([]));
+  }, []);
+
+  const cashBankAccounts = useMemo(
+    () =>
+      accounts.filter((account) => {
+        const groupName = account.accountGroup?.name?.toLowerCase?.() || "";
+        const accountName = account.name?.toLowerCase?.() || "";
+        return (
+          account.type === "ASSET" &&
+          (groupName.includes("cash") ||
+            groupName.includes("bank") ||
+            accountName.includes("cash") ||
+            accountName.includes("bank"))
+        );
+      }),
+    [accounts]
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,6 +77,23 @@ export default function CreateSupplierPaymentPage() {
                 <option value="CASH">Cash</option>
                 <option value="CHEQUE">Cheque</option>
                 <option value="CARD">Credit/Debit Card</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Pay From</label>
+              <select
+                name="paymentAccountId"
+                required
+                onChange={handleInputChange}
+                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                defaultValue=""
+              >
+                <option value="" disabled>Select cash/bank account</option>
+                {cashBankAccounts.map((account) => (
+                  <option key={account._id} value={account._id}>
+                    {account.name} {account.code ? `(${account.code})` : ""}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="space-y-2">

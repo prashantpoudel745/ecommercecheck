@@ -1,8 +1,8 @@
 {
-  "name": "Bebasthapan",
+  "name": "Bebasthapan ERP - Business Management Platform",
   "short_name": "Bebasthapan",
-  "description": "Business management platform",
-  "start_url": "/",
+  "description": "Business ERP system for accounting, inventory, sales, purchase, CRM, HR, attendance, and business insights.",
+  "start_url": "/home",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4a90e2",
