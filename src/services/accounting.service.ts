@@ -122,7 +122,6 @@ export const getTrialBalance = async (params?: { startDate?: string; endDate?: s
 };
 
 export const getPandL = async (params?: { startDate?: string; endDate?: string }) => {
-  console.log("get pandl params:",params)
   const now = new Date();
   const currentYear = now.getFullYear();
   const activeParams = {
@@ -149,9 +148,7 @@ export const getAgingReportAP = async () => {
 };
 
 export const getVatReport = async (params?: { startDate?: string; endDate?: string }): Promise<VatReport> => {
-  console.log("vat params :",params)
   const response = await api.get("/erp/reports/vat", { params });
-  console.log("vat report : ",response.data)
   return response.data;
 };
 
