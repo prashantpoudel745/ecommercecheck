@@ -1,13 +1,14 @@
-﻿import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { formatCurrencyShort } from "@/utils/formatCurrency";
 import { Target } from "lucide-react";
 import { toast } from "sonner";
 import { ClipLoader } from "react-spinners";
 import { Product, Transaction } from "../../types";
 import TargetSettingsDialog from "@/components/prediction/targetsettingdialog";
+import { toDecimal, toNumber } from "@/utils/helpers/decimalhelper";
 import { useAuth } from "@/context/AuthContext";
 
-// âœ… Recharts imports
+// ✅ Recharts imports
 import {
   LineChart,
   Line,
@@ -63,9 +64,9 @@ export default function UnifiedDashboard() {
     period: "month" | "year"
   ) => {
     const fallback = {
-      sales: Number(targetSection?.sales ?? 0),
-      inventory: Number(targetSection?.inventory ?? 0),
-      clients: Number(targetSection?.clients ?? 0),
+      sales: toNumber(targetSection?.sales ?? 0),
+      inventory: toNumber(targetSection?.inventory ?? 0),
+      clients: toNumber(targetSection?.clients ?? 0),
     };
 
     if (!targetSection) return fallback;
@@ -76,9 +77,9 @@ export default function UnifiedDashboard() {
       const nowMonth = new Date().getMonth();
       const monthTarget = targetSection.monthlyTargets[nowMonth];
       return {
-        sales: Number(monthTarget?.sales ?? fallback.sales),
-        inventory: Number(monthTarget?.inventory ?? fallback.inventory),
-        clients: Number(monthTarget?.clients ?? fallback.clients),
+        sales: toNumber(monthTarget?.sales ?? fallback.sales),
+        inventory: toNumber(monthTarget?.inventory ?? fallback.inventory),
+        clients: toNumber(monthTarget?.clients ?? fallback.clients),
       };
     }
 
@@ -86,17 +87,17 @@ export default function UnifiedDashboard() {
       const nowYear = new Date().getFullYear();
       const yearTarget = targetSection.yearlyTargets.find((entry) => Number(entry?.year) === nowYear);
       return {
-        sales: Number(yearTarget?.sales ?? fallback.sales),
-        inventory: Number(yearTarget?.inventory ?? fallback.inventory),
-        clients: Number(yearTarget?.clients ?? fallback.clients),
+        sales: toNumber(yearTarget?.sales ?? fallback.sales),
+        inventory: toNumber(yearTarget?.inventory ?? fallback.inventory),
+        clients: toNumber(yearTarget?.clients ?? fallback.clients),
       };
     }
 
     if (targetSection?.uniformTarget) {
       return {
-        sales: Number(targetSection.uniformTarget.sales ?? fallback.sales),
-        inventory: Number(targetSection.uniformTarget.inventory ?? fallback.inventory),
-        clients: Number(targetSection.uniformTarget.clients ?? fallback.clients),
+        sales: toNumber(targetSection.uniformTarget.sales ?? fallback.sales),
+        inventory: toNumber(targetSection.uniformTarget.inventory ?? fallback.inventory),
+        clients: toNumber(targetSection.uniformTarget.clients ?? fallback.clients),
       };
     }
 
@@ -144,9 +145,9 @@ export default function UnifiedDashboard() {
         const type = (transaction.type || "").toLowerCase();
         const category = (transaction.category || "").toLowerCase();
         if (type === "sales" || category === "sales") {
-          totalRevenue += Math.abs(transaction.amount);
+          totalRevenue += Math.abs(Number(transaction.amount));
         } else if (type === "expenses" || category === "expenses") {
-          totalExpenses += Math.abs(transaction.amount);
+          totalExpenses += Math.abs(Number(transaction.amount));
         }
       });
       setStats({ totalRevenue, totalExpenses, netProfit: totalRevenue - totalExpenses });

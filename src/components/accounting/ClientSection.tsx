@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useAccounting } from "@/hooks/useAccounting";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { CurrencyUtil } from "@/utils/currency.util";
 import { 
   Users, 
   Search, 
@@ -114,10 +115,13 @@ export default function ClientSection() {
       if (!result.find(r => r.name === name)) {
         // Calculate balance from vouchers
         const partyVouchers = vouchers.filter(v => v?.partyName === name);
-        const totalDue = partyVouchers.reduce((sum, v) => sum + (v?.amountDue || 0), 0);
+        const totalDue = partyVouchers.reduce(
+          (sum, v) => sum.plus(CurrencyUtil.parse(v?.amountDue || 0)),
+          CurrencyUtil.parse(0)
+        );
         result.push({
           name: name!,
-          balance: totalDue,
+          balance: totalDue.toFixed(2),
           id: `name-${name}`,
           type: "Lead/Guest",
           code: "GUEST",
@@ -161,9 +165,9 @@ export default function ClientSection() {
           </div>
           <div className="text-right">
             <span className="text-[10px] uppercase font-bold text-slate-400 block">Current Balance</span>
-            <span className={`text-2xl font-black tracking-tighter ${party?.balance && party.balance > 0 ? "text-rose-600" : "text-emerald-600"}`}>
-              {formatCurrency(Math.abs(party?.balance || 0))}
-              <span className="text-xs ml-1 font-bold">{party?.balance && party.balance > 0 ? "DR" : "CR"}</span>
+            <span className={`text-2xl font-black tracking-tighter ${CurrencyUtil.parse(party?.balance || 0).greaterThan(0) ? "text-rose-600" : "text-emerald-600"}`}>
+              {formatCurrency(CurrencyUtil.parse(party?.balance || 0).abs())}
+              <span className="text-xs ml-1 font-bold">{CurrencyUtil.parse(party?.balance || 0).greaterThan(0) ? "DR" : "CR"}</span>
             </span>
           </div>
         </div>
@@ -179,7 +183,7 @@ export default function ClientSection() {
                 {formatCurrency(
                   selectedPartyLedger
                     .filter(v => ["SALES", "PURCHASE", "CREDIT_NOTE", "DEBIT_NOTE"].includes(v.type))
-                    .reduce((sum, v) => sum + (v.totalAmount || 0), 0)
+                    .reduce((sum, v) => sum.plus(CurrencyUtil.parse(v.totalAmount || 0)), CurrencyUtil.parse(0))
                 )}
               </CardTitle>
             </CardHeader>
@@ -199,7 +203,7 @@ export default function ClientSection() {
             <CardHeader className="pb-2">
               <CardDescription className="text-slate-400 text-xs uppercase font-bold tracking-wider">Total Collection / Paid</CardDescription>
               <CardTitle className="text-3xl font-black text-emerald-600 tracking-tight">
-                {formatCurrency(selectedPartyLedger.filter(v => ['RECEIPT', 'PAYMENT'].includes(v.type)).reduce((sum, v) => sum + (v.totalAmount || 0), 0))}
+                {formatCurrency(selectedPartyLedger.filter(v => ['RECEIPT', 'PAYMENT'].includes(v.type)).reduce((sum, v) => sum.plus(CurrencyUtil.parse(v.totalAmount || 0)), CurrencyUtil.parse(0)))}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -218,8 +222,12 @@ export default function ClientSection() {
               <CardTitle className="text-3xl font-black text-rose-600 tracking-tight">
                 {formatCurrency(
                   party?.type === "Vendor"
-                    ? Math.max(0, -(party?.balance || 0))
-                    : Math.max(0, party?.balance || 0)
+                    ? CurrencyUtil.parse(party?.balance || 0).negated().greaterThan(0)
+                      ? CurrencyUtil.parse(party?.balance || 0).negated()
+                      : CurrencyUtil.parse(0)
+                    : CurrencyUtil.parse(party?.balance || 0).greaterThan(0)
+                      ? CurrencyUtil.parse(party?.balance || 0)
+                      : CurrencyUtil.parse(0)
                 )}
               </CardTitle>
             </CardHeader>
@@ -400,7 +408,7 @@ export default function ClientSection() {
                 <Input 
                   type="number" 
                   value={newParty.openingBalance} 
-                  onChange={e => setNewParty({...newParty, openingBalance: Number(e.target.value)})} 
+                  onChange={e => setNewParty({...newParty, openingBalance: e.target.value ? CurrencyUtil.parse(e.target.value).toNumber() : 0})} 
                   placeholder="0.00" 
                   disabled={isSubmitting}
                   className="bg-white border-slate-200 focus-visible:ring-indigo-500"
@@ -483,11 +491,11 @@ export default function ClientSection() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex flex-col items-end">
-                           <span className={`font-black text-base tracking-tighter ${party.balance > 0 ? "text-rose-600" : "text-emerald-600"}`}>
-                            {formatCurrency(Math.abs(party.balance))}
+                           <span className={`font-black text-base tracking-tighter ${CurrencyUtil.parse(party.balance).greaterThan(0) ? "text-rose-600" : "text-emerald-600"}`}>
+                            {formatCurrency(CurrencyUtil.parse(party.balance).abs())}
                           </span>
                           <span className="text-[10px] uppercase font-bold text-slate-400">
-                            {party.balance > 0 ? "Debit" : "Credit"}
+                            {CurrencyUtil.parse(party.balance).greaterThan(0) ? "Debit" : "Credit"}
                           </span>
                         </div>
                       </td>

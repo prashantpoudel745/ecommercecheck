@@ -44,7 +44,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
   // Fetch dashboard data
   const fetchDashboardData = useCallback(async () => {
     try {
-      const response = await api.get(`/dashboard`);
+      const response = await api.get(`/attendance/dashboard`);
       setDashboardData(response.data.data);
     } catch (err) {
       setError("Failed to load dashboard data");
@@ -64,7 +64,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
         groupBy: filters.groupBy,
       });
 
-      const response = await api.get(`/`);
+      const response = await api.get(`/attendance`);
       setAttendanceData(response.data.data);
     } catch (err) {
       setError(err.message || "Failed to load attendance data");

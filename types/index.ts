@@ -1,4 +1,6 @@
 import { ReactNode } from "react";
+export type Decimal128Json = { $numberDecimal: string };
+export type DecimalValue = number | string | Decimal128Json;
 export type ViewMode = "year" | "month" | "day";
 
 export interface Employee {
@@ -12,7 +14,7 @@ export interface InventoryItem {
   id: string;
   name: string;
   quantity: number;
-  price: number;
+  price: DecimalValue;
   clientname: string;
   status: "inStock" | "mediumStock" | "lowStock";
   category: string;
@@ -25,7 +27,7 @@ export interface Client {
   companyName?: string;
   vatNo: string;
   status: "paid" | "due";
-  value?: number;
+  value?: DecimalValue;
   email?: string;
   phone?: string;
   notes?: string;
@@ -53,7 +55,7 @@ export interface Transaction {
   description: string;
   clientname?: string;
   category?: string;
-  amount: number;
+  amount: DecimalValue;
   type: string; // Changed from literal to string for more flexibility
   updatedAt?: string;
   updatedBy?: string;
@@ -260,7 +262,7 @@ export interface InventoryStatusData {
 export interface Activity {
   _id: string;
   name?: string;
-  amount?: number;
+  amount?: DecimalValue;
   quantity?: number;
   category?: string;
   collection: "accounting" | "inventory";
@@ -295,7 +297,7 @@ export interface Product {
   name: string;
   category: string;
   quantity: number;
-  price: number;
+  price: DecimalValue;
   status: "in-stock" | "low-stock" | "out-of-stock";
   maxStock: number;
 }
@@ -304,28 +306,28 @@ export interface InventoryStats {
   totalProducts: number;
   lowStockItems: number;
   lowStockChange: number;
-  inventoryValue: number;
-  inventoryValueChange: number;
+  inventoryValue: DecimalValue;
+  inventoryValueChange: DecimalValue;
 }
 
 export interface UpdateInventoryProps {
   productId: string;
   productName: string;
   productCategory: string;
-  productPrice: number;
+  productPrice: DecimalValue;
   productQuantity: number;
   onUpdate: (updatedProduct: {
     _id: string;
     name: string;
     category: string;
-    price: number;
+    price: DecimalValue;
     quantity: number;
     status: "in-stock" | "low-stock" | "out-of-stock";
   }) => void;
 }
 
 export interface Investment {
-  amount: number;
+  amount: DecimalValue;
   category: string;
   clientname: string;
   createdAt: string;

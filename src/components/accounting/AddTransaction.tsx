@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
 import { Plus, Trash2, ScanLine } from "lucide-react";
@@ -26,18 +26,18 @@ import * as accountingService from "@/services/accounting.service";
 import BillScanner from "./BillScanner";
 import type { BillData } from "@/services/ocr.service";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { CurrencyUtil } from "@/utils/currency.util";
 
 const API_URL = import.meta.env.VITE_API_URL|| "";
 
 export default function CombinedAddDialog({
-  onClientAdded,
   onTransactionAdded,
-  onInventoryAdded,
   buttonLabel = "Add New",
   variant = "outline",
 }: CombinedDialogProps) {
   const [open, setOpen] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
   const [isLoadingInventory, setIsLoadingInventory] = useState(false);
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [itemSearchTerms, setItemSearchTerms] = useState<string[]>([""]);
@@ -154,9 +154,9 @@ export default function CombinedAddDialog({
     const updatedItem = { ...newItems[index], [name]: value };
 
     if (name === "quantity" || name === "price") {
-      const quantity = parseFloat(updatedItem.quantity as any) || 0;
-      const price = parseFloat(updatedItem.price as any) || 0;
-      updatedItem.amount = Number((quantity * price).toFixed(2));
+      const quantity = CurrencyUtil.parse(updatedItem.quantity);
+      const price = CurrencyUtil.parse(updatedItem.price);
+      updatedItem.amount = CurrencyUtil.mul(quantity, price).toNumber(); // or keep as string if formData types updated
     }
 
     newItems[index] = updatedItem;
@@ -180,12 +180,13 @@ export default function CombinedAddDialog({
 
   const handleSelectItem = (inventoryItem: any, index: number) => {
     const newItems = [...formData.items];
+    const price = CurrencyUtil.format(inventoryItem.price);
     newItems[index] = {
       ...newItems[index],
       itemName: inventoryItem.name,
       productCategory: inventoryItem.category || "",
-      price: inventoryItem.price,
-      amount: Number((inventoryItem.price * (newItems[index].quantity || 1)).toFixed(2))
+      price,
+      amount: CurrencyUtil.mul(price, (newItems[index].quantity || 1)).toNumber()
     };
     setFormData({...formData, items: newItems});
 
@@ -215,15 +216,16 @@ export default function CombinedAddDialog({
     setShowDropdowns((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async (e?: React.FormEvent) => {
+  const handleSubmit = async (post: boolean, e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!showConfirmation) {
+      setIsPosting(post);
       setShowConfirmation(true);
       return;
     }
     try {
-      await submitTransaction();
-      toast.success("Transaction added successfully");
+      await submitTransaction(isPosting);
+      toast.success(isPosting ? "Transaction posted to ledger" : "Draft saved successfully");
       setShowConfirmation(false);
     } catch (err) { 
       const friendlyMessage = getUserFriendlyErrorMessage(err);
@@ -233,7 +235,7 @@ export default function CombinedAddDialog({
   };
 
   const handleSubmitConfirmation = async () => {
-    await handleSubmit();
+    await handleSubmit(isPosting);
   };
 
   const handleReset = () => {
@@ -247,7 +249,9 @@ export default function CombinedAddDialog({
     setOpen(open);
   };
 
-  const totalAmount = formData.items.reduce((total, item) => total + (item.amount || 0), 0);
+  const totalAmount = formData.items
+    .reduce((total, item) => total.plus(CurrencyUtil.parse(item.amount || 0)), CurrencyUtil.parse(0))
+    .toNumber();
 
   const getFilteredItems = (searchTerm: string) => {
     if (!searchTerm.trim() || !inventoryItems.length) return [];
@@ -404,7 +408,7 @@ export default function CombinedAddDialog({
             onDataExtracted={handleBillDataExtracted}
           />
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-lg font-medium border-b pb-2">Client & Payment</h3>
               <div className="grid grid-cols-2 gap-4">
@@ -555,7 +559,7 @@ export default function CombinedAddDialog({
                           <div className="absolute z-50 mt-1 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-auto">
                             {getFilteredItems(itemSearchTerms[index]).map(invItem => (
                               <div key={invItem._id} className="p-2 hover:bg-gray-100 cursor-pointer text-sm" onMouseDown={(e) => e.preventDefault()} onClick={() => handleSelectItem(invItem, index)}>
-                                {invItem.name} ({formatCurrency(Number(invItem.price || 0))})
+                                {invItem.name} ({formatCurrency(invItem.price || 0)})
                               </div>
                             ))}
                           </div>
@@ -580,7 +584,8 @@ export default function CombinedAddDialog({
                 <div className="text-lg font-bold">Total: {formatCurrency(totalAmount)}</div>
                 <div className="space-x-2">
                   <Button type="button" variant="outline" onClick={() => { setOpen(false); handleReset(); }} disabled={isSubmitting}>Cancel</Button>
-                  <Button type="submit" disabled={isSubmitting}>Continue</Button>
+                  <Button type="button" variant="secondary" onClick={(e) => handleSubmit(false, e)} disabled={isSubmitting}>Save as Draft</Button>
+                  <Button type="button" onClick={(e) => handleSubmit(true, e)} disabled={isSubmitting}>Post to Ledger</Button>
                 </div>
               </div>
             </DialogFooter>
@@ -605,11 +610,13 @@ export default function CombinedAddDialog({
                 <div className="flex justify-between text-sm text-green-600"><span className="font-medium">Amount Paying Now:</span> <span className="font-bold">{formatCurrency(formData.amountPaid)}</span></div>
               )}
             </div>
-            <p className="text-xs text-gray-500 italic text-center">This will create a voucher and update balances across the system.</p>
+            <p className="text-xs text-gray-500 italic text-center">
+              {isPosting ? "This will post a voucher directly to the general ledger." : "This will save a draft voucher that must be approved later."}
+            </p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowConfirmation(false)} disabled={isSubmitting}>Back</Button>
-            <Button onClick={handleSubmitConfirmation} disabled={isSubmitting}>{isSubmitting ? "Processing..." : "Confirm & Submit"}</Button>
+            <Button onClick={handleSubmitConfirmation} disabled={isSubmitting}>{isSubmitting ? "Processing..." : isPosting ? "Confirm Post" : "Confirm Draft"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

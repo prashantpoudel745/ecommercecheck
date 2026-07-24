@@ -11,8 +11,8 @@ export default defineConfig(({ mode }): UserConfig => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'https://ecommercecheckbe.vercel.app',
-          // target:"http://localhost:5000",
+          // target: 'https://ecommercecheckbe.vercel.app',
+          target:"http://localhost:5000",
           changeOrigin: true,
           secure: false,
         },

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { CurrencyUtil } from "@/utils/currency.util";
 import { 
   getAccounts, 
   createAccount, 
   getAccountGroups, 
   createAccountGroup,
   seedDefaults, 
-  migrateLegacy 
 } from "../../services/accounting.service";
 import { 
   Plus, 
@@ -14,7 +14,6 @@ import {
   RefreshCw, 
   Database,
   Search,
-  ChevronRight,
   Info
 } from "lucide-react";
 import { toast } from "sonner";
@@ -128,7 +127,7 @@ export default function ChartOfAccounts() {
   return (
     <div className="space-y-6">
       {/* Sticky page header: title + Seed/Add Group/Add Ledger buttons */}
-      <div className="sticky lg:top-5 md:top-10 sm:top-10 z-30  backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-3 border-b border-gray-100">
+      <div className="sticky -top-6 z-30  backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-3 border-b border-gray-100">
         <div className="mx-5">
           <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent">
             Chart of Accounts
@@ -136,9 +135,9 @@ export default function ChartOfAccounts() {
           <p className="text-muted-foreground">Manage your ledger accounts and financial structure.</p>
         </div>
         <div className="flex gap-2">
-          {/* <Button variant="outline" size="sm" onClick={handleSeed} className="flex items-center gap-2">
-            <Database className="w-4 h-4" /> Seed Logic
-          </Button> */}
+          <Button variant="outline" size="sm" onClick={handleSeed} className="flex items-center gap-2 p-5 bg-black text-white hover:bg-white hover:text-black">
+            <Database className="w-4 h-4 mr-2" />Set Default Groups
+          </Button>
           <Button 
             variant="outline" 
             onClick={() => {
@@ -152,7 +151,7 @@ export default function ChartOfAccounts() {
             onClick={() => {
               setShowForm(!showForm);
             }} 
-            className="text-white hover:text-slate-900 bg-slate-900 "
+            className="text-white hover:text-black hover:bg-white bg-slate-900 "
           >
             <Plus className="w-4 h-4 mr-2" /> Add Ledger
           </Button>
@@ -262,7 +261,7 @@ export default function ChartOfAccounts() {
               </div>
               <div className="space-y-2">
                 <Label>Opening Bal</Label>
-                <Input type="number" value={newAccount.openingBalance} onChange={e => setNewAccount({...newAccount, openingBalance: Number(e.target.value)})} placeholder="0.00" />
+                <Input type="number" value={newAccount.openingBalance} onChange={e => setNewAccount({...newAccount, openingBalance: e.target.value ? CurrencyUtil.parse(e.target.value).toNumber() : 0})} placeholder="0.00" />
               </div>
               {newAccount.accountGroup && (
                 <div className="lg:col-span-1 flex items-end pb-2">
@@ -349,13 +348,13 @@ export default function ChartOfAccounts() {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex flex-col items-end">
-                            <span className={`font-bold text-base ${account.currentBalance >= 0 ? "text-green-600" : "text-red-600"}`}>
-                              {formatCurrency(Math.abs(account.currentBalance))}
+                            <span className={`font-bold text-base ${CurrencyUtil.parse(account.currentBalance).greaterThanOrEqualTo(0) ? "text-green-600" : "text-red-600"}`}>
+                              {formatCurrency(CurrencyUtil.parse(account.currentBalance).abs())}
                             </span>
                             <span className="text-[10px] uppercase font-bold text-gray-400">
                               {["ASSET", "EXPENSE"].includes(account.type) 
-                                ? (account.currentBalance >= 0 ? "Debit" : "Credit") 
-                                : (account.currentBalance >= 0 ? "Credit" : "Debit")}
+                                ? (CurrencyUtil.parse(account.currentBalance).greaterThanOrEqualTo(0) ? "Debit" : "Credit") 
+                                : (CurrencyUtil.parse(account.currentBalance).greaterThanOrEqualTo(0) ? "Credit" : "Debit")}
                             </span>
                           </div>
                         </td>

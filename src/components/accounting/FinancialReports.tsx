@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { formatCurrency } from "@/utils/formatCurrency";
+import type { DecimalValue } from "@/utils/formatCurrency";
+import { CurrencyUtil } from "@/utils/currency.util";
 import { 
-  getAccountingHealth, 
   getTrialBalance, 
   getPandL, 
   getBalanceSheet, 
   getVatReport,
+  getAgingReportAR,
+  getAgingReportAP,
   seedDefaults 
 } from "../../services/accounting.service";
 import { 
@@ -16,21 +19,42 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   ShieldCheck,
-  AlertTriangle
+  AlertTriangle,
+  ChevronDown,
+  X,
+  Filter
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+
 interface TBAccount {
   name: string;
   group?: string;
-  debit: number;
-  credit: number;
+  type?: string;
+  debit?: DecimalValue;
+  credit?: DecimalValue;
+  debitAmount?: DecimalValue;
+  creditAmount?: DecimalValue;
 }
 
 export default function FinancialReports() {
-  const [activeTab, setActiveTab] = useState<"tb" | "pl" | "bs" | "vat" | "health">("tb");
+  const getInitialDates = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const todayStr = now.toISOString().split("T")[0];
+    return {
+      startDate: `${year}-01-01`,
+      endDate: todayStr,
+    };
+  };
+
+  const initial = getInitialDates();
+  const [activeTab, setActiveTab] = useState<"tb" | "pl" | "bs" | "vat" | "aging-ar" | "aging-ap" | "health">("tb");
+  const [startDate, setStartDate] = useState<string>(initial.startDate);
+  const [endDate, setEndDate] = useState<string>(initial.endDate);
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -38,22 +62,54 @@ export default function FinancialReports() {
     fetchReport(activeTab);
   }, [activeTab]);
 
-  const fetchReport = async (tab: string) => {
+  const fetchReport = async (tab: string, customStartDate?: string, customEndDate?: string) => {
     setLoading(true);
     try {
       let res;
-      if (tab === "tb") res = await getTrialBalance();
-      if (tab === "pl") res = await getPandL();
-      if (tab === "bs") res = await getBalanceSheet();
-      if (tab === "vat") res = await getVatReport();
-      // if (tab === "health") res = await getAccountingHealth();
+      const activeStart = customStartDate !== undefined ? customStartDate : startDate;
+      const activeEnd = customEndDate !== undefined ? customEndDate : endDate;
+      const params = {
+        startDate: activeStart || initial.startDate,
+        endDate: activeEnd || initial.endDate,
+      };
+      if (tab === "tb") res = await getTrialBalance(params);
+      if (tab === "pl") res = await getPandL(params);
+      if (tab === "bs") res = await getBalanceSheet(params);
+      if (tab === "vat") res = await getVatReport(params);
+      if (tab === "aging-ar") res = await getAgingReportAR();
+      if (tab === "aging-ap") res = await getAgingReportAP();
       setData(res);
     } catch (error) {
-      // console.error("Error fetching report:", error);
       setData(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePreset = (preset: "thisMonth" | "last30" | "thisYear") => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const todayStr = now.toISOString().split("T")[0];
+
+    let newStart = startDate;
+    let newEnd = endDate;
+
+    if (preset === "thisMonth") {
+      const monthStr = (now.getMonth() + 1).toString().padStart(2, "0");
+      newStart = `${year}-${monthStr}-01`;
+      newEnd = todayStr;
+    } else if (preset === "last30") {
+      const past = new Date();
+      past.setDate(past.getDate() - 30);
+      newStart = past.toISOString().split("T")[0];
+      newEnd = todayStr;
+    } else if (preset === "thisYear") {
+      newStart = `${year}-01-01`;
+      newEnd = `${year}-12-31`;
+    }
+
+    setStartDate(newStart);
+    setEndDate(newEnd);
   };
 
   const handleSeedDefaults = async () => {
@@ -69,20 +125,31 @@ export default function FinancialReports() {
     }
   };
 
-  const Currency = ({ value, className = "" }: { value: number, className?: string }) => (
-    <span className={`${value < 0 ? "text-rose-500" : ""} font-mono font-bold ${className}`}>
-      {formatCurrency(Math.abs(value || 0))}
+  const getDebit = (acc: any) => acc?.debit ?? acc?.debitAmount ?? 0;
+  const getCredit = (acc: any) => acc?.credit ?? acc?.creditAmount ?? 0;
+  const getAmount = (item: any) => item?.amount ?? CurrencyUtil.sub(getDebit(item), getCredit(item));
+  const isPositive = (value: DecimalValue) => CurrencyUtil.parse(value).greaterThan(0);
+
+  const Currency = ({ value, className = "" }: { value: DecimalValue, className?: string }) => (
+    <span className={`${CurrencyUtil.parse(value).isNegative() ? "text-rose-500" : ""} font-mono font-bold ${className}`}>
+      {formatCurrency(CurrencyUtil.parse(value).abs())}
     </span>
   );
 
   const renderTB = () => {
     if (!data) return <div className="text-center py-12 text-slate-400 italic">No trial balance data found.</div>;
     const accountGroupKeys = ["ASSET", "LIABILITY", "EQUITY", "REVENUE", "EXPENSE"];
+    const groupedAccounts = Array.isArray(data?.accounts)
+      ? accountGroupKeys.reduce((groups, key) => {
+          groups[key] = data.accounts.filter((account: TBAccount) => account.type === key);
+          return groups;
+        }, {} as Record<string, TBAccount[]>)
+      : data;
     
     return (
   <div className="space-y-4 animate-in fade-in duration-500">
     <div className="rounded-xl border border-slate-100 overflow-hidden shadow-sm bg-white relative isolate">
-      <div className="max-h-[600px] overflow-y-auto">
+      <div className=" overflow-y-auto">
         <table className="w-full text-sm">
           <thead>
             <tr>
@@ -94,17 +161,17 @@ export default function FinancialReports() {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {accountGroupKeys.map((key) => {
-              const accounts = data?.[key];
+              const accounts = groupedAccounts?.[key];
               if (!Array.isArray(accounts) || accounts.length === 0) return null;
               return accounts.map((acc: TBAccount, i: number) => (
                 <tr key={`${key}-${i}`} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-4 font-semibold text-slate-900">{acc.name}</td>
                   <td className="px-6 py-4 text-xs text-slate-400 font-medium lowercase">{key}</td>
                   <td className="px-6 py-4 text-right">
-                    {acc.debit > 0 ? <Currency value={acc.debit} /> : "-"}
+                    {isPositive(getDebit(acc)) ? <Currency value={getDebit(acc)} /> : "-"}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    {acc.credit > 0 ? <Currency value={acc.credit} /> : "-"}
+                    {isPositive(getCredit(acc)) ? <Currency value={getCredit(acc)} /> : "-"}
                   </td>
                 </tr>
               ));
@@ -139,7 +206,7 @@ export default function FinancialReports() {
               {Array.isArray(data?.revenue) && data.revenue.length > 0 ? data.revenue.map((acc: any, i: number) => (
                 <div key={i} className="flex justify-between text-sm py-1 border-b border-white/40 last:border-0">
                   <span className="text-slate-600">{acc.name}</span>
-                  <Currency value={(acc.credit || 0) - (acc.debit || 0)} />
+                  <Currency value={acc.amount ?? CurrencyUtil.sub(getCredit(acc), getDebit(acc))} />
                 </div>
               )) : <p className="text-xs text-slate-400 italic">No revenue recorded.</p>}
             </CardContent>
@@ -158,7 +225,7 @@ export default function FinancialReports() {
               {Array.isArray(data?.expenses) && data.expenses.length > 0 ? data.expenses.map((acc: any, i: number) => (
                 <div key={i} className="flex justify-between text-sm py-1 border-b border-white/40 last:border-0">
                   <span className="text-slate-600">{acc.name}</span>
-                  <Currency value={(acc.debit || 0) - (acc.credit || 0)} />
+                  <Currency value={acc.amount ?? CurrencyUtil.sub(getDebit(acc), getCredit(acc))} />
                 </div>
               )) : <p className="text-xs text-slate-400 italic">No expenses recorded.</p>}
             </CardContent>
@@ -166,12 +233,12 @@ export default function FinancialReports() {
         </div>
 
         <div className={`p-8 rounded-3xl text-center shadow-xl border-4 ${
-          (data?.netProfit || 0) >= 0 ? "bg-emerald-600 border-emerald-500 text-white" : "bg-rose-600 border-rose-500 text-white"
+          CurrencyUtil.parse(data?.netProfit || 0).greaterThanOrEqualTo(0) ? "bg-emerald-600 border-emerald-500 text-white" : "bg-rose-600 border-rose-500 text-white"
         }`}>
           <p className="text-xs uppercase font-black tracking-[0.2em] mb-2 opacity-80">Final Performance Result</p>
           <h2 className="text-5xl font-black">
-            {(data?.netProfit || 0) >= 0 ? "PROFIT: " : "LOSS: "}
-            {formatCurrency(Math.abs(data?.netProfit || 0))}
+            {CurrencyUtil.parse(data?.netProfit || 0).greaterThanOrEqualTo(0) ? "PROFIT: " : "LOSS: "}
+            {formatCurrency(CurrencyUtil.parse(data?.netProfit || 0).abs())}
           </h2>
         </div>
       </div>
@@ -191,7 +258,7 @@ export default function FinancialReports() {
         </div>
         {data.isBalanced === false && (
           <div className="col-span-full p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-center font-bold">
-            ⚠️ Attention: Balance Sheet is currently out of sync by {formatCurrency(Math.abs(data.totalAssets - data.totalLiabilitiesAndEquity))}
+            ⚠️ Attention: Balance Sheet is currently out of sync by {formatCurrency(CurrencyUtil.sub(data.totalAssets, data.totalLiabilitiesAndEquity).abs())}
           </div>
         )}
       </div>
@@ -213,7 +280,7 @@ export default function FinancialReports() {
             <Card key={String(label)} className="border-none shadow-md bg-white">
               <CardHeader className="pb-2">
                 <CardDescription>{label}</CardDescription>
-                <CardTitle className="text-xl"><Currency value={Number(value || 0)} /></CardTitle>
+                <CardTitle className="text-xl"><Currency value={value} /></CardTitle>
               </CardHeader>
             </Card>
           ))}
@@ -224,7 +291,7 @@ export default function FinancialReports() {
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Nepal VAT Position</p>
               <h3 className="text-2xl font-black">
-                {data.netVatPayable > 0 ? "VAT Payable" : data.netVatRefundable > 0 ? "VAT Refundable/Credit" : "No Net VAT"}
+                {isPositive(data.netVatPayable) ? "VAT Payable" : isPositive(data.netVatRefundable) ? "VAT Refundable/Credit" : "No Net VAT"}
               </h3>
             </div>
             <div className="text-3xl font-black">
@@ -256,6 +323,103 @@ export default function FinancialReports() {
                   </tr>
                 ))}
               </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAging = (type: "ar" | "ap") => {
+    if (!data) return <div className="text-center py-12 text-slate-400 italic">No aging data found.</div>;
+    const parties = [...(data.parties || [])];
+    const details = data.details || [];
+    const hasPartyAging = parties.length > 0 || data.bucketTotals;
+    const buckets = hasPartyAging ? ["current", "1-30", "31-60", "61-90", "91+"] : ["0-30", "31-60", "61-90", "90+"];
+    const bucketLabels: Record<string, string> = {
+      current: "Current",
+      "1-30": "1–30 Days",
+      "31-60": "31–60 Days",
+      "61-90": "61–90 Days",
+      "91+": "91+ Days",
+    };
+    const bucketColors: Record<string, string> = {
+      current: "text-emerald-700 bg-emerald-50",
+      "1-30": "text-amber-700 bg-amber-50",
+      "0-30": "text-amber-700 bg-amber-50",
+      "31-60": "text-orange-700 bg-orange-50",
+      "61-90": "text-rose-700 bg-rose-50",
+      "91+": "text-red-800 bg-red-100 font-black",
+      "90+": "text-red-800 bg-red-100 font-black",
+    };
+    const bucketTotals = data.bucketTotals || data.buckets || {};
+    const outstandingTotal = data.totalOutstanding || data.total || 0;
+    if (!hasPartyAging && details.length > 0 && parties.length === 0) {
+      details.forEach((detail: any) => {
+        parties.push({
+          partyName: detail.partyName || detail.voucherNumber || "-",
+          buckets: { [detail.bucket]: detail.amountDue },
+          total: detail.amountDue,
+        });
+      });
+    }
+
+    return (
+      <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            ["Total Outstanding", outstandingTotal],
+            [hasPartyAging ? "Current" : "0-30 Days", hasPartyAging ? bucketTotals.current : bucketTotals["0-30"]],
+            ["31-60 Days", bucketTotals["31-60"]],
+            [hasPartyAging ? "91+ Days (High Risk)" : "90+ Days (High Risk)", hasPartyAging ? bucketTotals["91+"] : bucketTotals["90+"]],
+          ].map(([label, val]) => (
+            <Card key={String(label)} className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardDescription>{label}</CardDescription>
+                <CardTitle className="text-xl"><Currency value={val} /></CardTitle>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+
+        <div className="rounded-xl border border-slate-100 overflow-hidden shadow-sm bg-white">
+          <div className="max-h-[500px] overflow-y-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr>
+                  <th className="sticky top-0 z-10 bg-slate-50 border-b px-5 py-3 text-left text-[10px] uppercase text-slate-500">{type === "ar" ? "Customer" : "Supplier"}</th>
+                  {buckets.map(b => (
+                    <th key={b} className={`sticky top-0 z-10 border-b px-5 py-3 text-right text-[10px] uppercase ${bucketColors[b]}`}>{bucketLabels[b] || `${b} Days`}</th>
+                  ))}
+                  <th className="sticky top-0 z-10 bg-slate-800 text-white border-b px-5 py-3 text-right text-[10px] uppercase">Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {parties.length === 0 ? (
+                  <tr><td colSpan={7} className="px-5 py-10 text-center text-slate-400 italic">No outstanding balances.</td></tr>
+                ) : parties.map((p: any, i: number) => (
+                  <tr key={i} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-5 py-3 font-semibold text-slate-800">{p.partyName}</td>
+                    {buckets.map(b => (
+                      <td key={b} className="px-5 py-3 text-right font-mono">
+                        {isPositive(p.buckets?.[b]) ? <span className={`px-2 py-0.5 rounded text-xs ${bucketColors[b]}`}><Currency value={p.buckets[b]} /></span> : <span className="text-slate-300">—</span>}
+                      </td>
+                    ))}
+                    <td className="px-5 py-3 text-right font-black text-slate-900"><Currency value={p.total} /></td>
+                  </tr>
+                ))}
+              </tbody>
+              {parties.length > 0 && (
+                <tfoot>
+                  <tr className="bg-slate-900 text-white">
+                    <td className="px-5 py-3 font-black uppercase text-xs tracking-widest">Grand Total</td>
+                    {buckets.map(b => (
+                      <td key={b} className="px-5 py-3 text-right font-mono"><Currency value={bucketTotals?.[b] || 0} className="text-white" /></td>
+                    ))}
+                    <td className="px-5 py-3 text-right font-black"><Currency value={outstandingTotal} className="text-white" /></td>
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
         </div>
@@ -342,7 +506,7 @@ export default function FinancialReports() {
         {Array.isArray(items) && items.map((item: any, i: number) => (
           <div key={i} className="flex justify-between items-center text-sm py-1.5 border-b last:border-0 border-slate-50">
             <span className="text-slate-700 font-medium">{item.name}</span>
-            <Currency value={Math.abs((item.debit || 0) - (item.credit || 0))} />
+            <Currency value={CurrencyUtil.parse(getAmount(item)).abs()} />
           </div>
         ))}
         {extra && (
@@ -363,7 +527,7 @@ export default function FinancialReports() {
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="sticky lg:top-5 md:top-10 sm:top-10 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+      <div className="sticky -top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div className="ml-3">
           <h2 className="text-4xl font-semibold tracking-tighter bg-clip-text text-black">
             Financial Reporting
@@ -372,12 +536,117 @@ export default function FinancialReports() {
             <Calendar className="w-4 h-4" /> Real-time double-entry compliance monitoring.
           </p>
         </div>
-        <div className="flex gap-2 bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
-          <Button variant={activeTab === "tb" ? "default" : "ghost"} onClick={() => setActiveTab("tb")} className="rounded-xl h-10 px-6 font-bold">Trial Balance</Button>
-          <Button variant={activeTab === "pl" ? "default" : "ghost"} onClick={() => setActiveTab("pl")} className="rounded-xl h-10 px-6 font-bold">P & L</Button>
-          <Button variant={activeTab === "bs" ? "default" : "ghost"} onClick={() => setActiveTab("bs")} className="rounded-xl h-10 px-6 font-bold">Balance Sheet</Button>
-          <Button variant={activeTab === "vat" ? "default" : "ghost"} onClick={() => setActiveTab("vat")} className="rounded-xl h-10 px-6 font-bold">VAT</Button>
-          {/* <Button variant={activeTab === "health" ? "default" : "ghost"} onClick={() => setActiveTab("health")} className="rounded-xl h-10 px-6 font-bold">Health</Button> */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex gap-2 bg-white p-1 rounded-2xl shadow-sm border border-slate-100 flex-wrap">
+            <Button variant={activeTab === "tb" ? "default" : "ghost"} onClick={() => setActiveTab("tb")} className="rounded-xl h-10 px-5 font-bold">Trial Balance</Button>
+            <Button variant={activeTab === "pl" ? "default" : "ghost"} onClick={() => setActiveTab("pl")} className="rounded-xl h-10 px-5 font-bold">P & L</Button>
+            <Button variant={activeTab === "bs" ? "default" : "ghost"} onClick={() => setActiveTab("bs")} className="rounded-xl h-10 px-5 font-bold">Balance Sheet</Button>
+            <Button variant={activeTab === "vat" ? "default" : "ghost"} onClick={() => setActiveTab("vat")} className="rounded-xl h-10 px-5 font-bold">VAT</Button>
+            <Button variant={activeTab === "aging-ar" ? "default" : "ghost"} onClick={() => setActiveTab("aging-ar")} className="rounded-xl h-10 px-5 font-bold">AR Aging</Button>
+            <Button variant={activeTab === "aging-ap" ? "default" : "ghost"} onClick={() => setActiveTab("aging-ap")} className="rounded-xl h-10 px-5 font-bold">AP Aging</Button>
+          </div>
+
+          <div className="relative">
+            <Button
+              variant="outline"
+              onClick={() => setShowDatePicker(!showDatePicker)}
+              className="rounded-2xl h-11 px-4 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold shadow-sm flex items-center gap-2"
+            >
+              <Calendar className="w-4 h-4 text-indigo-600" />
+              <span className="text-xs sm:text-sm">
+                {startDate && endDate
+                  ? `${startDate} → ${endDate}`
+                  : "Filter Statement Period"}
+              </span>
+              <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${showDatePicker ? "rotate-180" : ""}`} />
+            </Button>
+
+            {showDatePicker && (
+              <div className="absolute right-0 mt-2 z-50 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 p-5 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+                <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                  <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-indigo-600" /> Statement Period
+                  </h4>
+                  <button
+                    onClick={() => setShowDatePicker(false)}
+                    className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Start Date</label>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 font-medium text-slate-800"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">End Date</label>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 font-medium text-slate-800"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Quick Presets</span>
+                  <div className="flex gap-1.5 flex-wrap">
+                    <button
+                      onClick={() => handlePreset("thisMonth")}
+                      className="px-2.5 py-1 text-xs rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 font-medium text-slate-600 transition-colors"
+                    >
+                      This Month
+                    </button>
+                    <button
+                      onClick={() => handlePreset("last30")}
+                      className="px-2.5 py-1 text-xs rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 font-medium text-slate-600 transition-colors"
+                    >
+                      Last 30 Days
+                    </button>
+                    <button
+                      onClick={() => handlePreset("thisYear")}
+                      className="px-2.5 py-1 text-xs rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 font-medium text-slate-600 transition-colors"
+                    >
+                      This Year
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2 border-t border-slate-100">
+                  <Button
+                    onClick={() => {
+                      fetchReport(activeTab);
+                      setShowDatePicker(false);
+                    }}
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-9 text-xs font-bold shadow-sm"
+                  >
+                    Fetch Records
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      const initialDates = getInitialDates();
+                      setStartDate(initialDates.startDate);
+                      setEndDate(initialDates.endDate);
+                      fetchReport(activeTab, initialDates.startDate, initialDates.endDate);
+                      setShowDatePicker(false);
+                    }}
+                    className="rounded-xl h-9 text-xs text-slate-500 hover:bg-slate-100 font-medium"
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -393,6 +662,8 @@ export default function FinancialReports() {
             {activeTab === "pl" && renderPL()}
             {activeTab === "bs" && renderBS()}
             {activeTab === "vat" && renderVAT()}
+            {activeTab === "aging-ar" && renderAging("ar")}
+            {activeTab === "aging-ap" && renderAging("ap")}
             {activeTab === "health" && renderHealth()}
           </div>
         ) : (

@@ -12,9 +12,49 @@ import { ProtectedKeepAliveRouter } from "./components/layout/ProtectedKeepAlive
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Insights = lazy(() => import("./pages/Insights"));
-const Accounting = lazy(() => import("./pages/Accounting"));
+// Removed general Accounting import in favor of specific components
+const ChartOfAccounts = lazy(() => import("./components/accounting/ChartOfAccounts"));
+const VoucherBook = lazy(() => import("./components/accounting/VoucherBook"));
+const FinancialReports = lazy(() => import("./components/accounting/FinancialReports"));
+const AccountingDashboard = lazy(() => import("./components/accounting/AccountingDashboard"));
+const CashTransfers = lazy(() => import("./components/accounting/CashTransfers"));
+const PlaceholderComponent = lazy(() => import("./components/common/PlaceholderComponent"));
+
+// Sales View Pages
+const QuotationsPage = lazy(() => import("./pages/sales/QuotationsPage"));
+const SalesOrdersPage = lazy(() => import("./pages/sales/SalesOrdersPage"));
+const InvoicesPage = lazy(() => import("./pages/sales/InvoicesPage"));
+const CreditNotesPage = lazy(() => import("./pages/sales/CreditNotesPage"));
+const CustomerPaymentsPage = lazy(() => import("./pages/sales/CustomerPaymentsPage"));
+const CustomersPage = lazy(() => import("./pages/sales/CustomersPage"));
+
+// Sales Create Pages
+const CreateQuotationPage = lazy(() => import("./pages/sales/CreateQuotationPage"));
+const CreateSalesOrderPage = lazy(() => import("./pages/sales/CreateSalesOrderPage"));
+const CreateInvoicePage = lazy(() => import("./pages/sales/CreateInvoicePage"));
+const CreateCreditNotePage = lazy(() => import("./pages/sales/CreateCreditNotePage"));
+const CreateCustomerPaymentPage = lazy(() => import("./pages/sales/CreateCustomerPaymentPage"));
+const CreateCustomerPage = lazy(() => import("./pages/sales/CreateCustomerPage"));
+
+// Purchase View Pages
+const PurchaseOrdersPage = lazy(() => import("./pages/purchase/PurchaseOrdersPage"));
+const PurchaseBillsPage = lazy(() => import("./pages/purchase/PurchaseBillsPage"));
+const ExpensesPage = lazy(() => import("./pages/purchase/ExpensesPage"));
+const SupplierPaymentsPage = lazy(() => import("./pages/purchase/SupplierPaymentsPage"));
+const SuppliersPage = lazy(() => import("./pages/purchase/SuppliersPage"));
+
+// Purchase Create Pages
+const CreatePurchaseOrderPage = lazy(() => import("./pages/purchase/CreatePurchaseOrderPage"));
+const CreatePurchaseBillPage = lazy(() => import("./pages/purchase/CreatePurchaseBillPage"));
+const CreateExpensePage = lazy(() => import("./pages/purchase/CreateExpensePage"));
+const CreateSupplierPaymentPage = lazy(() => import("./pages/purchase/CreateSupplierPaymentPage"));
+const CreateSupplierPage = lazy(() => import("./pages/purchase/CreateSupplierPage"));
+
 const CRM = lazy(() => import("./pages/CRM"));
+
 const Inventory = lazy(() => import("./pages/Inventory"));
+const ImportDataPage = lazy(() => import("./pages/ImportDataPage"));
+
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
@@ -45,11 +85,52 @@ const App = () => {
       { id: "dashboard", paths: ["/"], render: () => <Dashboard /> },
       { id: "insights", paths: ["/insights"], render: () => <Insights /> },
       { id: "employees", paths: ["/employees"], render: () => <EmployeePage /> },
-      { id: "accounting", paths: ["/accounting"], render: () => <Accounting /> },
+      
+      // Accounting Routes
+      { id: "accounting-dashboard", paths: ["/accounting/dashboard"], render: () => <div className="p-6"><AccountingDashboard /></div> },
+      { id: "accounting-coa", paths: ["/accounting/chart-of-accounts"], render: () => <div className="p-6"><ChartOfAccounts /></div> },
+      { id: "accounting-vouchers", paths: ["/accounting/journal-vouchers"], render: () => <div className="p-6"><VoucherBook /></div> },
+      { id: "accounting-cash", paths: ["/accounting/cash-transfers"], render: () => <div className="p-6"><CashTransfers /></div> },
+      { id: "accounting-reports", paths: ["/accounting/financial-reports"], render: () => <div className="p-6"><FinancialReports /></div> },
+
+      // Sales View Routes
+      { id: "sales-quotations", paths: ["/sales/quotations"], render: () => <QuotationsPage /> },
+      { id: "sales-orders", paths: ["/sales/orders"], render: () => <SalesOrdersPage /> },
+      { id: "sales-invoice", paths: ["/sales/invoice"], render: () => <InvoicesPage /> },
+      { id: "sales-credit", paths: ["/sales/credit-notes"], render: () => <CreditNotesPage /> },
+      { id: "sales-payment", paths: ["/sales/customer-payment"], render: () => <CustomerPaymentsPage /> },
+      { id: "sales-customers", paths: ["/sales/customers"], render: () => <CustomersPage /> },
+
+      // Sales Create Routes
+      { id: "create-quotation", paths: ["/sales/quotations/new"], render: () => <CreateQuotationPage /> },
+      { id: "create-sales-order", paths: ["/sales/orders/new"], render: () => <CreateSalesOrderPage /> },
+      { id: "create-invoice", paths: ["/sales/invoice/new"], render: () => <CreateInvoicePage /> },
+      { id: "create-credit-note", paths: ["/sales/credit-notes/new"], render: () => <CreateCreditNotePage /> },
+      { id: "create-customer-payment", paths: ["/sales/customer-payment/new"], render: () => <CreateCustomerPaymentPage /> },
+      { id: "create-customer", paths: ["/sales/customers/new"], render: () => <CreateCustomerPage /> },
+
+      // Purchase View Routes
+      { id: "purchase-orders", paths: ["/purchase/orders"], render: () => <PurchaseOrdersPage /> },
+      { id: "purchase-bills", paths: ["/purchase/bills"], render: () => <PurchaseBillsPage /> },
+      { id: "purchase-expenses", paths: ["/purchase/expenses"], render: () => <ExpensesPage /> },
+      { id: "purchase-payment", paths: ["/purchase/supplier-payment"], render: () => <SupplierPaymentsPage /> },
+      { id: "purchase-suppliers", paths: ["/purchase/suppliers"], render: () => <SuppliersPage /> },
+
+      // Purchase Create Routes
+      { id: "create-purchase-order", paths: ["/purchase/orders/new"], render: () => <CreatePurchaseOrderPage /> },
+      { id: "create-purchase-bill", paths: ["/purchase/bills/new"], render: () => <CreatePurchaseBillPage /> },
+      { id: "create-expense", paths: ["/purchase/expenses/new"], render: () => <CreateExpensePage /> },
+      { id: "create-supplier-payment", paths: ["/purchase/supplier-payment/new"], render: () => <CreateSupplierPaymentPage /> },
+      { id: "create-supplier", paths: ["/purchase/suppliers/new"], render: () => <CreateSupplierPage /> },
+
+      // Inventory Routes
+      { id: "inventory", paths: ["/inventory", "/inventory/products"], render: () => <Inventory /> },
+      { id: "inventory-categories", paths: ["/inventory/categories"], render: () => <PlaceholderComponent moduleName="Inventory" title="Categories" /> },
+      { id: "import", paths: ["/import"], render: () => <ImportDataPage /> },
+
       { id: "prediction", paths: ["/prediction"], render: () => <Prediction /> },
       { id: "attendance", paths: ["/attendance"], render: () => <Attendance />, roles: ["admin", "hr", "employee", "superadmin"] },
       { id: "crm", paths: ["/crm"], render: () => <CRM /> },
-      { id: "inventory", paths: ["/inventory"], render: () => <Inventory /> },
       { id: "investments", paths: ["/investments"], render: () => <Investmentpage />, roles: ["admin", "superadmin"] },
       {
         id: "superadminaccess",

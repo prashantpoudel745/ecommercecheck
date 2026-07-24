@@ -1,15 +1,22 @@
 import { useAccounting } from "@/hooks/useAccounting";
 import AccountingStats from "./AccountingStats";
 import RecentTransactions from "./RecentTransactions";
-export default function AccountingDashboard() {
+import { CurrencyUtil } from "@/utils/currency.util";
+
+interface AccountingDashboardProps {
+  startDate?: string;
+  endDate?: string;
+  dateRangeLabel?: string;
+}
+
+export default function AccountingDashboard({ startDate, endDate, dateRangeLabel }: AccountingDashboardProps = {}) {
   const { 
     stats, 
     vouchers: recentVouchers, 
     loading, 
     error, 
     refresh 
-  } = useAccounting();
-
+  } = useAccounting(startDate || endDate ? { startDate, endDate } : undefined);
   const handleTransactionAdded = async () => {
     await refresh();
   };
@@ -29,16 +36,15 @@ export default function AccountingDashboard() {
     accountsPayable: 0,
     cashBalance: 0,
   };
-
   const mappedTransactions = (recentVouchers || []).map(v => ({
-    id: v._id,
-    date: v.date,
-    description: v.narration || v.description || v.title || v.voucherNumber,
-    clientname: v.partyName,
-    amount: v.totalAmount,
-    type: v.type,
-    updatedBy: v.updatedBy,
-  }));
+  id: v._id,
+  date: v.date,
+  description: v.narration || v.description || v.title || v.voucherNumber,
+  clientname: v.partyName,
+  amount: CurrencyUtil.format(v.totalAmount),
+  type: v.type,
+  updatedBy: v.updatedBy,
+}));
 
   return (
     <div className="space-y-6">
@@ -50,6 +56,9 @@ export default function AccountingDashboard() {
       
       <AccountingStats 
         stats={dashboardStats} 
+        startDate={startDate}
+        endDate={endDate}
+        dateRangeLabel={dateRangeLabel}
       />
       
       <RecentTransactions

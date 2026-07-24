@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAccounting } from "@/hooks/useAccounting";
-import { CURRENCY_SYMBOL, formatCurrency } from "@/utils/formatCurrency";
-import { recordPayment, sendInvoice, Voucher } from "../../services/accounting.service";
+import { CurrencyUtil } from "@/utils/currency.util";
+import { recordPayment, sendInvoice, approveVoucher, deleteVoucher, Voucher } from "../../services/accounting.service";
 import VoucherEntry from "./VoucherEntry";
 import { 
   Plus, 
@@ -11,7 +11,9 @@ import {
   Calendar,
   Search,
   Mail,
-  Loader2
+  Loader2,
+  CheckCircle,
+  Ban
 } from "lucide-react";
 import {toast }from "sonner";
 import { Button } from "@/components/ui/button";
@@ -25,6 +27,7 @@ import {
   CardDescription 
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 
 export default function VoucherBook() {
   const { 
@@ -104,7 +107,7 @@ export default function VoucherBook() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const getPaymentStatusBadge = (status: string) => {
     switch (status) {
       case "PAID":
         return <Badge className="bg-green-500 hover:bg-green-600 border-none">Paid</Badge>;
@@ -114,6 +117,40 @@ export default function VoucherBook() {
         return <Badge className="bg-rose-500 hover:bg-rose-600 border-none">Unpaid</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
+  const getDocStatusBadge = (status: string) => {
+    switch (status) {
+      case "POSTED":
+        return <Badge className="bg-emerald-500 hover:bg-emerald-600 border-none">POSTED</Badge>;
+      case "DRAFT":
+        return <Badge className="bg-slate-500 hover:bg-slate-600 border-none">DRAFT</Badge>;
+      case "CANCELLED":
+        return <Badge className="bg-red-500 hover:bg-red-600 border-none">CANCELLED</Badge>;
+      default:
+        return <Badge variant="secondary">{status || "POSTED"}</Badge>;
+    }
+  };
+
+  const handleApprove = async (id: string) => {
+    try {
+      await approveVoucher(id);
+      toast.success("Voucher Approved and Posted!");
+      refresh();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to approve voucher");
+    }
+  };
+
+  const handleCancel = async (id: string) => {
+    if (!confirm("Are you sure? Cancelling a posted voucher will generate a reversing journal entry.")) return;
+    try {
+      await deleteVoucher(id);
+      toast.success("Voucher Cancelled successfully");
+      refresh();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to cancel voucher");
     }
   };
 
@@ -137,7 +174,7 @@ export default function VoucherBook() {
   return (
     <div className="space-y-6">
       {/* STICKY HEADER GROUP: title, new voucher button, search, status filter */}
-<div className="sticky lg:top-5 md:top-10 sm:top-10 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+<div className="sticky -top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div className=" mx-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="mx-4">
             <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent">
@@ -182,7 +219,8 @@ export default function VoucherBook() {
                   <th className="px-6 py-4 text-left font-semibold text-gray-600">Date</th>
                   <th className="px-6 py-4 text-left font-semibold text-gray-600">Voucher No</th>
                   <th className="px-6 py-4 text-left font-semibold text-gray-600">Party / Type</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Status</th>
+                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Doc Status</th>
+                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Payment</th>
                   <th className="px-6 py-4 text-right font-semibold text-gray-600">Amount</th>
                   <th className="px-6 py-4 text-center font-semibold text-gray-600">Action</th>
                 </tr>
@@ -223,21 +261,34 @@ export default function VoucherBook() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center whitespace-nowrap">
-                        {getStatusBadge(voucher.paymentStatus || "PAID")}
+                        {getDocStatusBadge(voucher.status)}
+                      </td>
+                      <td className="px-6 py-4 text-center whitespace-nowrap">
+                        {getPaymentStatusBadge(voucher.paymentStatus || "PAID")}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <span className="font-bold text-lg text-gray-900">
-                           {CURRENCY_SYMBOL}{voucher.totalAmount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                           {CURRENCY_SYMBOL}{CurrencyUtil.format(voucher.totalAmount)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Button variant="ghost" size="icon" onClick={() => setSelectedVoucher(voucher)}>
-                            <Eye className="w-4 h-4 text-blue-600" />
+                            <Eye className="w-4 h-4 text-blue-600" title="View" />
                           </Button>
-                          {voucher.paymentStatus !== "PAID" && (
+                          {voucher.status === "DRAFT" && (
+                            <Button variant="ghost" size="icon" onClick={() => handleApprove(voucher._id)}>
+                              <CheckCircle className="w-4 h-4 text-emerald-600" title="Approve & Post" />
+                            </Button>
+                          )}
+                          {voucher.status !== "CANCELLED" && (
+                            <Button variant="ghost" size="icon" onClick={() => handleCancel(voucher._id)}>
+                              <Ban className="w-4 h-4 text-rose-600" title="Cancel/Reverse" />
+                            </Button>
+                          )}
+                          {voucher.paymentStatus !== "PAID" && voucher.status === "POSTED" && (
                             <Button variant="ghost" size="icon" onClick={() => openPaymentModal(voucher)}>
-                              <DollarSign className="w-4 h-4 text-green-600" />
+                              <DollarSign className="w-4 h-4 text-green-600" title="Record Payment" />
                             </Button>
                           )}
                         </div>
@@ -287,15 +338,15 @@ export default function VoucherBook() {
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 text-center">
                   <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Total</p>
-                  <p className="font-bold text-lg text-gray-900">{CURRENCY_SYMBOL}{selectedVoucher.totalAmount?.toFixed(2)}</p>
+                  <p className="font-bold text-lg text-gray-900">{CURRENCY_SYMBOL}{CurrencyUtil.format(selectedVoucher.totalAmount)}</p>
                 </div>
                 <div className="p-3 bg-green-50 rounded-xl border border-green-100 text-center">
                   <p className="text-[10px] uppercase font-bold text-green-500 mb-1">Paid</p>
-                  <p className="font-bold text-lg text-green-700">{CURRENCY_SYMBOL}{(selectedVoucher.amountPaid || 0).toFixed(2)}</p>
+                  <p className="font-bold text-lg text-green-700">{CURRENCY_SYMBOL}{CurrencyUtil.format(selectedVoucher.amountPaid)}</p>
                 </div>
                 <div className="p-3 bg-rose-50 rounded-xl border border-rose-100 text-center">
                   <p className="text-[10px] uppercase font-bold text-rose-500 mb-1">Due</p>
-                  <p className="font-bold text-lg text-rose-700">{CURRENCY_SYMBOL}{(selectedVoucher.amountDue || 0).toFixed(2)}</p>
+                  <p className="font-bold text-lg text-rose-700">{CURRENCY_SYMBOL}{CurrencyUtil.format(selectedVoucher.amountDue)}</p>
                 </div>
               </div>
 
@@ -320,10 +371,10 @@ export default function VoucherBook() {
                             <p className="text-[10px] text-gray-500 italic mt-0.5">{entry.description}</p>
                           </td>
                           <td className="px-4 py-3 text-right font-mono">
-                            {entry.type === 'DEBIT' ? formatCurrency(entry.amount) : "-"}
+                            {entry.type === 'DEBIT' ? CurrencyUtil.format(entry.amount) : "-"}
                           </td>
                           <td className="px-4 py-3 text-right font-mono">
-                            {entry.type === 'CREDIT' ? formatCurrency(entry.amount) : "-"}
+                            {entry.type === 'CREDIT' ? CurrencyUtil.format(entry.amount) : "-"}
                           </td>
                         </tr>
                       ))}
@@ -371,15 +422,15 @@ export default function VoucherBook() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="p-4 bg-indigo-50/50 rounded-xl text-indigo-900 text-sm">
-                <div className="flex justify-between font-bold"><span>Total Due:</span> <span>{CURRENCY_SYMBOL}{paymentVoucher.amountDue.toFixed(2)}</span></div>
+                <div className="flex justify-between font-bold"><span>Total Due:</span> <span>{CURRENCY_SYMBOL}{CurrencyUtil.format(paymentVoucher.amountDue)}</span></div>
               </div>
               <div className="space-y-2">
                 <Label>Payment Amount</Label>
                 <Input 
                   type="number" 
                   value={paymentData.amount} 
-                  onChange={(e) => setPaymentData({ ...paymentData, amount: Number(e.target.value) })}
-                  max={paymentVoucher.amountDue}
+                  onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value ? CurrencyUtil.parse(e.target.value).toNumber() : 0 })}
+                  max={paymentVoucher.amountDue ? CurrencyUtil.parse(paymentVoucher.amountDue).toNumber() : 0}
                 />
               </div>
               <div className="space-y-2">

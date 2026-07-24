@@ -1,4 +1,6 @@
+import { AccountGroup,Account, AccountingHealth, VatReport, Voucher, AccountingStats } from '../../types/accounting.types';
 import axios from "axios";
+import Decimal from 'decimal.js';
 
 const API_URL = import.meta.env.VITE_API_URL||"";
 const api = axios.create({
@@ -14,133 +16,7 @@ api.interceptors.request.use((config) => {
 });
 
 import { Transaction } from "../../types/index";
-
-// --- ERP Types ---
-export interface AccountGroup {
-  _id: string;
-  name: string;
-  parentGroup?: AccountGroup | string;
-  nature: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
-  description?: string;
-}
-
-export interface Account {
-  _id: string;
-  code: string;
-  name: string;
-  accountGroup: AccountGroup | string;
-  type: string;
-  openingBalance: number;
-  currentBalance: number;
-  currency: string;
-  description?: string;
-}
-
-export interface VoucherEntry {
-  account: Account | string;
-  type: "DEBIT" | "CREDIT";
-  amount: number;
-  description?: string;
-}
-
-export interface Voucher {
-  _id: string;
-  voucherNumber: string;
-  title:string;
-  description:string;
-  type: string;
-  date: string;
-  narration: string;
-  partyName?: string;
-  referenceNumber?: string;
-  entries: VoucherEntry[];
-  totalAmount: number;
-  taxRate?: number;
-  taxAmount?: number;
-  amountPaid: number;
-  amountDue: number;
-  paymentStatus: "UNPAID" | "PARTIAL" | "PAID";
-  status: string;
-  updatedBy?: string;
-}
-
-export interface JournalEntry {
-  _id: string;
-  date: string;
-  description: string;
-  entries: {
-    account: Account;
-    debit: number;
-    credit: number;
-  }[];
-  totalAmount: number;
-  status: string;
-}
-
-export interface AccountingStats {
-  revenue: number;
-  expenses: number;
-  netProfit: number;
-  accountsReceivable: number;
-  accountsPayable: number;
-  cashBalance: number;
-}
-
-export interface VatReport {
-  period: {
-    startDate?: string | null;
-    endDate?: string | null;
-  };
-  taxableSales: number;
-  taxablePurchases: number;
-  outputVat: number;
-  inputVat: number;
-  netVatPayable: number;
-  netVatRefundable: number;
-  vouchers: Array<{
-    voucherNumber: string;
-    type: string;
-    date: string;
-    partyName?: string;
-    taxableAmount: number;
-    outputVat: number;
-    inputVat: number;
-    totalAmount: number;
-  }>;
-}
-
-export interface AccountingHealth {
-  readinessScore: number;
-  marketLaunchReady: boolean;
-  verdict: string;
-  passed: string[];
-  issues: Array<{
-    code: string;
-    severity: string;
-    message: string;
-  }>;
-  warnings: Array<{
-    code: string;
-    severity: string;
-    message: string;
-  }>;
-  metrics: {
-    trialBalanceDebit: number;
-    trialBalanceCredit: number;
-    trialDifference: number;
-    totalAssets: number;
-    totalLiabilitiesAndEquity: number;
-    outputVat: number;
-    inputVat: number;
-    netVatPayable: number;
-    netVatRefundable: number;
-    voucherCount: number;
-    accountCount: number;
-  };
-  nepalContext: string[];
-}
-
-// --- API Calls ---
+import { toDecimal } from '@/utils/helpers/decimalhelper';
 
 // Party logic
 export const getPartyBalance = async (name: string) => {
@@ -197,8 +73,13 @@ export const getVoucherById = async (id: string): Promise<Voucher> => {
   return response.data;
 };
 
-export const createVoucher = async (data: any) => {
-  const response = await api.post("/erp/vouchers", data);
+export const createVoucher = async (data: any, post: boolean = false) => {
+  const response = await api.post(`/erp/vouchers?post=${post}`, data);
+  return response.data;
+};
+
+export const approveVoucher = async (id: string) => {
+  const response = await api.post(`/erp/vouchers/${id}/approve`);
   return response.data;
 };
 
@@ -219,8 +100,8 @@ export const sendInvoice = async (id: string, data?: { email?: string, paymentTe
 };
 
 // Unified Transaction
-export const createTransactionWithVoucher = async (data: any) => {
-  const response = await api.post("/erp/transactions", data);
+export const createTransactionWithVoucher = async (data: any, post: boolean = false) => {
+  const response = await api.post(`/erp/transactions?post=${post}`, data);
   return response.data;
 };
 
@@ -236,23 +117,42 @@ export const getAccountingTransactions = async (): Promise<Transaction[]> => {
 };
 
 // Reports
-export const getTrialBalance = async () => {
-  const response = await api.get("/erp/reports/trial-balance");
+export const getTrialBalance = async (params?: { startDate?: string; endDate?: string }) => {
+  const response = await api.get("/erp/reports/trial-balance", { params });
   return response.data;
 };
 
 export const getPandL = async (params?: { startDate?: string; endDate?: string }) => {
-  const response = await api.get("/erp/reports/p-and-l", { params });
+  console.log("get pandl params:",params)
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const activeParams = {
+    startDate: params?.startDate || `${currentYear}-01-01`,
+    endDate: params?.endDate || now.toISOString().split("T")[0],
+  };
+  const response = await api.get("/erp/reports/p-and-l", { params: activeParams });
   return response.data;
 };
 
-export const getBalanceSheet = async () => {
-  const response = await api.get("/erp/reports/balance-sheet");
+export const getBalanceSheet = async (params?: { startDate?: string; endDate?: string }) => {
+  const response = await api.get("/erp/reports/balance-sheet", { params });
+  return response.data;
+};
+
+export const getAgingReportAR = async () => {
+  const response = await api.get("/erp/reports/aging/ar");
+  return response.data;
+};
+
+export const getAgingReportAP = async () => {
+  const response = await api.get("/erp/reports/aging/ap");
   return response.data;
 };
 
 export const getVatReport = async (params?: { startDate?: string; endDate?: string }): Promise<VatReport> => {
+  console.log("vat params :",params)
   const response = await api.get("/erp/reports/vat", { params });
+  console.log("vat report : ",response.data)
   return response.data;
 };
 
@@ -261,46 +161,203 @@ export const getAccountingHealth = async (): Promise<AccountingHealth> => {
   return response.data;
 };
 
-export const getDashboardStats = async (): Promise<AccountingStats> => {
-  const [pnl, tb, accounts] = await Promise.all([
-    getPandL(),
-    getTrialBalance(),
-    getAccounts()
-  ]);
+export const getDashboardStats =
+async (params?: { startDate?: string; endDate?: string }):Promise<AccountingStats>=>{
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const activeParams = params || {
+      startDate: `${currentYear}-01-01`,
+      endDate: now.toISOString().split("T")[0],
+    };
 
-  // Use pre-calculated totals from backend for accuracy
-  const revenue = pnl.totalRevenue || 0;
-  const expenses = pnl.totalExpense || pnl.totalExpenses || 0;
-  const netProfit = pnl.netProfit ?? (revenue - expenses);
-  
-  // Use trial balance summary for AR/AP if available, otherwise fallback to account filtering
-  const accountsReceivable = tb.summary?.receivables ?? accounts
-    .filter(a => (a.type === 'ASSET' || (typeof a.accountGroup === 'object' && a.accountGroup?.nature === 'ASSET')) && 
-                (a.name.toLowerCase().includes('debtor') || a.name.toLowerCase().includes('receivable')))
-    .reduce((sum, a) => sum + (a.currentBalance || 0), 0);
-    
-  const accountsPayable = tb.summary?.payables ?? accounts
-    .filter(a => (a.type === 'LIABILITY' || (typeof a.accountGroup === 'object' && a.accountGroup?.nature === 'LIABILITY')) && 
-                (a.name.toLowerCase().includes('creditor') || a.name.toLowerCase().includes('payable')))
-    .reduce((sum, a) => sum + (Math.abs(a.currentBalance) || 0), 0);
+    const [pnl,tb,accounts]=await Promise.all([
+        getPandL(activeParams),
+        getTrialBalance(),
+        getAccounts(),
 
-  // Cash/Bank balance calculation
-  const cashBalance = accounts
-    .filter(a => {
-        const name = a.name.toLowerCase();
-        const groupName = typeof a.accountGroup === 'object' ? a.accountGroup?.name?.toLowerCase() : "";
-        return name.includes('cash') || name.includes('bank') || groupName?.includes('cash') || groupName?.includes('bank');
-    })
-    .reduce((sum, a) => sum + (a.currentBalance || 0), 0);
+    ]);
+    //---------------------
+    // Revenue
+    //---------------------
 
-  return {
-    revenue,
-    expenses,
-    netProfit,
-    accountsReceivable,
-    accountsPayable,
-    cashBalance
-  };
+    const revenue = toDecimal(pnl.totalRevenue);
+
+    const expenses = pnl.totalExpense != null
+        ? toDecimal(pnl.totalExpense)
+        : toDecimal(pnl.totalExpenses);
+
+    const netProfit = pnl.netProfit != null
+        ? toDecimal(pnl.netProfit)
+        : revenue.minus(expenses);
+
+    //---------------------
+    // Accounts Receivable
+    //---------------------
+    const accountsReceivable = tb.summary?.receivables != null
+        ? toDecimal(tb.summary.receivables)
+        : accounts
+
+            .filter((a)=>{
+
+                const nature=
+                typeof a.accountGroup==="object"
+
+                ?a.accountGroup?.nature
+
+                :null;
+
+
+                const name=
+                a?.name ? a.name.toLowerCase() : "";
+
+
+                return(
+
+                    (
+                        a.type==="ASSET" ||
+                        nature==="ASSET"
+                    )
+
+                    &&
+
+                    (
+                        name.includes(
+                            "debtor"
+                        )
+
+                        ||
+
+                        name.includes(
+                            "receivable"
+                        )
+
+                    )
+
+                );
+
+
+            })
+
+            .reduce(
+
+                (sum,a)=>
+
+                    sum.plus(
+
+                        toDecimal(
+                            a.currentBalance
+                        )
+
+                    ),
+
+                new Decimal(0)
+
+            );
+
+
+    //---------------------
+    // Accounts Payable
+    //---------------------
+
+    const accountsPayable=
+
+        tb.summary?.payables!=null
+
+        ?toDecimal(
+            tb.summary.payables
+         )
+
+        :accounts
+
+            .filter((a)=>{
+
+                const nature=
+                typeof a.accountGroup==="object"
+
+                ?a.accountGroup?.nature
+
+                :null;
+
+
+                const name=
+                a?.name ? a.name.toLowerCase() : "";
+
+
+                return(
+
+                    (
+                        a.type==="LIABILITY" ||
+                        nature==="LIABILITY"
+                    )
+
+                    &&
+
+                    (
+                        name.includes(
+                            "creditor"
+                        )
+
+                        ||
+
+                        name.includes(
+                            "payable"
+                        )
+
+                    )
+
+                );
+
+            })
+
+            .reduce(
+
+                (sum,a)=>
+
+                    sum.plus(
+
+                        toDecimal(
+                            a.currentBalance
+                        ).abs()
+
+                    ),
+
+                new Decimal(0)
+
+            );
+    const cashBalance=
+        accounts
+        .filter((a)=>{
+            const name=
+            a?.name ? a.name.toLowerCase() : "";
+            const groupName=
+            typeof a.accountGroup==="object" && a.accountGroup?.name
+            ?a.accountGroup.name.toLowerCase()
+            :"";
+            return(
+                name.includes("cash") ||
+                name.includes("bank") ||
+                groupName.includes("cash") ||
+                groupName.includes("bank")
+            );
+        })
+        .reduce(
+            (sum,a)=>
+                sum.plus(
+                    toDecimal(
+                        a.currentBalance
+                    )
+                ),
+            new Decimal(0)
+        );
+    return {
+        revenue: pnl.totalRevenue || "0",
+        expenses: pnl.totalExpense ?? pnl.totalExpenses ?? "0",
+        netProfit: pnl.netProfit || "0",
+        accountsReceivable: accountsReceivable.toString(),
+        accountsPayable: accountsPayable.toString(),
+        cashBalance: cashBalance.toString(),
+    };
+
 };
 
 // Setup
@@ -317,25 +374,29 @@ export const migrateLegacy = async () => {
 // --- Logic Helpers (Refactored from Components) ---
 
 export const calculateRevenueExpenses = (transactions: Transaction[]) => {
-  let revenue = 0;
-  let expenses = 0;
+  let revenue = new Decimal(0);
+  let expenses = new Decimal(0);
 
   transactions.forEach((t) => {
-    const amount = Math.abs(t.amount || 0);
+    const amount = toDecimal(t.amount || 0).abs();
     const category = t.category?.toLowerCase() || "";
     const type = t.type?.toLowerCase() || "";
 
     if (category === "sales" || type === "sales" || category === "revenue") {
-      revenue += amount;
+      revenue = revenue.plus(amount);
     } else if (
       ["expenses", "expense"].includes(category) ||
       ["expenses", "expense"].includes(type)
     ) {
-      expenses += amount;
+      expenses = expenses.plus(amount);
     }
   });
 
-  return { revenue, expenses, netProfit: revenue - expenses };
+  return {
+    revenue: revenue.toNumber(),
+    expenses: expenses.toNumber(),
+    netProfit: revenue.minus(expenses).toNumber(),
+  };
 };
 
 // --- Legacy Support (Aliases) ---
@@ -370,3 +431,4 @@ export const createJournalEntry = async (data: any) => {
 
     return await createVoucher(payload);
 };
+

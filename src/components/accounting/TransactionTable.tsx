@@ -68,7 +68,7 @@ export default function TransactionTable({
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in zoom-in-95 duration-300">
             <CheckCircle2 className="w-6 h-6" />
-            <span className="font-bold tracking-tight">Transaction Deleted Successfully</span>
+            <span className="font-bold tracking-tight">Transaction Cancelled Successfully</span>
           </div>
         </div>
       )}
@@ -84,7 +84,7 @@ export default function TransactionTable({
             <div className="text-center space-y-2">
               <h3 className="text-xl font-black text-slate-900 tracking-tight">Are you absolutely sure?</h3>
               <p className="text-slate-500 text-sm leading-relaxed px-4">
-                This action will permanently remove this transaction from the ledger and reverse all associated balances. This cannot be undone.
+                This action will permanently cancel this transaction and generate a reversing journal entry to ensure ledger integrity. This cannot be undone.
               </p>
             </div>
 
@@ -110,7 +110,7 @@ export default function TransactionTable({
                 {isDeleting ? (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
-                  <>Confirm Delete</>
+                  <>Confirm Cancel</>
                 )}
               </button>
             </div>
@@ -204,15 +204,15 @@ export default function TransactionTable({
                     "text-slate-600"
                   }`}
                 >
-                  {formatCurrency(Math.abs(transaction.totalAmount || transaction.amount))}
+                  {formatCurrency(transaction.totalAmount || transaction.amount)}
                 </TableCell>
                 <TableCell className="text-center py-4 lg:pr-6">
                   <button
                     onClick={() => setDeletingId(transaction._id || transaction.id)}
                     className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all flex items-center justify-center opacity-0 group-hover:opacity-100"
-                    title="Delete Transaction"
+                    title="Cancel/Reverse Transaction"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <X className="w-4 h-4" />
                   </button>
                 </TableCell>
               </TableRow>

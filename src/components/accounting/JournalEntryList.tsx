@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
+import { CurrencyUtil } from "@/utils/currency.util";
 import { 
   getJournalEntries, 
   createJournalEntry, 
-  getAccounts, 
-  Account, 
-  JournalEntry 
+  getAccounts 
 } from "../../services/accounting.service";
 import { 
   Plus, 
@@ -31,6 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import { formatCurrency, CURRENCY_SYMBOL } from "@/utils/formatCurrency";
+import { JournalEntry,Account } from "../../../types/accounting.types";
 
 export default function JournalEntryList() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -90,8 +90,8 @@ export default function JournalEntryList() {
     try {
       const formattedEntries = lines.map(line => ({
         account: line.accountId,
-        debit: Number(line.debit),
-        credit: Number(line.credit)
+        debit: line.debit ? CurrencyUtil.parse(line.debit).toNumber() : 0,
+        credit: line.credit ? CurrencyUtil.parse(line.credit).toNumber() : 0
       }));
 
       await createJournalEntry({
@@ -115,7 +115,7 @@ export default function JournalEntryList() {
   };
 
   const calculateTotal = (type: 'debit' | 'credit') => {
-      return lines.reduce((sum, line) => sum + Number(line[type] || 0), 0);
+      return lines.reduce((sum, line) => sum + CurrencyUtil.parse(line[type] || 0).toNumber(), 0);
   }
 
   const isBalanced = Math.abs(calculateTotal('debit') - calculateTotal('credit')) < 0.01;
@@ -305,7 +305,7 @@ export default function JournalEntryList() {
                               {entry.entries.map((line, idx) => (
                                   <div key={idx} className="flex items-center justify-between text-[11px] bg-slate-50/50 p-1.5 rounded border border-slate-100/50 group-hover:bg-white transition-colors">
                                       <span className="font-semibold text-slate-700">{line.account.name}</span>
-                                      {line.debit > 0 ? 
+                                      {Number(line.debit) > 0 ? 
                                         <Badge variant="outline" className="text-[9px] bg-emerald-50 text-emerald-600 border-emerald-100 font-black">DR {formatCurrency(line.debit)}</Badge> : 
                                         <Badge variant="outline" className="text-[9px] bg-rose-50 text-rose-600 border-rose-100 font-black">CR {formatCurrency(line.credit)}</Badge>
                                       }

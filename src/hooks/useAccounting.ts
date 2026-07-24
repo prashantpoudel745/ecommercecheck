@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import * as accountingService from "../services/accounting.service";
-
-export function useAccounting() {
-  const [stats, setStats] = useState<accountingService.AccountingStats | null>(null);
-  const [vouchers, setVouchers] = useState<accountingService.Voucher[]>([]);
-  const [accounts, setAccounts] = useState<accountingService.Account[]>([]);
+import { AccountingStats,Voucher,Account } from "../../types/accounting.types";
+export function useAccounting(params?: { startDate?: string; endDate?: string }) {
+  const [stats, setStats] = useState<AccountingStats | null>(null);
+  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,7 +13,7 @@ export function useAccounting() {
     setError(null);
     try {
       const [statsData, vouchersData, accountsData] = await Promise.all([
-        accountingService.getDashboardStats(),
+        accountingService.getDashboardStats(params),
         accountingService.getVouchers(),
         accountingService.getAccounts(),
       ]);
@@ -26,7 +26,7 @@ export function useAccounting() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [params?.startDate, params?.endDate]);
 
   useEffect(() => {
     fetchData();

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"; // Adjust path based on your project structure
 import { Download } from "lucide-react";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
+import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
 
 const DownloadInventoryCSVButton = ({ products }) => {
   const convertToCSV = (data) => {
@@ -30,7 +31,7 @@ const DownloadInventoryCSVButton = ({ products }) => {
         product.name || "",
         product._id || "",
         product.category || "",
-        product.price ? `${CURRENCY_SYMBOL}${product.price.toFixed(2)}` : "",
+        product.price ? `${CURRENCY_SYMBOL}${formatCurrencyValue(product.price)}` : "",
         product.quantity || 0,
         product.maxStock || 0,
         stockPercentage,

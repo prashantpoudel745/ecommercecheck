@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAccounts, createVoucher } from "../../services/accounting.service";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
+import { CurrencyUtil } from "@/utils/currency.util";
 import { Plus, Trash2, Save, AlertCircle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -46,8 +47,8 @@ export default function VoucherEntry({ onVoucherAdded }: { onVoucherAdded?: () =
   };
 
   const totals = voucher.entries.reduce((acc, entry) => {
-    if (entry.type === "DEBIT") acc.dr += Number(entry.amount);
-    else acc.cr += Number(entry.amount);
+    if (entry.type === "DEBIT") acc.dr += CurrencyUtil.parse(entry.amount).toNumber();
+    else acc.cr += CurrencyUtil.parse(entry.amount).toNumber();
     return acc;
   }, { dr: 0, cr: 0 });
 
@@ -163,7 +164,7 @@ export default function VoucherEntry({ onVoucherAdded }: { onVoucherAdded?: () =
                         <Input 
                           type="number" 
                           value={entry.amount} 
-                          onChange={e => updateEntry(index, 'amount', Number(e.target.value))}
+                          onChange={e => updateEntry(index, 'amount', e.target.value ? CurrencyUtil.parse(e.target.value).toNumber() : '')}
                           className="border-none bg-transparent hover:bg-white focus:bg-white text-right font-mono font-bold"
                           placeholder="0.00"
                         />

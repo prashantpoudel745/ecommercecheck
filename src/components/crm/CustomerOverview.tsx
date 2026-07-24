@@ -24,6 +24,7 @@ import DownloadCSVButton from "./DownloadCustomer";
 import SearchComponent from "../Search";
 import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
 import RecentClients from "./RecentClients";
+import { toNumber } from "@/utils/helpers/decimalhelper";
 
 const Api_Url = import.meta.env.VITE_API_URL||"";
 
@@ -196,7 +197,7 @@ const CustomerOverview = () => {
           (c: Client) => c.status === "paid"
         ).length;
         const totalValue = data.clients.reduce(
-          (sum: number, client: Client) => sum + (client.value || 0),
+          (sum: number, client: Client) => sum + toNumber(client.value || 0),
           0
         );
         setStats({ totalClients, activeClients, totalValue });

@@ -62,11 +62,11 @@ export function useTransactionForm(onSuccess?: () => void) {
     setError(null);
   };
 
-  const submitTransaction = async () => {
+  const submitTransaction = async (post: boolean = false) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await accountingService.createTransactionWithVoucher(formData);
+      const response = await accountingService.createTransactionWithVoucher(formData, post);
       if (onSuccess) onSuccess();
       resetForm();
       return response;

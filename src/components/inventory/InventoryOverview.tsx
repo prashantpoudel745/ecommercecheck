@@ -23,6 +23,7 @@ import { Product, InventoryStats } from "../../../types";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 import { useAuth } from "@/context/AuthContext";
 import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
+import { CurrencyUtil } from "@/utils/currency.util";
 
 const Api = import.meta.env.VITE_API_URL||"";
 
@@ -157,9 +158,12 @@ export function InventoryOverview() {
     const lowStockItems = products.filter(
       (p) => p.status === "low-stock" || p.status === "out-of-stock"
     ).length;
-    const inventoryValue = Number(
-      products.reduce((sum, product) => sum + product.price * product.quantity, 0).toFixed(2)
-    );
+    const inventoryValue = products
+      .reduce(
+        (sum, product) => sum.plus(CurrencyUtil.mul(product.price || 0, product.quantity || 0)),
+        CurrencyUtil.parse(0)
+      )
+      .toFixed(2);
 
     return {
       totalProducts,
@@ -381,13 +385,18 @@ export function InventoryOverview() {
             <div className="mt-2 text-xs space-y-2">
               <div className="font-medium">Top Valued Products:</div>
               {[...products]
-                .sort((a, b) => b.price * b.quantity - a.price * a.quantity)
+                .sort(
+                  (a, b) =>
+                    CurrencyUtil.mul(b.price || 0, b.quantity || 0)
+                      .minus(CurrencyUtil.mul(a.price || 0, a.quantity || 0))
+                      .toNumber()
+                )
                 .slice(0, 3)
                 .map((product) => (
                   <div key={product._id} className="flex justify-between">
                     <span className="truncate">{product.name}</span>
                     <span className="text-emerald-500">
-                      {CURRENCY_SYMBOL}{formatCurrencyValue(product.price * product.quantity)}
+                      {CURRENCY_SYMBOL}{formatCurrencyValue(CurrencyUtil.mul(product.price || 0, product.quantity || 0))}
                     </span>
                   </div>
                 ))}
@@ -457,7 +466,7 @@ export function InventoryOverview() {
                                 {product.category}
                               </Badge>
                             </TableCell>
-                            <TableCell>{CURRENCY_SYMBOL}{product.price.toFixed(2)}</TableCell>
+                            <TableCell>{CURRENCY_SYMBOL}{formatCurrencyValue(product.price)}</TableCell>
                             <TableCell>
                               <div className="w-full space-y-1">
                                 <div className="flex items-center justify-between text-xs">

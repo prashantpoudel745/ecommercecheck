@@ -16,6 +16,7 @@ import {
   RecentActivitySkeleton,
 } from "@/skeleton/dashboardSkeleton/dashboardSkeleton";
 import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
+import { CurrencyUtil } from "@/utils/currency.util";
 import { useGlobalDataStore } from "@/store/GlobalDataStore";
 import { useAuth } from "@/context/AuthContext";
 import { getDashboardStats } from "@/services/accounting.service";
@@ -30,7 +31,69 @@ const InventoryStatusChart = lazy(
 const RecentActivity = lazy(
   () => import("@/components/dashboard/RecentActivity")
 );
+import { Link } from "react-router-dom";
+import {
+  Users,
+  Settings,
+  FileText,
+  ShoppingCart,
+  Truck,
+  Package,
+  BarChart3,
+  Wallet,
+  Receipt,
+  Building2,
+  Bell,
+  Tag,
+  Warehouse,
+  ClipboardList,
+  UserCog,
+} from "lucide-react";
 
+const quickLinks = [
+  { label: "Quotations", url: "sales/quotations/new", icon: DollarSign },
+  { label: "Sales Order", url: "sales/orders/new", icon: Receipt },
+  { label: "Invoices", url: "sales/invoice/new", icon: Users },
+  { label: "Credit Notes", url: "sales/credit-notes/new", icon: Building2 },
+  { label: "Customer Payment", url: "sales/customer-payment/new", icon: Package },
+  { label: "Customers", url: "sales/customers/new", icon: ShoppingCart },
+  { label: "Purchase Order", url: "purchase/orders/new", icon: Truck },
+  { label: "Purchase Bills", url: "purchase/bills/new", icon: Warehouse },
+  { label: "Expenses", url: "purchase/expenses/new", icon: CreditCard },
+  { label: "Supplier Payment", url: "purchase/supplier-payment/new", icon: FileText },
+  { label: "Supplier", url: "purchase/suppliers/new", icon: BarChart3 },
+  { label: "Analytics", url: "/insights", icon: ChartBar },
+  { label: "Products", url: "/inventory", icon: Database },
+  { label: "Team", url: "/employees", icon: UserCog },
+  { label: "Import Data", url: "/import", icon: Upload },
+];
+
+function QuickLinksGrid() {
+  return (
+    <>
+      <div className="p-2 text-black text-xl font-bold "> Quick Add Links </div>
+    <div
+      className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 animate-fade-up"
+      style={{ animationDelay: "0.05s" }}
+    >
+      {quickLinks.map(({ label, url, icon: Icon }) => (
+        <Link
+          key={url}
+          to={url}
+          className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-4 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
+        >
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition-colors duration-200 group-hover:bg-primary/10 group-hover:text-primary">
+            <Icon size={18} />
+          </span>
+          <span className="text-xs font-medium text-slate-700 group-hover:text-slate-950">
+            {label}
+          </span>
+        </Link>
+      ))}
+    </div>
+        </>
+  );
+}
 export default function Dashboard() {
   const { state, setDashboard } = useGlobalDataStore();
   const { user } = useAuth();
@@ -44,28 +107,66 @@ export default function Dashboard() {
   const [financialSelectedYear, setFinancialSelectedYear] = useState<string | null>(null);
   const [financialSelectedMonth, setFinancialSelectedMonth] = useState<string | null>(null);
 
+  const getDerivedDateParams = useCallback(() => {
+    if (!financialSelectedYear) return undefined;
+    const year = financialSelectedYear;
+    if (financialSelectedMonth) {
+      const monthNum = parseInt(financialSelectedMonth, 10);
+      const mStr = monthNum < 10 ? `0${monthNum}` : `${monthNum}`;
+      const lastDay = new Date(parseInt(year, 10), monthNum, 0).getDate();
+      return {
+        startDate: `${year}-${mStr}-01`,
+        endDate: `${year}-${mStr}-${lastDay < 10 ? '0' + lastDay : lastDay}`,
+      };
+    }
+    return {
+      startDate: `${year}-01-01`,
+      endDate: `${year}-12-31`,
+    };
+  }, [financialSelectedYear, financialSelectedMonth]);
+  
   const handleFinancialViewChange = useCallback(
     (viewMode: "year" | "month" | "day", selectedYear: string | null, selectedMonth: string | null) => {
       setFinancialViewMode(viewMode);
       setFinancialSelectedYear(selectedYear);
       setFinancialSelectedMonth(selectedMonth);
+
+      let params: { startDate?: string; endDate?: string } | undefined = undefined;
+      if (selectedYear) {
+        if (selectedMonth) {
+          const monthNum = parseInt(selectedMonth, 10);
+          const mStr = monthNum < 10 ? `0${monthNum}` : `${monthNum}`;
+          const lastDay = new Date(parseInt(selectedYear, 10), monthNum, 0).getDate();
+          params = {
+            startDate: `${selectedYear}-${mStr}-01`,
+            endDate: `${selectedYear}-${mStr}-${lastDay < 10 ? '0' + lastDay : lastDay}`,
+          };
+        } else {
+          params = {
+            startDate: `${selectedYear}-01-01`,
+            endDate: `${selectedYear}-12-31`,
+          };
+        }
+      }
+      fetchTransactions(params);
     },
     []
   );
 
   const stats = dashboardState.stats;
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = async (params?: { startDate?: string; endDate?: string }) => {
     try {
-      const statsData = await getDashboardStats();
+      const activeParams = params !== undefined ? params : getDerivedDateParams();
+      const statsData = await getDashboardStats(activeParams);
 
       setDashboard((previous) => ({
         ...previous,
         transactions: [], // Not used for rendering in the dashboard
         stats: {
-          totalRevenue: statsData.revenue,
-          totalExpenses: statsData.expenses,
-          netProfit: statsData.netProfit,
+          totalRevenue: Number(statsData.revenue),
+          totalExpenses:Number(statsData.expenses),
+          netProfit: Number(statsData.netProfit),
         },
       }));
     } catch (error) {
@@ -156,7 +257,8 @@ export default function Dashboard() {
           <ClipLoader color="#6366f1" size={40} />
         </div>
       )}
-      
+          <QuickLinksGrid />
+
       <div className="flex flex-col space-y-2 animate-fade-up" style={{ animationDelay: '0.1s' }}>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
           Dashboard Overview
@@ -194,14 +296,19 @@ export default function Dashboard() {
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
           title="Inventory Value"
-          value={formatCurrency(products.reduce((sum, product) => sum + product.price * product.quantity, 0))}
+          value={formatCurrency(
+            products.reduce(
+              (sum, product) => sum.plus(CurrencyUtil.mul(product.price || 0, product.quantity || 0)),
+              CurrencyUtil.parse(0)
+            )
+          )}
           icon={<ChartBar className="text-purple-500" size={20} />}
         />
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
-          title={stats.netProfit >= 0 ? "Net Profit" : "Net Loss"}
-          value={formatCurrency(Math.abs(stats.netProfit))}
-          icon={<ChartBar className={stats.netProfit >= 0 ? "text-emerald-500" : "text-rose-500"} size={20} />}
+          title={CurrencyUtil.parse(stats.netProfit).greaterThanOrEqualTo(0) ? "Net Profit" : "Net Loss"}
+          value={formatCurrency(CurrencyUtil.parse(stats.netProfit).abs())}
+          icon={<ChartBar className={CurrencyUtil.parse(stats.netProfit).greaterThanOrEqualTo(0) ? "text-emerald-500" : "text-rose-500"} size={20} />}
         />
       </div>
 

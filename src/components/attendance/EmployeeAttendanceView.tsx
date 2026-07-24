@@ -38,7 +38,7 @@ const EmployeeAttendanceView: React.FC<EmployeeAttendanceViewProps> = ({
     try {
       const [employeeResponse, statusResponse, statsResponse] =
         await Promise.all([
-          api.get(`/employee/${user.id}`), // Employee endpoint
+          api.get(`/attendance/employee/${user.id}`), // Employee endpoint
           getCurrentStatus(user.id),
           getStats(user.id, period),
         ]);
