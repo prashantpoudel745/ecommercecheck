@@ -267,7 +267,7 @@ export function Sidebar() {
                {user?.name?.charAt(0) || "U"}
              </div>
              <div className="min-w-0 flex-1">
-               <p className="text-sm font-medium text-white truncate">{user.fullName || "guest user"}</p>
+               {/* <p className="text-sm font-medium text-white truncate">{user.fullName || "guest user"}</p> */}
                <p className="text-sm font-medium text-white truncate">{user.email || "guestuser123@gmail.com"}</p>
              </div>
            </div>
