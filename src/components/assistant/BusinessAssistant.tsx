@@ -362,9 +362,9 @@ export function BusinessAssistant() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button className="fixed bottom-10 right-10 z-[60] h-14 rounded-full bg-slate-950 px-5 text-white shadow-[0_20px_60px_rgba(15,23,42,0.35)] hover:bg-slate-800">
+        <Button className=" z-[60] h-10 rounded-full bg-slate-950 px-2 text-white shadow-[0_20px_60px_rgba(15,23,42,0.35)] hover:bg-slate-800">
           <Bot className="h-5 w-5" />
-          Business AI
+          Ask AI
           <Sparkles className="h-4 w-4 text-amber-300" />
         </Button>
       </SheetTrigger>

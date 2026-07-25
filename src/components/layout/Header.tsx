@@ -26,6 +26,7 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import EditProfileModal from "@/components/profile/EditProfileModal";
+import { BusinessAssistant } from "../assistant/BusinessAssistant";
 const API_URL = import.meta.env.VITE_API_URL||"";
 
 const sectionLabels: Record<string, string> = {
@@ -144,9 +145,9 @@ export function Header() {
           <div className="min-w-0">
             <div className="flex itemps-center gap-2">
               <h1 className="truncate text-[15px] font-semibold tracking-tight text-slate-950">Bebasthapan</h1>
-              <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:inline-flex">
+              {/* <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:inline-flex">
                 Enterprise
-              </span>
+              </span> */}
             </div>
             <p className="mt-1 truncate text-xs text-slate-500">
               {sectionLabels[location.pathname] || "Operations workspace"}
@@ -156,10 +157,12 @@ export function Header() {
 
         <div className="hidden items-center gap-2 lg:flex">
           
-          <InstallButton />
+          {/* <InstallButton /> */}
         </div>
-
+            
         <div className="flex items-center gap-2 sm:gap-3">
+                              <BusinessAssistant />
+
           <Dialog open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
             <DialogTrigger asChild>
               <Button

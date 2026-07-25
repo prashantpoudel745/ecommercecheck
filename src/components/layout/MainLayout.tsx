@@ -19,7 +19,6 @@ export function MainLayout({ children }: MainLayoutProps) {
             {children}
           </div>
         </main>
-        <BusinessAssistant />
       </div>
     </div>
   );
