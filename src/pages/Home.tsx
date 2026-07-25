@@ -32,9 +32,9 @@ export default function Home() {
 
   useEffect(() => {
     setPageSeo({
-      title: "Bebasthapan ERP | Business ERP, Accounting, Inventory, CRM & HR Software",
+      title: "Bebasthapan ERP System for Nepal Businesses | Accounting, Inventory, Sales & CRM",
       description:
-        "Bebasthapan ERP is a business management platform for accounting, inventory, sales, purchase, CRM, HR, attendance, financial reports, and AI-powered insights.",
+        "Bebasthapan ERP is a business management platform for Nepal businesses covering accounting, inventory, sales, purchase, CRM, invoices, HR, attendance, reports, and AI insights.",
       canonicalPath: "/home",
     });
     document.body.style.backgroundColor = '#f7f9fc';
@@ -89,11 +89,11 @@ export default function Home() {
             </div>
 
             <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-7xl lg:leading-[1.02]">
-              Business ERP software for accounting, inventory, sales, purchase, CRM, and HR.
+              Bebasthapan ERP system for Nepal businesses.
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-              Bebasthapan ERP replaces disconnected spreadsheets and admin tools with one structured business management platform for financial reports, stock control, customer dues, supplier payments, attendance, and AI-powered business insights.
+              Bebasthapan ERP replaces disconnected accounting software, inventory tools, sales trackers, and customer spreadsheets with one structured business management platform for Nepal businesses. Manage financial reports, stock control, sales, purchase, customer dues, supplier payments, attendance, and AI-powered business insights from one system.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -111,6 +111,13 @@ export default function Home() {
                 Contact sales
                 <ChevronRight className="h-4 w-4 text-slate-400" />
               </button>
+              <a
+                href="/erp-system-nepal"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+              >
+                ERP for Nepal
+                <ChevronRight className="h-4 w-4 text-slate-400" />
+              </a>
             </div>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-3">
@@ -197,6 +204,29 @@ export default function Home() {
                 <p className="mt-2 text-sm leading-6 text-slate-600">{feature.description}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="mt-20 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <div className="enterprise-kicker">
+              <Sparkles className="h-3.5 w-3.5" />
+              ERP system for Nepal businesses
+            </div>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              Built for companies tired of separate accounting, inventory, and sales tools.
+            </h2>
+          </div>
+          <div className="space-y-5 text-sm leading-7 text-slate-600">
+            <p>
+              Many businesses in Nepal manage distribution, accounting, inventory, sales, clients, invoices, and team attendance in separate systems. That creates duplicate work, unclear reports, and slow decisions.
+            </p>
+            <p>
+              Bebasthapan brings those core business functions into a single ERP platform so owners and managers can see sales, purchases, stock, receivables, payables, employee activity, and business performance without jumping between disconnected software.
+            </p>
+            <p>
+              The product is currently available for beta testing with a 10-day free trial, including access to the core ERP features so Nepal businesses can evaluate the system before committing.
+            </p>
           </div>
         </section>
 

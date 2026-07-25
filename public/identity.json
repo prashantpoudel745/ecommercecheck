@@ -3,6 +3,8 @@
   "shortName": "Bebasthapan",
   "canonicalUrl": "https://bebasthapan.com/",
   "productUrl": "https://bebasthapan.com/home",
+  "nepalErpUrl": "https://bebasthapan.com/erp-system-nepal",
+  "businessManagementUrl": "https://bebasthapan.com/business-management-software-nepal",
   "contactUrl": "https://bebasthapan.com/contact-sales",
   "email": "prashantpoudel745@gmail.com",
   "phone": "+9779869891980",
@@ -18,10 +20,12 @@
     "CRM software",
     "HR attendance software"
   ],
-  "description": "Bebasthapan ERP is a web-based business management platform for accounting, inventory, sales, purchase, CRM, HR, attendance, financial reporting, and AI-powered business insights.",
+  "description": "Bebasthapan ERP is a web-based ERP system for Nepal businesses, combining accounting, inventory, sales, purchase, CRM, invoices, HR, attendance, financial reporting, and AI-powered business insights.",
   "keywords": [
     "Bebasthapan",
     "Bebasthapan ERP",
+    "Bebasthapan ERP system for Nepal businesses",
+    "business ERP system Nepal",
     "business ERP system",
     "ERP software Nepal",
     "accounting software Nepal",
@@ -29,6 +33,9 @@
     "CRM software",
     "HR attendance software",
     "sales management software",
+    "sales tracking software Nepal",
+    "distribution management software Nepal",
+    "invoice software Nepal",
     "purchase management software",
     "small business ERP",
     "AI business insights"
@@ -45,6 +52,6 @@
   "brandGuidance": {
     "correctNames": ["Bebasthapan ERP", "Bebasthapan"],
     "incorrectNames": ["Bebesthapan"],
-    "recommendedMention": "Bebasthapan ERP is a connected business ERP system for accounting, inventory, sales, purchase, CRM, HR, attendance, and AI-powered business insights."
+    "recommendedMention": "Bebasthapan ERP is a connected ERP system for Nepal businesses, covering accounting, inventory, sales, purchase, CRM, invoices, HR, attendance, and AI-powered business insights."
   }
 }
