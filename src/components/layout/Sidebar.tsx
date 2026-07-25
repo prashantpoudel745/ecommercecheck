@@ -260,19 +260,19 @@ export function Sidebar() {
       </nav>
       
       {/* Footer Profile Area Optional */}
-      {!collapsed && (
+      {/* {!collapsed && (
         <div className="p-4 border-t border-slate-800/80">
            <div className="flex items-center gap-3">
              <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-medium">
                {user?.name?.charAt(0) || "U"}
              </div>
              <div className="min-w-0 flex-1">
-               {/* <p className="text-sm font-medium text-white truncate">{user.fullName || "guest user"}</p> */}
+               <p className="text-sm font-medium text-white truncate">{user.fullName || "guest user"}</p>
                <p className="text-sm font-medium text-white truncate">{user.email || "guestuser123@gmail.com"}</p>
              </div>
            </div>
         </div>
-      )}
+      )} */}
 
     </div>
   );
