@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import BillScanner from "../accounting/BillScanner";
-import type { BillData } from "@/services/ocr.service";
+import { BillData } from "../../../types/ocr.types";
 import { AddInventoryButtonProps } from "../../../types/inventory.types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL||"";
 
