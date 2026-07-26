@@ -15,23 +15,13 @@ import {
 import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
 import { useScreenSize } from "@/hooks/use-mobile";
 import { FinancialDataItem, BackendDataItem } from "../../../types";
-import { CURRENCY_SYMBOL, getCurrencySymbol } from "@/utils/formatCurrency";
+import { CURRENCY_SYMBOL} from "@/utils/formatCurrency";
 import { FinancialOverviewPageProps } from "../../../types/accounting.types";
 import {COLOR} from "../../utils/constants/color"
 import { MONTH_NAMES_SHORT,MONTH_NAMES_FULL } from "@/utils/constants/monthnames";
+import { formatCurrency } from "@/utils/formatCurrency";
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
-
-const formatCurrency = (value: number, compact = false) => {
-  const sym = getCurrencySymbol();
-  const locale = (sym === "रु" || sym === "₹") ? "en-IN" : "en-US";
-  return new Intl.NumberFormat(locale, {
-    style: "decimal",
-    minimumFractionDigits: compact ? 0 : 2,
-    maximumFractionDigits: compact ? 1 : 2,
-    notation: compact ? "compact" : "standard",
-  }).format(value);
-};
 
 const TooltipRow = ({
   color,

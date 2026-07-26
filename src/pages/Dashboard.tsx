@@ -77,9 +77,8 @@ function QuickLinksGrid() {
           <Link
             key={url}
             to={url}
-            className="group relative flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-4 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
+            className="group relative flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-1 py-2 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
           >
-            {/* Optional "add" affordance in the corner instead of competing with the icon/label */}
             <button
               type="button"
               className="absolute right-2 top-2 rounded-full p-1 text-slate-300 opacity-0 transition-opacity duration-200 hover:text-primary group-hover:opacity-100"

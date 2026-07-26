@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Activity } from "../../../types";
-import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
+import { getCurrencySymbol } from "@/utils/formatCurrency";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
@@ -72,11 +73,6 @@ const formatDate = (dateString: string) =>
     hour12: true,
   });
 
-const formatAmount = (value: number) =>
-  new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
-    Math.abs(value)
-  );
-
 const formatQuantity = (value: number) =>
   new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
 
@@ -86,6 +82,23 @@ const formatQuantity = (value: number) =>
 
 const ActivityRow = ({ activity }: { activity: Activity }) => {
   const { color, bg, kind } = getActivityStyle(activity.collection);
+
+  // Handles both Number and String values coming from the backend.
+  const amount =
+    activity.amount !== undefined &&
+    activity.amount !== null &&
+    activity.amount !== ""
+      ? Number(activity.amount)
+      : null;
+
+  const quantity =
+    activity.quantity !== undefined &&
+    activity.quantity !== null
+      ? Number(activity.quantity)
+      : null;
+
+  const hasAmount = amount !== null && !Number.isNaN(amount);
+  const hasQuantity = quantity !== null && !Number.isNaN(quantity);
 
   return (
     <div className="flex items-start gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800">
@@ -101,6 +114,7 @@ const ActivityRow = ({ activity }: { activity: Activity }) => {
           <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
             {activity.name || activity.category}
           </p>
+
           <span className="shrink-0 rounded border border-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:border-slate-700">
             {activity.collection}
           </span>
@@ -108,21 +122,22 @@ const ActivityRow = ({ activity }: { activity: Activity }) => {
 
         <p className="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">
           {activity.action}
-          {typeof activity.amount === "number" && (
+
+          {hasAmount && (
             <span
               className="ml-1.5 font-semibold tabular-nums"
               style={{ color: COLOR.accounting }}
             >
-              {CURRENCY_SYMBOL}
-              {formatAmount(activity.amount)}
+              {formatCurrency(amount)}
             </span>
           )}
-          {typeof activity.quantity === "number" && (
+
+          {hasQuantity && (
             <span
               className="ml-1.5 font-semibold tabular-nums"
               style={{ color: COLOR.inventory }}
             >
-              {formatQuantity(activity.quantity)} units
+              {formatQuantity(quantity)} units
             </span>
           )}
         </p>
@@ -196,6 +211,7 @@ const RecentActivity = ({ userId }: { userId: string }) => {
           throw new Error(`Failed to fetch activities: ${response.status}`);
         }
         const data = await response.json();
+        console.log(data);
         setActivities(Array.isArray(data) ? data : []);
       } catch (err) {
         setError("Failed to load recent activity.");
