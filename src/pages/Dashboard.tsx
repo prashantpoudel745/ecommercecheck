@@ -4,12 +4,12 @@
   Database,
   DollarSign,
   Upload,
+  ReceiptText,
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { useEffect, useState, useCallback, lazy, Suspense } from "react";
 import { toast } from "sonner";
 import { ClipLoader } from "react-spinners";
-import { Transaction } from "../../types";
 import {
   FinancialOverviewSkeleton,
   InventoryStatusSkeleton,
@@ -33,28 +33,25 @@ const RecentActivity = lazy(
 );
 import { Link } from "react-router-dom";
 import {
-  Users,
-  Settings,
   FileText,
   ShoppingCart,
   Truck,
   Package,
   BarChart3,
-  Wallet,
   Receipt,
-  Building2,
-  Bell,
-  Tag,
   Warehouse,
-  ClipboardList,
   UserCog,
+  Plus,
+  WalletCards,
+  LineChart
 } from "lucide-react";
 
 const quickLinks = [
+  { label: "Import Data", url: "/import", icon: Upload },
   { label: "Quotations", url: "sales/quotations/new", icon: DollarSign },
   { label: "Sales Order", url: "sales/orders/new", icon: Receipt },
-  { label: "Invoices", url: "sales/invoice/new", icon: Users },
-  { label: "Credit Notes", url: "sales/credit-notes/new", icon: Building2 },
+  { label: "Invoices", url: "sales/invoice/new", icon: ReceiptText },
+  { label: "Credit Notes", url: "sales/credit-notes/new", icon: WalletCards },
   { label: "Customer Payment", url: "sales/customer-payment/new", icon: Package },
   { label: "Customers", url: "sales/customers/new", icon: ShoppingCart },
   { label: "Purchase Order", url: "purchase/orders/new", icon: Truck },
@@ -62,36 +59,45 @@ const quickLinks = [
   { label: "Expenses", url: "purchase/expenses/new", icon: CreditCard },
   { label: "Supplier Payment", url: "purchase/supplier-payment/new", icon: FileText },
   { label: "Supplier", url: "purchase/suppliers/new", icon: BarChart3 },
-  { label: "Analytics", url: "/insights", icon: ChartBar },
+  { label: "Analytics", url: "/insights", icon: LineChart },
   { label: "Products", url: "/inventory", icon: Database },
   { label: "Team", url: "/employees", icon: UserCog },
-  { label: "Import Data", url: "/import", icon: Upload },
 ];
 
 function QuickLinksGrid() {
   return (
     <>
-      <div className="p-2 text-black text-xl font-bold "> Quick Add Links </div>
-    <div
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 animate-fade-up"
-      style={{ animationDelay: "0.05s" }}
-    >
-      {quickLinks.map(({ label, url, icon: Icon }) => (
-        <Link
-          key={url}
-          to={url}
-          className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-4 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
-        >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition-colors duration-200 group-hover:bg-primary/10 group-hover:text-primary">
-            <Icon size={18} />
-          </span>
-          <span className="text-xs font-medium text-slate-700 group-hover:text-slate-950">
-            {label}
-          </span>
-        </Link>
-      ))}
-    </div>
-        </>
+      <div className="p-2 text-black text-xl font-bold">Quick Add Links</div>
+
+      <div
+        className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 animate-fade-up"
+        style={{ animationDelay: "0.05s" }}
+      >
+        {quickLinks.map(({ label, url, icon: Icon }) => (
+          <Link
+            key={url}
+            to={url}
+            className="group relative flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-4 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
+          >
+            {/* Optional "add" affordance in the corner instead of competing with the icon/label */}
+            <button
+              type="button"
+              className="absolute right-2 top-2 rounded-full p-1 text-slate-300 opacity-0 transition-opacity duration-200 hover:text-primary group-hover:opacity-100"
+            >
+              <Plus size={15} />
+            </button>
+
+            <span className="flex h-3 w-10 items-center justify-center rounded-xl  text-slate-600 transition-colors duration-200 group-hover:bg-primary/10">
+              <Icon size={15} />
+            </span>
+
+            <span className="text-xs font-medium text-slate-700 group-hover:text-slate-950">
+              {label}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </>
   );
 }
 export default function Dashboard() {
