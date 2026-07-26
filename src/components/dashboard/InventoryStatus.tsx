@@ -8,30 +8,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import type {
-  NameType,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
-import type { TooltipProps } from "recharts";
+
 import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
-import { InventoryStatusData } from "../../../types";
+import { InventoryStatusData,InventoryStatusChartProps,ChartPayload,BarClickState } from "../../../types/inventory.types";
 
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
-interface InventoryStatusChartProps {
-  userId: string;
-  financialViewMode?: "year" | "month" | "day";
-  financialSelectedYear?: string | null;
-  financialSelectedMonth?: string | null;
-}
-
-type ChartPayload = TooltipProps<ValueType, NameType>;
-
-interface BarClickState {
-  activePayload?: Array<{
-    payload?: InventoryStatusData;
-  }>;
-}
 
 // ---------------------------------------------------------------------------
 // Design tokens — shared semantics with the financial overview: a calm,

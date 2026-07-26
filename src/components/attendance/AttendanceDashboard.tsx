@@ -1,11 +1,6 @@
 // AttendanceDashboard.tsx
 import React from "react";
-import { DashboardData } from "../../../types";
-interface AttendanceDashboardProps {
-  data: DashboardData | null;
-  loading: boolean;
-  onRefresh: () => void;
-}
+import { AttendanceDashboardProps } from "../../../types/attendance.types";
 
 const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
   data,

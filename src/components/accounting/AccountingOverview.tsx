@@ -11,7 +11,7 @@ import ErrorBoundary from "./ErrorBoundary";
 export default function AccountingOverview() {
   const [activeTab, setActiveTab] = useState<"dashboard" | "coa" | "vouchers" | "reports" | "clients" | "fiscal">("dashboard");
 
-  const TabButton = ({ id, label, icon: Icon }: { id: "dashboard" | "coa" | "vouchers" | "reports" | "clients" | "fiscal", label: string, icon: any }) => (
+  const TabButton = ({ id, label, icon: Icon }: { id: "dashboard" | "coa" | "vouchers" | "reports" | "clients" | "fiscal", label: string, icon }) => (
     <button
       onClick={() => setActiveTab(id)}
       className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${

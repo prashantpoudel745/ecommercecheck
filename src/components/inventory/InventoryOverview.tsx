@@ -377,8 +377,8 @@ export function InventoryOverview() {
           title="Inventory Value"
           value={`${CURRENCY_SYMBOL} ${formatCurrencyValue(stats.inventoryValue)}`}
           change={{
-            value: stats.inventoryValueChange,
-            type: stats.inventoryValueChange >= 0 ? "increase" : "decrease",
+            value:Number(stats.inventoryValueChange),
+            type: Number(stats.inventoryValueChange) >= 0 ? "increase" : "decrease",
           }}
           icon={<BarChart3 size={18} />}
           details={

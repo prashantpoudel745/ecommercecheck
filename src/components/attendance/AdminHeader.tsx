@@ -1,10 +1,7 @@
 // AdminHeader.tsx - Header component for admin view
 import React from "react";
-import { AttendUser } from "../../../types";
+import { AdminHeaderProps } from "../../../types/attendance.types";
 
-interface AdminHeaderProps {
-  user: AttendUser;
-}
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ user }) => {
   return (

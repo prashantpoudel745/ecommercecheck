@@ -2,22 +2,8 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { DollarSign, CreditCard, ChartBar, Users, TrendingDown, Landmark } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { CurrencyUtil } from "@/utils/currency.util";
+import { AccountingStatsProps } from "../../../types/accounting.types";
 
-import type { DecimalValue } from "@/utils/formatCurrency";
-
-interface AccountingStatsProps {
-  stats: {
-    totalRevenue: DecimalValue;
-    totalExpenses: DecimalValue;
-    netProfit: DecimalValue;
-    accountsReceivable?: DecimalValue;
-    accountsPayable?: DecimalValue;
-    cashBalance?: DecimalValue;
-  };
-  startDate?: string;
-  endDate?: string;
-  dateRangeLabel?: string;
-}
 
 export default function AccountingStats({ stats, startDate, endDate, dateRangeLabel }: AccountingStatsProps) {
   const formatDateLabel = () => {

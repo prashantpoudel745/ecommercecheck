@@ -1,9 +1,6 @@
 import { ModulePageFrame } from "@/components/layout/ModulePageFrame";
+import {PlaceholderProps} from "../../../types/placeholder.types"
 
-interface PlaceholderProps {
-  moduleName: string;
-  title: string;
-}
 
 export default function PlaceholderComponent({ moduleName, title }: PlaceholderProps) {
   return (

@@ -282,7 +282,7 @@ export default function ChartOfAccounts() {
 
       <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-xl">
         {/* Sticky search/filter bar — sits below the page header above */}
-        <CardHeader className="sticky top-[92px] z-20 bg-white/95 backdrop-blur-sm flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 pb-4 gap-3 rounded-t-xl">
+        <CardHeader className="sticky top-12 z-20 bg-white/95 backdrop-blur-sm flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 pb-4 gap-3 rounded-t-xl">
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />

@@ -7,17 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Lock, Plus, RefreshCw, Calendar, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/utils/api";
+import { FiscalPeriod } from "../../../types/accounting.types";
+
 const API_URL =  import.meta.env.VITE_API_URL|| "";
 
-interface FiscalPeriod {
-  _id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  isLocked: boolean;
-  lockedAt?: string;
-  lockedBy?: string;
-}
+
 
 export default function FiscalPeriodManager() {
   const [periods, setPeriods] = useState<FiscalPeriod[]>([]);

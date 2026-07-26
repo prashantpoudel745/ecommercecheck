@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Activity } from "lucide-react";
-import { AttendanceRecord } from "../../../types";
+import { AttendanceRecord } from "../../../types/attendance.types";
 import {
   formatDate,
   formatDuration,

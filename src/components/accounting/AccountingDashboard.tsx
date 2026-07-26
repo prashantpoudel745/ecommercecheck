@@ -2,12 +2,7 @@ import { useAccounting } from "@/hooks/useAccounting";
 import AccountingStats from "./AccountingStats";
 import RecentTransactions from "./RecentTransactions";
 import { CurrencyUtil } from "@/utils/currency.util";
-
-interface AccountingDashboardProps {
-  startDate?: string;
-  endDate?: string;
-  dateRangeLabel?: string;
-}
+import { AccountingDashboardProps } from "../../../types/accounting.types";
 
 export default function AccountingDashboard({ startDate, endDate, dateRangeLabel }: AccountingDashboardProps = {}) {
   const { 

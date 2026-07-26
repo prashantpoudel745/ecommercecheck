@@ -1,31 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { clearAuthToken, setAuthToken } from "@/utils/authToken";
-
-interface User {
-  _id?: string;
-  id?: string;
-  name?: string;
-  fullName?: string;
-  phone?:string;
-  email?: string;
-  role?: string;
-  companyName?: string;
-  profileImage?: string;
-  companyprofileImage?: string;
-  signature?: string;
-  selectedPlan?: string;
-  companyId?: string;
-  plan?: string;
-  currencySymbol?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  login: (userData: User, token?: string) => void;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
-}
+import {User,AuthContextType} from "../../types/employee.types"
 
 const AUTH_STORAGE_KEY = "auth-user-cache";
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

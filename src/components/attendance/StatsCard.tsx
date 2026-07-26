@@ -7,12 +7,8 @@ import {
   Timer,
   BarChart3,
 } from "lucide-react";
-import { AttendanceStats } from "../../../types";
+import { StatsCardsProps } from "../../../types/statcard.types";
 
-interface StatsCardsProps {
-  stats: AttendanceStats;
-  period: string;
-}
 
 const StatsCards: React.FC<StatsCardsProps> = ({ stats, period }) => {
   const statCards = [

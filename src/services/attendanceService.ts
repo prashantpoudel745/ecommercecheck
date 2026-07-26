@@ -1,57 +1,7 @@
-// import axios from 'axios';
-// import { AttendanceData } from 'types';
-// const API_URL = 'http://localhost:5000/api/attendance';
-
-// axios.interceptors.request.use((config) => {
-//   const token = localStorage.getItem('token');
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
-
-// export const getAttendance = async (): Promise<AttendanceData[]> => {
-//   const response = await axios.get(API_URL,{
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     withCredentials:true,
-//   });
-//   return response.data;
-// };
-
-// export const getAttendanceById = async (id: string): Promise<AttendanceData> => {
-//   const response = await axios.get(`${API_URL}/employee/${id}`);
-//   return response.data;
-// };
-
-// export const CheckIn = async (id:string): Promise<AttendanceData> => {
-//   const response = await axios.post(`${API_URL}/check-in/${id}`);
-//   return response.data;
-// };
-
-// export const CheckOut = async (id:string): Promise<AttendanceData> => {
-//   const response = await axios.post(`${API_URL}/check-out/${id}`);
-//   return response.data;
-// };
-
-// export const getStats = async (id:string): Promise<AttendanceData> => {
-//   const response = await axios.post(`${API_URL}/stats/${id}`);
-//   return response.data;
-// };
-
-// export const getStatus = async (id:string): Promise<AttendanceData> => {
-//   const response = await axios.post(`${API_URL}/status/${id}`);
-//   return response.data;
-// };
-
-// export const getAttendanceDashboard = async (): Promise<void> => {
-//   await axios.delete(`${API_URL}/dashboard`);
-// };
 
 
 import axios, { AxiosResponse } from 'axios';
-import { CurrentStatus, AttendanceStats, AttendanceRecord } from '../../types';
+import { CurrentStatus, AttendanceStats, AttendanceRecord } from '../../types/attendance.types';
 import { attachAuthHeader } from '@/utils/authToken';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://ecommercebackend-black.vercel.app';

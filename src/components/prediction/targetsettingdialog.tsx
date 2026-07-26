@@ -13,49 +13,9 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { ClipLoader } from 'react-spinners';
+import {IMetricTarget ,ITargetsResponse, ITargetsPayload ,IYearlyMetricTarget, TargetSettingsDialogProps ,TargetMode} from "../../../types/prediction.types"
+
 const API_BASE = import.meta.env.VITE_API_URL||"";
-
-type TargetMode = 'uniform' | 'custom';
-
-interface IMetricTarget {
-  sales: number;
-  inventory: number;
-  clients: number;
-}
-
-interface IYearlyMetricTarget extends IMetricTarget {
-  year: number;
-}
-
-interface IMonthlyTargetConfig {
-  mode: TargetMode;
-  uniformTarget: IMetricTarget;
-  monthlyTargets: IMetricTarget[];
-}
-
-interface IYearlyTargetConfig {
-  mode: TargetMode;
-  baseYear: number;
-  yearsCount: number;
-  uniformTarget: IMetricTarget;
-  yearlyTargets: IYearlyMetricTarget[];
-}
-
-interface ITargetsPayload {
-  monthly: IMonthlyTargetConfig;
-  yearly: IYearlyTargetConfig;
-}
-
-interface ITargetsResponse {
-  monthly?: Partial<IMonthlyTargetConfig> & Partial<IMetricTarget>;
-  yearly?: Partial<IYearlyTargetConfig> & Partial<IMetricTarget>;
-}
-
-interface TargetSettingsDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (data: ITargetsPayload) => Promise<void> | void;
-}
 
 const emptyMetric = (): IMetricTarget => ({
   sales: 0,

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { InventoryItem,InventoryStats ,InventoryStatusData ,InventoryFormData } from 'types';
+import { InventoryItem ,InventoryStatusData } from '../../types/inventory.types';
 import { attachAuthHeader } from '@/utils/authToken';
 
 axios.interceptors.request.use((config) => attachAuthHeader(config));
@@ -22,13 +22,13 @@ export const getInventoryStatusChart = async (userId: string): Promise<Inventory
 };
 
 // Add a new inventory item
-export const addInventory = async (data: InventoryFormData): Promise<InventoryItem> => {
+export const addInventory = async (data: InventoryItem): Promise<InventoryItem> => {
   const response = await axios.post('/api/inventory/add', data);
   return response.data;
 };
 
 // Update an inventory item by ID
-export const updateInventory = async (id: string, data: InventoryFormData): Promise<InventoryItem> => {
+export const updateInventory = async (id: string, data: InventoryItem): Promise<InventoryItem> => {
   const response = await axios.put(`/api/inventory/update/${id}`, data);
   return response.data;
 };
@@ -44,7 +44,7 @@ export const sendStockMail = async (): Promise<void> => {
 };
 
 // Manually update inventory by ID
-export const manualUpdateInventory = async (id: string, data: Partial<InventoryFormData>): Promise<InventoryItem> => {
+export const manualUpdateInventory = async (id: string, data: Partial<InventoryItem>): Promise<InventoryItem> => {
   const response = await axios.put(`/api/inventory/manualupdate/${id}`, data);
   return response.data;
 };

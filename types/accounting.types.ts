@@ -1,6 +1,25 @@
 export type Decimal128Json = { $numberDecimal: string };
 export type DecimalValue = number | string | Decimal128Json;
 
+export interface AccountingDashboardProps {
+  startDate?: string;
+  endDate?: string;
+  dateRangeLabel?: string;
+}
+export interface AccountingStatsProps {
+  stats: {
+    totalRevenue: DecimalValue;
+    totalExpenses: DecimalValue;
+    netProfit: DecimalValue;
+    accountsReceivable?: DecimalValue;
+    accountsPayable?: DecimalValue;
+    cashBalance?: DecimalValue;
+  };
+  startDate?: string;
+  endDate?: string;
+  dateRangeLabel?: string;
+}
+
 export interface AccountGroup {
   _id: string;
   name: string;
@@ -123,4 +142,62 @@ export interface AccountingHealth {
     accountCount: number;
   };
   nepalContext: string[];
+}
+
+export interface TBAccount {
+  name: string;
+  group?: string;
+  type?: string;
+  debit?: DecimalValue;
+  credit?: DecimalValue;
+  debitAmount?: DecimalValue;
+  creditAmount?: DecimalValue;
+}
+export interface FiscalPeriod {
+  _id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isLocked: boolean;
+  lockedAt?: string;
+  lockedBy?: string;
+}
+export interface FinanceChartProps {
+  data: Array<{
+    name: string;
+    income: number;
+    expenses: number;
+  }>;
+}
+
+export interface FinancialOverviewPageProps {
+  userId: string;
+  onViewChange?: (
+    viewMode: "year" | "month" | "day",
+    selectedYear: string | null,
+    selectedMonth: string | null
+  ) => void;
+}
+
+export interface TransactionFormData {
+  clientName: string;
+  companyName: string;
+  vatNo: string;
+  email: string;
+  phone: string;
+  notes: string;
+  description: string;
+  category: string;
+  paymentStatus: "paid" | "partial" | "due";
+  amountPaid: number;
+  paymentAccountId: string;
+  partyAccountGroupId?: string;
+  vatBillNo: string;
+  items: {
+    itemName: string;
+    quantity: number;
+    price: number;
+    amount: number;
+    productCategory: string;
+  }[];
 }

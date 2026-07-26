@@ -25,33 +25,8 @@ import SearchComponent from "../Search";
 import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
 import RecentClients from "./RecentClients";
 import { toNumber } from "@/utils/helpers/decimalhelper";
-
+import { Client , Stats} from "../../../types/customer.types";
 const Api_Url = import.meta.env.VITE_API_URL||"";
-
-interface Client {
-  _id: string;
-  name: string;
-  email?: string;
-  companyName?: string;
-  vatNo?: string;
-  status: "paid" | "due";
-  phone?: string;
-  value?: number;
-  dueamount?: number;
-  updatedBy?: string;
-  items?: Array<{
-    _id: string;
-    itemName: string;
-    quantity: number;
-    price: number;
-  }>;
-}
-
-interface Stats {
-  totalClients: number;
-  activeClients: number;
-  totalValue: number;
-}
 
 const StatusPieChart = React.memo(({ clients }: { clients: Client[] }) => {
   const statusData = useMemo(

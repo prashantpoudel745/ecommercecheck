@@ -19,92 +19,20 @@ import {
   YAxis,
 } from "recharts";
 import {
-  AlertTriangle,
   Boxes,
-  BrainCircuit,
-  ClipboardList,
   Loader2,
-  SendHorizontal,
-  Target,
   TrendingDown,
   TrendingUp,
   Users,
   Wallet,
 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
-
+import { Customer } from "../../types/customer.types";
+import { Snapshot } from "../../types";
 const API_BASE = import.meta.env.VITE_API_URL||"";
-
-type InventoryItem = {
-  name: string;
-  category?: string;
-  quantity?: number;
-  price?: number;
-  value?: number;
-};
-
-type Customer = {
-  name: string;
-  companyName?: string;
-  dueamount?: number;
-  value?: number;
-};
-
-type Snapshot = {
-  generatedAt?: string;
-  finance: {
-    todayRevenue: number;
-    todayExpenses: number;
-    todayNet: number;
-    yesterdayRevenue: number;
-    yesterdayExpenses: number;
-    yesterdayNet: number;
-    monthRevenue: number;
-    monthExpenses: number;
-    monthNet: number;
-    revenueDayDelta: number;
-    netDayDelta: number;
-    revenueMonthDeltaPercent: number;
-    netMonthDeltaPercent: number;
-  };
-  inventory: {
-    totalProducts: number;
-    lowStockItems: InventoryItem[];
-    outOfStockItems: InventoryItem[];
-    inventoryValue: number;
-    highestValueItems: InventoryItem[];
-  };
-  customers: {
-    totalCustomers: number;
-    dueCustomers: Customer[];
-    totalDueAmount: number;
-    totalPaidAmount: number;
-  };
-  employees: {
-    totalEmployees: number;
-    activeEmployees: number;
-    departments: number;
-  };
-  attendance: {
-    presentCount: number;
-    lateCount: number;
-    absentCount: number;
-    overtimeCount: number;
-    averageHours: number;
-  };
-  investments: {
-    totalInvested: number;
-    averageReturn: number;
-    activeClients: number;
-    totalCategories: number;
-  };
-  recommendations: string[];
-};
 
 const COLORS = {
   teal: "#0F766E",

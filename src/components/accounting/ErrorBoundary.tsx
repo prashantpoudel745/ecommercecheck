@@ -1,16 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-interface Props {
-  children?: ReactNode;
-  fallback?: ReactNode;
-}
-
-interface State {
-  hasError: boolean;
-  error?: Error;
-}
+import {Props , State} from "../../../types/error.types"
 
 export default class ErrorBoundary extends Component<Props, State> {
   public state: State = {

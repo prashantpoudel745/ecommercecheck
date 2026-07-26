@@ -1,7 +1,6 @@
 import api, { checkIn, checkOut } from "@/utils/api";
 import React, { useState } from "react";
-import { CurrentStatus } from "../../../types";
-
+import { CurrentStatus } from "../../../types/attendance.types";
 interface AttendanceActionsProps {
   employeeId: string;
   status: CurrentStatus;

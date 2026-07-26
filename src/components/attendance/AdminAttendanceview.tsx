@@ -8,10 +8,9 @@ import AllEmployeesAttendanceTable from "./AllEmployeesAttendanceTable";
 import {
   AttendanceFilters,
   AttendanceData,
-  DashboardData,
   AttendUser,
-} from "../../../types";
-
+} from "../../../types/attendance.types";
+import { DashboardData } from "../../../types";
 interface AdminAttendanceViewProps {
   user: AttendUser;
 }

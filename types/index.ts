@@ -2,25 +2,9 @@ import { ReactNode } from "react";
 export type Decimal128Json = { $numberDecimal: string };
 export type DecimalValue = number | string | Decimal128Json;
 export type ViewMode = "year" | "month" | "day";
-
-export interface Employee {
-  _id: string;
-  name: string;
-  department: string;
-  position: string;
-}
-export interface InventoryItem {
-  _id: string;
-  id: string;
-  name: string;
-  quantity: number;
-  price: DecimalValue;
-  clientname: string;
-  status: "inStock" | "mediumStock" | "lowStock";
-  category: string;
-  updatedAt: string;
-}
-
+import {AttendanceData} from "./attendance.types"
+import { InventoryItem } from "./inventory.types";
+import { Customer } from "./customer.types";
 export interface Client {
   id: string;
   name: string;
@@ -34,21 +18,7 @@ export interface Client {
   updatedAt: string;
   empId: string;
 }
-export interface ItemFormData {
-  itemName: string;
-  quantity: string;
-  price: string;
-  amount: string;
-  productCategory: string;
-}
 
-export interface CombinedDialogProps {
-  onClientAdded?: (client: Client) => void;
-  onTransactionAdded?: (transaction: Transaction) => void;
-  onInventoryAdded?: (inventory: InventoryItem) => void;
-  buttonLabel?: string;
-  variant?: "default" | "outline";
-}
 export interface Transaction {
   id: string;
   date: string;
@@ -61,33 +31,12 @@ export interface Transaction {
   updatedBy?: string;
 }
 
-
 export interface User {
   _id: string;
   username: string;
   email: string;
 }
 
-export interface AttendanceData {
-  data: any; // temporarily any to support both flat and grouped
-  pagination: {
-    current: number;
-    pages: number;
-    total: number;
-    limit: number;
-  };
-  summary: {
-    totalRecords: number;
-    uniqueEmployees: number;
-    presentDays: number;
-    lateDays: number;
-    halfDays: number;
-    overtimeDays: number;
-    totalHours: number;
-    avgHours: number;
-    attendanceRate: number;
-  };
-}
 export interface Props {
   data: AttendanceData | null;
   loading: boolean;
@@ -103,103 +52,6 @@ export interface User {
   username: string;
   email: string;
 }
-
-export interface AttendanceRecord {
-  _id: string;
-  employee: Employee;
-  user: User;
-  date: string;
-  checkIn: string;
-  checkOut?: string;
-  status: "present" | "late" | "half-day" | "overtime";
-  totalWorkHours?: number;
-  workingHours?: {
-    actual: number;
-    expected: number;
-  };
-  notes?: string;
-  location?: {
-    type: string;
-    coordinates?: number[];
-  };
-  breaks?: Array<{
-    start: string;
-    end: string;
-    duration: number;
-  }>;
-  employeeName?: string;
-  employeeEmail?: string;
-  department?: string;
-  hoursWorked?: number;
-}
-
-export interface AttendanceStats {
-  totalDays: number;
-  presentDays: number;
-  lateDays: number;
-  halfDays: number;
-  overtimeDays: number;
-  totalHours: number;
-  avgHours: number;
-}
-
-export interface CurrentStatus {
-  isCheckedIn: boolean;
-  isCheckedOut: boolean;
-  attendance?: AttendanceRecord;
-  canCheckIn: boolean;
-  canCheckOut: boolean;
-}
-
-export interface AttendanceResponse {
-  success: boolean;
-  message: string;
-  data: AttendanceRecord;
-  warnings?: string[];
-}
-
-export interface AttendanceListResponse {
-  success: boolean;
-  data: AttendanceRecord[];
-  pagination: {
-    current: number;
-    pages: number;
-    total: number;
-    limit: number;
-  };
-}
-
-export interface AttendanceFilters {
-  startDate: string;
-  endDate: string;
-  status: string;
-  department: string;
-  employeeId: string;
-  groupBy: "employee" | "date" | "department" | "none";
-}
-
-export interface AttendanceData {
-  data: any;
-  pagination: {
-    current: number;
-    pages: number;
-    total: number;
-    limit: number;
-  };
-  summary: {
-    totalRecords: number;
-    uniqueEmployees: number;
-    presentDays: number;
-    lateDays: number;
-    halfDays: number;
-    overtimeDays: number;
-    totalHours: number;
-    avgHours: number;
-    attendanceRate: number;
-  };
-  departmentSummary?: Record<string, any>;
-}
-
 export interface DashboardData {
   todayOverview: {
     total: number;
@@ -215,17 +67,6 @@ export interface DashboardData {
   notCheckedIn: any[];
   lastUpdated: string;
 }
-
-export interface AttendUser {
-  id: string;
-  _id: string;
-  fullName: string;
-  email: string;
-  role: "admin" | "employee" | "hr";
-  companyName: string;
-  companyprofileImage: string;
-}
-
 export interface FinancialDataItem {
   name: string;
   income: number;
@@ -243,22 +84,11 @@ export interface BackendDataItem {
   expenses: number;
   [key: string]: unknown;
 }
-
 export interface FinancialViewState {
   viewMode: ViewMode;
   selectedYear: string | null;
   selectedMonth: string | null;
 }
-export interface InventoryStatusData {
-  category: string;
-  totalItems: number;
-  inStock: number;
-  mediumStock: number;
-  lowStock: number;
-  items: InventoryItem[];
-  names: string[];
-}
-
 export interface Activity {
   _id: string;
   name?: string;
@@ -273,7 +103,6 @@ export interface FinancialOverviewPageProps {
   userId: string;
   onViewChange?: (state: FinancialViewState) => void;
 }
-
 export interface StatCardProps {
   title: string;
   value: string | number;
@@ -285,47 +114,6 @@ export interface StatCardProps {
   className?: string;
   details?: ReactNode;
 }
-
-export interface DeleteInventoryProps {
-  productId: string;
-  productName: string;
-  onDelete: (productId: string) => void;
-}
-
-export interface Product {
-  _id: string;
-  name: string;
-  category: string;
-  quantity: number;
-  price: DecimalValue;
-  status: "in-stock" | "low-stock" | "out-of-stock";
-  maxStock: number;
-}
-
-export interface InventoryStats {
-  totalProducts: number;
-  lowStockItems: number;
-  lowStockChange: number;
-  inventoryValue: DecimalValue;
-  inventoryValueChange: DecimalValue;
-}
-
-export interface UpdateInventoryProps {
-  productId: string;
-  productName: string;
-  productCategory: string;
-  productPrice: DecimalValue;
-  productQuantity: number;
-  onUpdate: (updatedProduct: {
-    _id: string;
-    name: string;
-    category: string;
-    price: DecimalValue;
-    quantity: number;
-    status: "in-stock" | "low-stock" | "out-of-stock";
-  }) => void;
-}
-
 export interface Investment {
   amount: DecimalValue;
   category: string;
@@ -339,39 +127,31 @@ export interface Investment {
   __v: number;
   _id: string;
 }
-
 export interface CalculatedStats {
   totalInvestments: number;
   activeClients: number;
   potentialLeads: number;
   avgReturn: number;
 }
-
 export interface DisplayStat {
   title: string;
   value: string;
   change: string;
   changeColor: string;
 }
-
-// types/target.ts
 export interface ITargetPeriod {
   sales: number;
   inventory: number;
   clients: number;
 }
-
 export interface ITargetsPayload {
   monthly?: IMonthlyTargets;
   yearly?: ITargetPeriod;
 }
-
 export interface ITargetsResponse {
   monthly?: IMonthlyTargets;
   yearly?: ITargetPeriod;
 }
-
-// types.ts
 export interface ITargetPeriod {
   sales: number;
   inventory: number;
@@ -408,3 +188,82 @@ export type FetchResult<T> =
   | { status: "success"; data: T }
   | { status: "empty" }
   | { status: "error"; message: string };
+
+export type ModulePageFrameProps = {
+  kicker: string;
+  title: string;
+  subtitle: string;
+  chips?: string[];
+  actions?: ReactNode;
+  children: ReactNode;
+  contentClassName?: string;
+};
+
+export type KeepAlivePage = {
+  id: string;
+  paths: string[];
+  render: () => ReactNode;
+  roles?: string[];
+};
+
+export type ProtectedKeepAliveRouterProps = {
+  pages: KeepAlivePage[];
+  fallback: ReactNode;
+};
+
+export interface EditProfileModalProps {
+  open: boolean;
+  onClose: () => void;
+  defaultTab?: "profile" | "password";
+}
+
+export type Snapshot = {
+  generatedAt?: string;
+  finance: {
+    todayRevenue: number;
+    todayExpenses: number;
+    todayNet: number;
+    yesterdayRevenue: number;
+    yesterdayExpenses: number;
+    yesterdayNet: number;
+    monthRevenue: number;
+    monthExpenses: number;
+    monthNet: number;
+    revenueDayDelta: number;
+    netDayDelta: number;
+    revenueMonthDeltaPercent: number;
+    netMonthDeltaPercent: number;
+  };
+  inventory: {
+    totalProducts: number;
+    lowStockItems: InventoryItem[];
+    outOfStockItems: InventoryItem[];
+    inventoryValue: number;
+    highestValueItems: InventoryItem[];
+  };
+  customers: {
+    totalCustomers: number;
+    dueCustomers: Customer[];
+    totalDueAmount: number;
+    totalPaidAmount: number;
+  };
+  employees: {
+    totalEmployees: number;
+    activeEmployees: number;
+    departments: number;
+  };
+  attendance: {
+    presentCount: number;
+    lateCount: number;
+    absentCount: number;
+    overtimeCount: number;
+    averageHours: number;
+  };
+  investments: {
+    totalInvested: number;
+    averageReturn: number;
+    activeClients: number;
+    totalCategories: number;
+  };
+  recommendations: string[];
+};

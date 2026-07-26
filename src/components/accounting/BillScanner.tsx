@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
-import { extractBillData, BillData } from "@/services/ocr.service";
+import { extractBillData} from "@/services/ocr.service";
+import { BillData } from "../../../types/ocr.types";
 
 interface BillScannerProps {
   open: boolean;

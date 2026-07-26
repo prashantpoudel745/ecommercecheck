@@ -28,17 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-
-interface TBAccount {
-  name: string;
-  group?: string;
-  type?: string;
-  debit?: DecimalValue;
-  credit?: DecimalValue;
-  debitAmount?: DecimalValue;
-  creditAmount?: DecimalValue;
-}
+import { TBAccount } from "../../../types/accounting.types";
 
 export default function FinancialReports() {
   const getInitialDates = () => {
@@ -119,7 +109,7 @@ export default function FinancialReports() {
     try {
       await seedDefaults();
       await fetchReport(activeTab);
-    } catch (e: any) {
+    } catch (e) {
       console.error("Failed to seed defaults", e);
     } finally {
       setLoading(false);
@@ -554,7 +544,7 @@ export default function FinancialReports() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex gap-2 bg-white p-1 rounded-2xl shadow-sm border border-slate-100 flex-wrap">
             <Button variant={activeTab === "tb" ? "default" : "ghost"} onClick={() => setActiveTab("tb")} className="rounded-xl h-10 px-5 font-bold">Trial Balance</Button>
-            <Button variant={activeTab === "pl" ? "default" : "ghost"} onClick={() => setActiveTab("pl")} className="rounded-xl h-10 px-5 font-bold">P & L</Button>
+            {/* <Button variant={activeTab === "pl" ? "default" : "ghost"} onClick={() => setActiveTab("pl")} className="rounded-xl h-10 px-5 font-bold">P & L</Button> */}
             <Button variant={activeTab === "bs" ? "default" : "ghost"} onClick={() => setActiveTab("bs")} className="rounded-xl h-10 px-5 font-bold">Balance Sheet</Button>
             <Button variant={activeTab === "vat" ? "default" : "ghost"} onClick={() => setActiveTab("vat")} className="rounded-xl h-10 px-5 font-bold">VAT</Button>
             <Button variant={activeTab === "aging-ar" ? "default" : "ghost"} onClick={() => setActiveTab("aging-ar")} className="rounded-xl h-10 px-5 font-bold">AR Aging</Button>

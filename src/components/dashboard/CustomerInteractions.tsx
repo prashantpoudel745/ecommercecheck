@@ -7,14 +7,8 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
+import { CustomerInteractionsProps } from "../../../types/customer.types";
 
-interface CustomerInteractionsProps {
-  data: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
-}
 export function CustomerInteractions({ data }: CustomerInteractionsProps) {
   return (
     <Card>

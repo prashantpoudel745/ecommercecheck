@@ -4,13 +4,6 @@ import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
-// ---------------------------------------------------------------------------
-// Design tokens — shared semantics with the financial overview and inventory
-// charts: accounting activity reads as income/expense-adjacent (teal),
-// inventory activity reads as stock-adjacent (slate/amber), rather than
-// arbitrary emoji.
-// ---------------------------------------------------------------------------
-
 const COLOR = {
   accounting: "#0F766E", // teal-700
   accountingBg: "#F0FDFA",
@@ -142,10 +135,6 @@ const ActivityRow = ({ activity }: { activity: Activity }) => {
   );
 };
 
-// ---------------------------------------------------------------------------
-// Filter tabs
-// ---------------------------------------------------------------------------
-
 type FilterKind = "all" | "accounting" | "inventory";
 
 const FILTERS: { key: FilterKind; label: string }[] = [
@@ -187,10 +176,6 @@ const FilterTabs = ({
     </div>
   );
 };
-
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
 
 const RecentActivity = ({ userId }: { userId: string }) => {
   const [activities, setActivities] = useState<Activity[]>([]);

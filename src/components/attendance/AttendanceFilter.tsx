@@ -1,12 +1,8 @@
 // AttendanceFilters.tsx - Filters component for admin attendance view
 import React, { useState } from "react";
-import type { AttendanceFilters } from "../../../types";
+import type { AttendanceFilters ,AttendanceFiltersProps} from "../../../types/attendance.types";
 
-interface AttendanceFiltersProps {
-  filters: AttendanceFilters;
-  onFilterChange: (filters: Partial<AttendanceFilters>) => void;
-  onClearFilters: () => void;
-}
+
 
 const AttendanceFilters: React.FC<AttendanceFiltersProps> = ({
   filters,

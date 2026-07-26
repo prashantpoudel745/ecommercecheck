@@ -1,28 +1,6 @@
 import { useState } from "react";
 import * as accountingService from "../services/accounting.service";
-
-export interface TransactionFormData {
-  clientName: string;
-  companyName: string;
-  vatNo: string;
-  email: string;
-  phone: string;
-  notes: string;
-  description: string;
-  category: string;
-  paymentStatus: "paid" | "partial" | "due";
-  amountPaid: number;
-  paymentAccountId: string;
-  partyAccountGroupId?: string;
-  vatBillNo: string;
-  items: {
-    itemName: string;
-    quantity: number;
-    price: number;
-    amount: number;
-    productCategory: string;
-  }[];
-}
+import { TransactionFormData } from "../../types/accounting.types";
 
 export function useTransactionForm(onSuccess?: () => void) {
   const [formData, setFormData] = useState<TransactionFormData>({
@@ -70,7 +48,7 @@ export function useTransactionForm(onSuccess?: () => void) {
       if (onSuccess) onSuccess();
       resetForm();
       return response;
-    } catch (err: any) {
+    } catch (err) {
       // console.error("Transaction submission error:", err);
       setError(err.response?.data?.message || err.message || "Submission failed");
       throw err;

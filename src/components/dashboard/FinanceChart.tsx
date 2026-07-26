@@ -9,14 +9,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
+import { FinanceChartProps } from "../../../types/accounting.types";
 
-interface FinanceChartProps {
-  data: Array<{
-    name: string;
-    income: number;
-    expenses: number;
-  }>;
-}
 
 export function FinanceChart({ data }: FinanceChartProps) {
   return (

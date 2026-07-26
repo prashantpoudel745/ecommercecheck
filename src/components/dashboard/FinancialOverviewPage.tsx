@@ -16,49 +16,11 @@ import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
 import { useScreenSize } from "@/hooks/use-mobile";
 import { FinancialDataItem, BackendDataItem } from "../../../types";
 import { CURRENCY_SYMBOL, getCurrencySymbol } from "@/utils/formatCurrency";
-
+import { FinancialOverviewPageProps } from "../../../types/accounting.types";
+import {COLOR} from "../../utils/constants/color"
+import { MONTH_NAMES_SHORT,MONTH_NAMES_FULL } from "@/utils/constants/monthnames";
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
-interface FinancialOverviewPageProps {
-  userId: string;
-  onViewChange?: (
-    viewMode: "year" | "month" | "day",
-    selectedYear: string | null,
-    selectedMonth: string | null
-  ) => void;
-}
-
-// ---------------------------------------------------------------------------
-// Design tokens
-// ---------------------------------------------------------------------------
-// A restrained, semantic palette rather than a generic emerald/rose + gradient
-// scheme. Income and expenses each get one flat, deliberate color; net is a
-// distinct neutral accent so it never gets confused with either series.
-
-const COLOR = {
-  income: "#0F766E", // teal-700
-  incomeMuted: "#CCFBF1",
-  expense: "#9F1239", // rose-800
-  expenseMuted: "#FFE4E6",
-  net: "#334155", // slate-700 — profit/loss (signed)
-  netAbs: "#4F46E5", // indigo-600 — net (absolute)
-  netUp: "#0F766E",
-  netDown: "#9F1239",
-  grid: "#E2E8F0",
-  axis: "#94A3B8",
-  border: "#E2E8F0",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-};
-
-const MONTH_NAMES_SHORT = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-];
-const MONTH_NAMES_FULL = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
 
 const formatCurrency = (value: number, compact = false) => {
   const sym = getCurrencySymbol();
@@ -70,10 +32,6 @@ const formatCurrency = (value: number, compact = false) => {
     notation: compact ? "compact" : "standard",
   }).format(value);
 };
-
-// ---------------------------------------------------------------------------
-// Tooltips
-// ---------------------------------------------------------------------------
 
 const TooltipRow = ({
   color,
@@ -176,10 +134,6 @@ const TrendTooltip = React.memo(({ active, payload, label }: any) => {
     </div>
   );
 });
-
-// ---------------------------------------------------------------------------
-// KPI summary card
-// ---------------------------------------------------------------------------
 
 const KpiCard = ({
   label,

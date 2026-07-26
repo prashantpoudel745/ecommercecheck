@@ -15,22 +15,11 @@ import { CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import BillScanner from "../accounting/BillScanner";
 import type { BillData } from "@/services/ocr.service";
-
+import { AddInventoryButtonProps } from "../../../types/inventory.types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL||"";
 
-interface InventoryItem {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
-  clientname: string;
-  category: string;
-  updatedAt: string;
-}
 
-interface AddInventoryButtonProps {
-  onInventoryAdded?: (inventory: InventoryItem) => void;
-}
+
 
 const AddInventoryButton = ({ onInventoryAdded }: AddInventoryButtonProps) => {
   const [open, setOpen] = useState(false);

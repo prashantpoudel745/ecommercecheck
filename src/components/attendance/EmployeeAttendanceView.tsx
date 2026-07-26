@@ -1,6 +1,7 @@
 // EmployeeAttendanceView.tsx - Individual employee attendance view
 import React, { useState, useEffect, useCallback } from "react";
-import { Employee, CurrentStatus, AttendanceStats, AttendUser } from "../../../types";
+import {  CurrentStatus, AttendanceStats, AttendUser } from "../../../types/attendance.types";
+import { Employee } from "../../../types/employee.types";
 import Header from "../employees/EmployeesHeader";
 import AttendanceActions from "./AttendanceActions";
 import AttendanceHistory from "./AttendanceHistory";

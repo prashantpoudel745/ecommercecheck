@@ -1,5 +1,5 @@
 import React from "react";
-import { Employee } from "../../../types";
+import { Employee } from "../../../types/employee.types";
 
 interface HeaderProps {
   employee: Employee | null;

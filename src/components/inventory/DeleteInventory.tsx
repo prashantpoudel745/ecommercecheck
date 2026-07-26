@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { DeleteInventoryProps } from "../../../types";
+import { DeleteInventoryProps } from "../../../types/inventory.types";
 const API_URL = import.meta.env.VITE_API_URL ||"";
 
 export function DeleteInventory({

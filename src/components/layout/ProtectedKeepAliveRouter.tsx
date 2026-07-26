@@ -1,18 +1,7 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-
-type KeepAlivePage = {
-  id: string;
-  paths: string[];
-  render: () => ReactNode;
-  roles?: string[];
-};
-
-type ProtectedKeepAliveRouterProps = {
-  pages: KeepAlivePage[];
-  fallback: ReactNode;
-};
+import { ProtectedKeepAliveRouterProps } from "../../../types";
 
 const normalizePath = (path: string) => {
   if (!path) return "/";

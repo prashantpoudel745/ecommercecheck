@@ -1,14 +1,5 @@
 import { ReactNode } from "react";
-
-type ModulePageFrameProps = {
-  kicker: string;
-  title: string;
-  subtitle: string;
-  chips?: string[];
-  actions?: ReactNode;
-  children: ReactNode;
-  contentClassName?: string;
-};
+import { ModulePageFrameProps } from "../../../types";
 
 export function ModulePageFrame({
   kicker,

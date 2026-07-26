@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { AttendanceRecord, Props } from "../../../types";
+import { AttendanceRecord} from "../../../types/attendance.types";
+import {Props} from "../../../types"
 
 const AllEmployeesAttendanceTable: React.FC<Props> = ({
   data,

@@ -3,7 +3,7 @@ import React from "react";
 import EmployeeAttendanceView from "./EmployeeAttendanceView";
 import AdminAttendanceView from "./AdminAttendanceview";
 import { useAuth } from "@/context/AuthContext";
-import { AttendUser } from "../../../types";
+import { AttendUser } from "../../../types/attendance.types";
 
 const AttendanceApp: React.FC = () => {
   const { user, loading } = useAuth();

@@ -17,17 +17,16 @@ import { CardTitle } from "@/components/ui/card";
 import {
   InventoryItem,
   CombinedDialogProps,
-} from "../../../types";
+} from "../../../types/inventory.types";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useTransactionForm } from "@/hooks/useTransactionForm";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import * as accountingService from "@/services/accounting.service";
 import BillScanner from "./BillScanner";
-import type { BillData } from "@/services/ocr.service";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { CurrencyUtil } from "@/utils/currency.util";
-
+import { BillData } from "../../../types/ocr.types";
 const API_URL = import.meta.env.VITE_API_URL|| "";
 
 export default function CombinedAddDialog({
@@ -143,7 +142,7 @@ export default function CombinedAddDialog({
       companyName: party.companyName || party.name || prev.companyName,
       vatNo: party.vatNo || "",
       email: party.email || "",
-      phone: party.phone || prev.phone,
+      phone: party.phone || "",
     }));
     setShowClientDropdown(false);
   };
@@ -178,14 +177,14 @@ export default function CombinedAddDialog({
     setFormData({...formData, items: newItems});
   };
 
-  const handleSelectItem = (inventoryItem: any, index: number) => {
+  const handleSelectItem = (inventoryItem: InventoryItem, index: number) => {
     const newItems = [...formData.items];
     const price = CurrencyUtil.format(inventoryItem.price);
     newItems[index] = {
       ...newItems[index],
       itemName: inventoryItem.name,
       productCategory: inventoryItem.category || "",
-      price,
+      price : Number(inventoryItem.price),
       amount: CurrencyUtil.mul(price, (newItems[index].quantity || 1)).toNumber()
     };
     setFormData({...formData, items: newItems});

@@ -1,28 +1,9 @@
+import { BillData } from './../../types/ocr.types';
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL||"";
 
-export interface BillItem {
-  itemName: string;
-  quantity: number;
-  price: number;
-  amount: number;
-  productCategory: string;
-}
 
-export interface BillData {
-  success: boolean;
-  clientName: string;
-  vatNo: string;
-  vatBillNo: string;
-  category: string;
-  items: BillItem[];
-  totalAmount: number;
-  rawText: string;
-  source: "llm" | "regex";
-  imageUrl?: string;
-  error?: string;
-}
 
 /**
  * Convert a File to a base64 data URI string.
@@ -36,11 +17,6 @@ const fileToBase64 = (file: File): Promise<string> => {
   });
 };
 
-/**
- * Upload a bill image to the backend OCR endpoint.
- * The image is sent as a base64 data URI string.
- * Backend uploads to Cloudinary → sends URL to Python OCR service → returns structured JSON.
- */
 export const extractBillData = async (imageFile: File): Promise<BillData> => {
   const base64Image = await fileToBase64(imageFile);
 

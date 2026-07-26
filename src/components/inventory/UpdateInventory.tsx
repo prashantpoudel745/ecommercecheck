@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UpdateInventoryProps } from "../../../types";
+import { UpdateInventoryProps } from "../../../types/inventory.types";
 import { CurrencyUtil } from "@/utils/currency.util";
 
 const Api = import.meta.env.VITE_API_URL||"";
