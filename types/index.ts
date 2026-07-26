@@ -71,6 +71,8 @@ export interface FinancialDataItem {
   name: string;
   income: number;
   expenses: number;
+  incomeWithTax?: number;
+  expensesWithTax?: number;
   fullName: string;
   originalDate?: Date;
   monthKey?: string;
@@ -82,6 +84,8 @@ export interface BackendDataItem {
   date: string;
   sales: number;
   expenses: number;
+  salesWithTax?: number;
+  expensesWithTax?: number;
   [key: string]: unknown;
 }
 export interface FinancialViewState {

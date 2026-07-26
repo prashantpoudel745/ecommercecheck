@@ -367,6 +367,8 @@ async (params?: { startDate?: string; endDate?: string }):Promise<AccountingStat
     return {
         revenue: pnl.totalRevenue || "0",
         expenses: pnl.totalExpense ?? pnl.totalExpenses ?? "0",
+        revenueWithTax: pnl.totalRevenueWithTax ?? pnl.totalRevenue ?? "0",
+        expensesWithTax: pnl.totalExpenseWithTax ?? pnl.totalExpensesWithTax ?? pnl.totalExpense ?? pnl.totalExpenses ?? "0",
         netProfit: pnl.netProfit || "0",
         accountsReceivable: accountsReceivable.toString(),
         accountsPayable: accountsPayable.toString(),

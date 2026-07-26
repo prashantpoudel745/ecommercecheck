@@ -204,7 +204,10 @@ export default function FinancialReports() {
                 <CardTitle className="text-emerald-700 font-bold flex items-center gap-2">
                   <ArrowUpRight className="w-5 h-5" /> Trading Revenue
                 </CardTitle>
-                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none">Total: {formatCurrency(data?.totalRevenue || 0)}</Badge>
+                <div className="flex flex-wrap justify-end gap-2">
+                  <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none">Excl. VAT: {formatCurrency(data?.totalRevenue || 0)}</Badge>
+                  <Badge className="bg-emerald-200 text-emerald-800 hover:bg-emerald-200 border-none">Incl. VAT: {formatCurrency(data?.totalRevenueWithTax ?? data?.totalRevenue ?? 0)}</Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="pt-4 space-y-2">
@@ -223,7 +226,10 @@ export default function FinancialReports() {
                 <CardTitle className="text-rose-700 font-bold flex items-center gap-2">
                   <ArrowDownRight className="w-5 h-5" /> Operating Expenses
                 </CardTitle>
-                <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-200 border-none">Total: {formatCurrency(data?.totalExpenses || data?.totalExpense || 0)}</Badge>
+                <div className="flex flex-wrap justify-end gap-2">
+                  <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-200 border-none">Excl. VAT: {formatCurrency(data?.totalExpenses || data?.totalExpense || 0)}</Badge>
+                  <Badge className="bg-rose-200 text-rose-800 hover:bg-rose-200 border-none">Incl. VAT: {formatCurrency(data?.totalExpensesWithTax ?? data?.totalExpenseWithTax ?? data?.totalExpenses ?? data?.totalExpense ?? 0)}</Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="pt-4 space-y-2">

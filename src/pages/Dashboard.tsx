@@ -171,6 +171,8 @@ export default function Dashboard() {
         stats: {
           totalRevenue: Number(statsData.revenue),
           totalExpenses:Number(statsData.expenses),
+          totalRevenueWithTax: Number(statsData.revenueWithTax ?? statsData.revenue),
+          totalExpensesWithTax: Number(statsData.expensesWithTax ?? statsData.expenses),
           netProfit: Number(statsData.netProfit),
         },
       }));
@@ -273,18 +275,30 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-up" style={{ animationDelay: '0.2s' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-fade-up" style={{ animationDelay: '0.2s' }}>
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
-          title="Total Revenue"
+          title="Revenue (excl. VAT)"
           value={formatCurrency(stats.totalRevenue)}
           icon={<DollarSign className="text-emerald-500" size={20} />}
         />
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
-          title="Total Expenses"
+          title="Expenses (excl. VAT)"
           value={formatCurrency(stats.totalExpenses)}
           icon={<CreditCard className="text-rose-500" size={20} />}
+        />
+        <StatCard
+          className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
+          title="Revenue (incl. VAT)"
+          value={formatCurrency(stats.totalRevenueWithTax)}
+          icon={<DollarSign className="text-emerald-600" size={20} />}
+        />
+        <StatCard
+          className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
+          title="Expenses (incl. VAT)"
+          value={formatCurrency(stats.totalExpensesWithTax)}
+          icon={<CreditCard className="text-rose-600" size={20} />}
         />
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"

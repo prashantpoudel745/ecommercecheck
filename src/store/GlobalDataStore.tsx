@@ -6,13 +6,16 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { InventoryStats, Product, Transaction } from "types";
+import {  Transaction } from "../../types";
+import { Product,InventoryStats } from "../../types/inventory.types";
 
 const STORAGE_KEY = "global-app-store-v1";
 
 type DashboardStats = {
   totalRevenue: number;
   totalExpenses: number;
+  totalRevenueWithTax: number;
+  totalExpensesWithTax: number;
   netProfit: number;
 };
 
@@ -49,6 +52,8 @@ const defaultDashboardState: DashboardState = {
   stats: {
     totalRevenue: 0,
     totalExpenses: 0,
+    totalRevenueWithTax: 0,
+    totalExpensesWithTax: 0,
     netProfit: 0,
   },
   inventoryStats: {

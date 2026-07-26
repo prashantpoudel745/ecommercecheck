@@ -63,7 +63,7 @@ export default function CombinedAddDialog({
   useEffect(() => {
     if (open) {
       const normalizedCategory = formData.category?.toLowerCase();
-      if (["sales", "purchase"].includes(normalizedCategory || "")) {
+      if (normalizedCategory === "sales") {
         fetchInventoryItems();
       }
       fetchAccounts();
@@ -169,7 +169,7 @@ export default function CombinedAddDialog({
     setItemSearchTerms(newSearchTerms);
 
     const newShowDropdowns = [...showDropdowns];
-    newShowDropdowns[index] = value.trim().length > 0 && ["sales", "purchase"].includes(formData.category?.toLowerCase() || "");
+    newShowDropdowns[index] = value.trim().length > 0 && formData.category?.toLowerCase() === "sales";
     setShowDropdowns(newShowDropdowns);
 
     const newItems = [...formData.items];
@@ -472,7 +472,6 @@ export default function CombinedAddDialog({
                   <select id="category" name="category" value={formData.category} onChange={handleChange} className="w-full border rounded-md p-2 h-10" disabled={isSubmitting} >
                     <option value="">Select Category</option>
                     <option value="Sales">Sales</option>
-                    <option value="Purchase">Purchase</option>
                     <option value="Expenses">Expenses</option>
                   </select>
                 </div>

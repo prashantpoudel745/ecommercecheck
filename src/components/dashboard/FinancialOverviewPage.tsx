@@ -15,7 +15,6 @@ import {
 import { SkeletonLoader } from "@/skeleton/costumerSkeleton/skeletonLoader";
 import { useScreenSize } from "@/hooks/use-mobile";
 import { FinancialDataItem, BackendDataItem } from "../../../types";
-import { CURRENCY_SYMBOL} from "@/utils/formatCurrency";
 import { FinancialOverviewPageProps } from "../../../types/accounting.types";
 import {COLOR} from "../../utils/constants/color"
 import { MONTH_NAMES_SHORT,MONTH_NAMES_FULL } from "@/utils/constants/monthnames";
@@ -43,7 +42,6 @@ const TooltipRow = ({
     <span
       className="text-[12px] font-medium tabular-nums text-slate-800"
     >
-      {CURRENCY_SYMBOL}
       {formatCurrency(value)}
     </span>
   </div>
@@ -70,7 +68,6 @@ const BarTooltip = React.memo(({ active, payload, label }: any) => {
           style={{ color: net >= 0 ? COLOR.netUp : COLOR.netDown }}
         >
           {net >= 0 ? "+" : "\u2212"}
-          {CURRENCY_SYMBOL}
           {formatCurrency(Math.abs(net))}
         </span>
       </div>
@@ -107,7 +104,6 @@ const TrendTooltip = React.memo(({ active, payload, label }: any) => {
           style={{ color: netReal >= 0 ? COLOR.netUp : COLOR.netDown }}
         >
           {netReal >= 0 ? "+" : "\u2212"}
-          {CURRENCY_SYMBOL}
           {formatCurrency(Math.abs(netReal))}
         </span>
       </div>
@@ -117,7 +113,6 @@ const TrendTooltip = React.memo(({ active, payload, label }: any) => {
           Net
         </span>
         <span className="text-[12px] font-medium tabular-nums text-slate-800">
-          {CURRENCY_SYMBOL}
           {formatCurrency(netAbs)}
         </span>
       </div>
@@ -151,8 +146,7 @@ const KpiCard = ({
       style={{ color: emphasis ? accent : COLOR.textPrimary }}
     >
       {emphasis && value >= 0 ? "+" : emphasis && value < 0 ? "\u2212" : ""}
-      {CURRENCY_SYMBOL}
-      {formatCurrency(Math.abs(value), true)}
+      {formatCurrency(Math.abs(value))}
     </p>
   </div>
 );
@@ -283,10 +277,12 @@ export default function FinancialOverviewPage({
       if (!Array.isArray(data)) {
         throw new Error("Expected array response but got: " + typeof data);
       }
-      const formattedData = data.map((item: BackendDataItem) => ({
+      const formattedData = data.map((item: any) => ({
         name: item.date,
         income: Math.abs(item.sales),
         expenses: Math.abs(item.expenses),
+        incomeWithTax: Math.abs(item.salesWithTax || item.sales),
+        expensesWithTax: Math.abs(item.expensesWithTax || item.expenses),
         fullName: item.date,
         originalDate: new Date(item.date),
       }));
@@ -314,24 +310,26 @@ export default function FinancialOverviewPage({
 
   // Aggregation -----------------------------------------------------------
 
-  const processDataByYear = useCallback((data: FinancialDataItem[]) => {
-    const yearlyData: { [key: string]: FinancialDataItem } = {};
-    data.forEach((item) => {
+  const processDataByYear = useCallback((data: any[]) => {
+    const yearlyData: { [key: string]: any } = {};
+    data.forEach((item: any) => {
       const year = item.originalDate!.getFullYear().toString();
       if (!yearlyData[year]) {
-        yearlyData[year] = { name: year, income: 0, expenses: 0, fullName: year };
+        yearlyData[year] = { name: year, income: 0, expenses: 0, incomeWithTax: 0, expensesWithTax: 0, fullName: year };
       }
       yearlyData[year].income += item.income;
       yearlyData[year].expenses += item.expenses;
+      yearlyData[year].incomeWithTax += (item.incomeWithTax || 0);
+      yearlyData[year].expensesWithTax += (item.expensesWithTax || 0);
     });
     setDisplayData(
-      Object.values(yearlyData).sort((a, b) => parseInt(a.name) - parseInt(b.name))
+      Object.values(yearlyData).sort((a: any, b: any) => parseInt(a.name) - parseInt(b.name))
     );
   }, []);
 
-  const processDataByMonth = useCallback((data: FinancialDataItem[], year: string) => {
-    const monthlyData: { [key: string]: FinancialDataItem } = {};
-    data.forEach((item) => {
+  const processDataByMonth = useCallback((data: any[], year: string) => {
+    const monthlyData: { [key: string]: any } = {};
+    data.forEach((item: any) => {
       const date = item.originalDate!;
       if (date.getFullYear().toString() !== year) return;
       const month = date.getMonth();
@@ -344,14 +342,18 @@ export default function FinancialOverviewPage({
           monthKey,
           income: 0,
           expenses: 0,
+          incomeWithTax: 0,
+          expensesWithTax: 0,
         };
       }
       monthlyData[monthKey].income += item.income;
       monthlyData[monthKey].expenses += item.expenses;
+      monthlyData[monthKey].incomeWithTax += (item.incomeWithTax || 0);
+      monthlyData[monthKey].expensesWithTax += (item.expensesWithTax || 0);
     });
     setDisplayData(
       Object.values(monthlyData).sort(
-        (a, b) => parseInt(a.monthKey!) - parseInt(b.monthKey!)
+        (a: any, b: any) => parseInt(a.monthKey!) - parseInt(b.monthKey!)
       )
     );
   }, []);
@@ -474,9 +476,11 @@ export default function FinancialOverviewPage({
   );
 
   const totals = useMemo(() => {
-    const income = displayData.reduce((sum, item) => sum + item.income, 0);
-    const expenses = displayData.reduce((sum, item) => sum + item.expenses, 0);
-    return { income, expenses, net: income - expenses };
+    const income = displayData.reduce((sum: any, item: any) => sum + item.income, 0);
+    const expenses = displayData.reduce((sum: any, item: any) => sum + item.expenses, 0);
+    const incomeWithTax = displayData.reduce((sum: any, item: any) => sum + (item.incomeWithTax || 0), 0);
+    const expensesWithTax = displayData.reduce((sum: any, item: any) => sum + (item.expensesWithTax || 0), 0);
+    return { income, expenses, net: income - expenses, incomeWithTax, expensesWithTax };
   }, [displayData]);
 
   // States ----------------------------------------------------------------
@@ -567,9 +571,11 @@ export default function FinancialOverviewPage({
       </div>
 
       {/* KPI summary strip */}
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <KpiCard label="Total income" value={totals.income} accent={COLOR.income} />
-        <KpiCard label="Total expenses" value={totals.expenses} accent={COLOR.expense} />
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-5">
+        <KpiCard label="Revenue (excl. VAT)" value={totals.income} accent={COLOR.income} />
+        <KpiCard label="Expenses (excl. VAT)" value={totals.expenses} accent={COLOR.expense} />
+        <KpiCard label="Revenue (incl. VAT)" value={totals.incomeWithTax} accent={COLOR.income} />
+        <KpiCard label="Expenses (incl. VAT)" value={totals.expensesWithTax} accent={COLOR.expense} />
         <KpiCard
           label="Net position"
           value={totals.net}
@@ -622,7 +628,7 @@ export default function FinancialOverviewPage({
                 tickLine={false}
                 axisLine={false}
                 width={48}
-                tickFormatter={(v) => `${CURRENCY_SYMBOL}${formatCurrency(v, true)}`}
+                tickFormatter={(v) => `${formatCurrency(v)}`}
               />
               <Tooltip
                 content={<BarTooltip />}
@@ -685,7 +691,7 @@ export default function FinancialOverviewPage({
                 tickLine={false}
                 axisLine={false}
                 width={48}
-                tickFormatter={(v) => `${CURRENCY_SYMBOL}${formatCurrency(v, true)}`}
+                tickFormatter={(v) => `${formatCurrency(v)}`}
               />
               <Tooltip content={<TrendTooltip />} cursor={{ stroke: COLOR.grid, strokeWidth: 1 }} />
               <Legend wrapperStyle={{ fontSize: 12, paddingTop: 12 }} iconType="square" iconSize={8} />

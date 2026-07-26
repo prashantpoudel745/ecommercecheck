@@ -15,17 +15,17 @@ export default function RecentTransactions({
   onTransactionAdded: (t: Transaction) => void;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const [filter, setFilter] = useState<"PAYMENT" | "PURCHASE" | "SALES" | "RECEIPT" | "OTHER">("SALES");
+  const [filter, setFilter] = useState<"PAYMENT" | "EXPENSE" | "SALES" | "RECEIPT" | "OTHER">("SALES");
 
   const filteredTransactions = (transactions || []).filter((t) => {
     if (filter === "SALES") return t.type === "SALES" || t.category?.toLowerCase() === "sales";
-    if (filter === "PURCHASE") return t.type === "PURCHASE" || t.category?.toLowerCase() === "purchase";
+    if (filter === "EXPENSE") return ["EXPENSE", "PURCHASE"].includes(t.type || "") || ["expense", "expenses", "purchase", "purchases"].includes(t.category?.toLowerCase() || "");
     if (filter === "PAYMENT") return t.type === "PAYMENT";
     if (filter === "RECEIPT") return t.type === "RECEIPT";
     if (filter === "OTHER") {
-      return !["SALES", "PURCHASE", "PAYMENT", "RECEIPT"].includes(t.type || "") && 
+      return !["SALES", "PURCHASE", "EXPENSE", "PAYMENT", "RECEIPT"].includes(t.type || "") && 
              t.category?.toLowerCase() !== "sales" && 
-             t.category?.toLowerCase() !== "purchase";
+             !["expense", "expenses", "purchase", "purchases"].includes(t.category?.toLowerCase() || "");
     }
     return true;
   });
@@ -72,14 +72,14 @@ export default function RecentTransactions({
               Sales
             </button>
             <button
-              onClick={() => setFilter("PURCHASE")}
+              onClick={() => setFilter("EXPENSE")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                filter === "PURCHASE"
+                filter === "EXPENSE"
                   ? "bg-rose-500 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900"
               }`}
             >
-              Purchases
+              Expenses
             </button>
             <button
               onClick={() => setFilter("PAYMENT")}

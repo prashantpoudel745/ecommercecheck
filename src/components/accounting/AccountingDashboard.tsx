@@ -19,6 +19,8 @@ export default function AccountingDashboard({ startDate, endDate, dateRangeLabel
   const dashboardStats = stats ? {
     totalRevenue: stats.revenue,
     totalExpenses: stats.expenses,
+    totalRevenueWithTax: stats.revenueWithTax,
+    totalExpensesWithTax: stats.expensesWithTax,
     netProfit: stats.netProfit,
     accountsReceivable: stats.accountsReceivable,
     accountsPayable: stats.accountsPayable,

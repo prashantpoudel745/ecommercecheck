@@ -10,6 +10,8 @@ export interface AccountingStatsProps {
   stats: {
     totalRevenue: DecimalValue;
     totalExpenses: DecimalValue;
+    totalRevenueWithTax?: DecimalValue;
+    totalExpensesWithTax?: DecimalValue;
     netProfit: DecimalValue;
     accountsReceivable?: DecimalValue;
     accountsPayable?: DecimalValue;
@@ -84,6 +86,8 @@ export interface JournalEntry {
 export interface AccountingStats {
   revenue: DecimalValue;
   expenses: DecimalValue;
+  revenueWithTax?: DecimalValue;
+  expensesWithTax?: DecimalValue;
   netProfit: DecimalValue;
   accountsReceivable: DecimalValue;
   accountsPayable: DecimalValue;

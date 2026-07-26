@@ -176,7 +176,7 @@ export default function TransactionTable({
     (transaction.type === "RECEIPT")
       ? "bg-sky-100 text-sky-800 border-sky-400" :
 
-    (transaction.type === "PURCHASE" || transaction.category?.toLowerCase() === "purchase")
+    (transaction.type === "PURCHASE" || transaction.type === "EXPENSE" || ["purchase", "purchases", "expense", "expenses"].includes(transaction.category?.toLowerCase() || ""))
       ? "bg-rose-100 text-rose-800 border-rose-400" :
 
     (transaction.type === "PAYMENT")
@@ -188,7 +188,9 @@ export default function TransactionTable({
     "bg-gray-100 text-gray-700 border-gray-300"
   }`}
 >
-  {transaction.type || transaction.category || "General"}
+  {transaction.type === "PURCHASE" || ["purchase", "purchases"].includes(transaction.category?.toLowerCase() || "")
+    ? "EXPENSE"
+    : transaction.type || transaction.category || "General"}
 </Badge>
                 </TableCell>
                 <TableCell
@@ -197,7 +199,7 @@ export default function TransactionTable({
                       ? "text-emerald-600" :
                     (transaction.type === "RECEIPT")
                       ? "text-cyan-600" :
-                    (transaction.type === "PURCHASE")
+                    (transaction.type === "PURCHASE" || transaction.type === "EXPENSE")
                       ? "text-rose-600" :
                     (transaction.type === "PAYMENT")
                       ? "text-indigo-600" :

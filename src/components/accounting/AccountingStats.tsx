@@ -39,15 +39,25 @@ export default function AccountingStats({ stats, startDate, endDate, dateRangeLa
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <StatCard
-            title="Total Revenue"
+            title="Revenue (excl. VAT)"
             value={formatCurrency(stats.totalRevenue)}
             icon={<DollarSign size={18} />}
           />
           <StatCard
-            title="Total Expenses"
+            title="Expenses (excl. VAT)"
             value={formatCurrency(stats.totalExpenses)}
+            icon={<CreditCard size={18} />}
+          />
+          <StatCard
+            title="Revenue (incl. VAT)"
+            value={formatCurrency(stats.totalRevenueWithTax ?? stats.totalRevenue)}
+            icon={<DollarSign size={18} />}
+          />
+          <StatCard
+            title="Expenses (incl. VAT)"
+            value={formatCurrency(stats.totalExpensesWithTax ?? stats.totalExpenses)}
             icon={<CreditCard size={18} />}
           />
           <StatCard
