@@ -1,20 +1,33 @@
 import { CurrencyUtil } from "./currency.util";
 import type Decimal from "decimal.js";
 
+const CURRENCY_SYMBOL_ALIASES: Record<string, string> = {
+  "à¤°à¥": "रु",
+  "â‚¹": "₹",
+  "â‚¬": "€",
+};
+
+export const normalizeCurrencySymbol = (symbol?: string | null) => {
+  if (!symbol) return "रु";
+  return CURRENCY_SYMBOL_ALIASES[symbol] || symbol;
+};
+
 export const getCurrencySymbol = () => {
   if (typeof window !== "undefined") {
     const user = (window as any).__AUTH_USER__;
-    if (user && user.currencySymbol) return user.currencySymbol;
+    if (user?.currencySymbol) return normalizeCurrencySymbol(user.currencySymbol);
+
     try {
       const cached = window.sessionStorage.getItem("auth-user-cache");
       if (cached) {
         const parsed = JSON.parse(cached);
-        if (parsed && parsed.currencySymbol) return parsed.currencySymbol;
+        if (parsed?.currencySymbol) return normalizeCurrencySymbol(parsed.currencySymbol);
       }
-    } catch (e) {
+    } catch {
       //
     }
   }
+
   return "रु";
 };
 

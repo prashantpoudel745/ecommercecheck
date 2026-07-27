@@ -181,7 +181,7 @@ const Breadcrumb = ({
     });
   }
   if (viewMode === "day" && selectedMonth) {
-    crumbs.push({ label: MONTH_NAMES_FULL[parseInt(selectedMonth)] });
+    crumbs.push({ label: MONTH_NAMES_FULL[parseInt(selectedMonth, 10) - 1] });
   }
 
   return (
@@ -332,9 +332,9 @@ export default function FinancialOverviewPage({
     data.forEach((item: any) => {
       const date = item.originalDate!;
       if (date.getFullYear().toString() !== year) return;
-      const month = date.getMonth();
-      const monthKey = month.toString().padStart(2, "0");
-      const monthDisplay = MONTH_NAMES_SHORT[month];
+      const monthIndex = date.getMonth();
+      const monthKey = (monthIndex + 1).toString().padStart(2, "0");
+      const monthDisplay = MONTH_NAMES_SHORT[monthIndex];
       if (!monthlyData[monthKey]) {
         monthlyData[monthKey] = {
           name: monthDisplay,
@@ -365,7 +365,7 @@ export default function FinancialOverviewPage({
           const date = item.originalDate!;
           return (
             date.getFullYear().toString() === year &&
-            date.getMonth().toString().padStart(2, "0") === month
+            (date.getMonth() + 1).toString().padStart(2, "0") === month
           );
         })
         .map((item) => ({ ...item, name: item.originalDate!.getDate().toString() }))
@@ -431,7 +431,7 @@ export default function FinancialOverviewPage({
       if (viewMode === "month" && item.fullName) {
         period = item.fullName;
       } else if (viewMode === "day" && selectedYear && selectedMonth) {
-        period = `${MONTH_NAMES_FULL[parseInt(selectedMonth)]} ${item.name}, ${selectedYear}`;
+        period = `${MONTH_NAMES_FULL[parseInt(selectedMonth, 10) - 1]} ${item.name}, ${selectedYear}`;
       }
       const netProfit = item.income - item.expenses;
       csvContent += `${period},${item.income.toFixed(2)},${item.expenses.toFixed(2)},${netProfit.toFixed(2)}\n`;
@@ -442,7 +442,7 @@ export default function FinancialOverviewPage({
     } else if (viewMode === "month" && selectedYear) {
       fileName = `${selectedYear}-monthly-financial-data`;
     } else if (viewMode === "day" && selectedYear && selectedMonth) {
-      fileName = `${selectedYear}-${MONTH_NAMES_FULL[parseInt(selectedMonth)]}-daily-financial-data`;
+      fileName = `${selectedYear}-${MONTH_NAMES_FULL[parseInt(selectedMonth, 10) - 1]}-daily-financial-data`;
     }
 
     const encodedUri = encodeURI(csvContent);
@@ -459,7 +459,7 @@ export default function FinancialOverviewPage({
   const chartTitle = useMemo(() => {
     if (viewMode === "month" && selectedYear) return `Monthly breakdown \u2014 ${selectedYear}`;
     if (viewMode === "day" && selectedYear && selectedMonth) {
-      return `Daily breakdown \u2014 ${MONTH_NAMES_FULL[parseInt(selectedMonth)]} ${selectedYear}`;
+      return `Daily breakdown \u2014 ${MONTH_NAMES_FULL[parseInt(selectedMonth, 10) - 1]} ${selectedYear}`;
     }
     return "Annual overview";
   }, [viewMode, selectedYear, selectedMonth]);

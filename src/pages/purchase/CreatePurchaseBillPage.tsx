@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { createPurchaseBill } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
 import { Plus, Trash2 } from "lucide-react";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function CreatePurchaseBillPage() {
   const navigate = useNavigate();
@@ -220,7 +221,7 @@ export default function CreatePurchaseBillPage() {
                         />
                       </td>
                       <td className="p-2 font-medium text-slate-700">
-                        {Number(item.amount || 0).toFixed(2)}
+                        {formatCurrency(item.amount)}
                       </td>
                       <td className="p-2 text-center">
                         <button type="button" onClick={() => removeItem(index)} className="p-1 text-red-400 hover:text-red-600">
@@ -248,15 +249,15 @@ export default function CreatePurchaseBillPage() {
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Subtotal:</span>
-                  <span>{subtotal.toFixed(2)}</span>
+                  <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Tax:</span>
-                  <span>{tax.toFixed(2)}</span>
+                  <span>{formatCurrency(tax)}</span>
                 </div>
                 <div className="flex justify-between border-t border-slate-200 pt-2 text-lg font-bold text-slate-900">
                   <span>Total:</span>
-                  <span>{totalAmount.toFixed(2)}</span>
+                  <span>{formatCurrency(totalAmount)}</span>
                 </div>
               </div>
             </div>

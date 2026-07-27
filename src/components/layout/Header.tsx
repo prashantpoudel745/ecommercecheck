@@ -27,6 +27,7 @@ import { useAuth } from "@/context/AuthContext";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import EditProfileModal from "@/components/profile/EditProfileModal";
 import { BusinessAssistant } from "../assistant/BusinessAssistant";
+import { normalizeCurrencySymbol } from "@/utils/formatCurrency";
 const API_URL = import.meta.env.VITE_API_URL||"";
 
 const sectionLabels: Record<string, string> = {
@@ -79,7 +80,7 @@ export function Header() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ currencySymbol: symbol }),
+        body: JSON.stringify({ currencySymbol: normalizeCurrencySymbol(symbol) }),
       });
       if (response.ok) {
         toast.success("Currency updated");

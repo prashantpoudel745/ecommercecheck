@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createQuotation } from "@/services/sales.service";
 import { Plus, Trash2 } from "lucide-react";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function CreateQuotationPage() {
   const navigate = useNavigate();
@@ -126,7 +127,7 @@ export default function CreateQuotationPage() {
                       <input required type="number" min="0" step="0.01" value={item.price} onChange={e => handleItemChange(index, "price", e.target.value)} className="w-full rounded border p-2 text-sm outline-none" />
                     </td>
                     <td className="p-2 font-medium text-slate-700">
-                      ${item.amount.toFixed(2)}
+                      {formatCurrency(item.amount)}
                     </td>
                     <td className="p-2 text-center">
                       <button type="button" onClick={() => handleRemoveItem(index)} className="text-red-400 hover:text-red-600 p-1">
@@ -143,7 +144,7 @@ export default function CreateQuotationPage() {
             <div className="w-64 space-y-3 text-sm">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal:</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <span className="font-medium">{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between items-center text-slate-600">
                 <span>Tax Rate (%):</span>
@@ -151,11 +152,11 @@ export default function CreateQuotationPage() {
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Tax Amount:</span>
-                <span className="font-medium">${tax.toFixed(2)}</span>
+                <span className="font-medium">{formatCurrency(tax)}</span>
               </div>
               <div className="flex justify-between text-lg font-bold text-slate-900 pt-2 border-t border-slate-200">
                 <span>Total:</span>
-                <span>${totalAmount.toFixed(2)}</span>
+                <span>{formatCurrency(totalAmount)}</span>
               </div>
             </div>
           </div>

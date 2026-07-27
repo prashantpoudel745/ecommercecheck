@@ -117,6 +117,12 @@ export default function Dashboard() {
     const year = financialSelectedYear;
     if (financialSelectedMonth) {
       const monthNum = parseInt(financialSelectedMonth, 10);
+      if (!Number.isInteger(monthNum) || monthNum < 1 || monthNum > 12) {
+        return {
+          startDate: `${year}-01-01`,
+          endDate: `${year}-12-31`,
+        };
+      }
       const mStr = monthNum < 10 ? `0${monthNum}` : `${monthNum}`;
       const lastDay = new Date(parseInt(year, 10), monthNum, 0).getDate();
       return {
@@ -140,6 +146,14 @@ export default function Dashboard() {
       if (selectedYear) {
         if (selectedMonth) {
           const monthNum = parseInt(selectedMonth, 10);
+          if (!Number.isInteger(monthNum) || monthNum < 1 || monthNum > 12) {
+            params = {
+              startDate: `${selectedYear}-01-01`,
+              endDate: `${selectedYear}-12-31`,
+            };
+            fetchTransactions(params);
+            return;
+          }
           const mStr = monthNum < 10 ? `0${monthNum}` : `${monthNum}`;
           const lastDay = new Date(parseInt(selectedYear, 10), monthNum, 0).getDate();
           params = {

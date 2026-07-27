@@ -388,7 +388,7 @@ export function InventoryStatusChart({
       return `Synced to ${financialSelectedYear}`;
     }
     if (financialViewMode === "day" && financialSelectedYear && financialSelectedMonth) {
-      return `Synced to ${MONTH_NAMES_FULL[parseInt(financialSelectedMonth)]} ${financialSelectedYear}`;
+      return `Synced to ${MONTH_NAMES_FULL[parseInt(financialSelectedMonth, 10) - 1]} ${financialSelectedYear}`;
     }
     return null;
   }, [financialViewMode, financialSelectedYear, financialSelectedMonth]);

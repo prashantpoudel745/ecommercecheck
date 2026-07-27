@@ -3,6 +3,7 @@ import { fetchQuotations } from "@/services/sales.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function QuotationsPage() {
   const [data, setData] = useState([]);
@@ -53,7 +54,7 @@ export default function QuotationsPage() {
                     <td className="px-6 py-4 font-medium text-slate-900">{item.quotationNumber}</td>
                     <td className="px-6 py-4">{item.customerName}</td>
                     <td className="px-6 py-4">{new Date(item.date || item.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 font-medium">${item.totalAmount?.$numberDecimal || 0}</td>
+                    <td className="px-6 py-4 font-medium">{formatCurrency(item.totalAmount)}</td>
                     <td className="px-6 py-4">
                       <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">
                         {item.status || "DRAFT"}

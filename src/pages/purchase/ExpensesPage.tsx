@@ -3,7 +3,7 @@ import { fetchExpenses } from "@/services/purchase.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-
+import { formatCurrency } from "@/utils/formatCurrency";
 export default function ExpensesPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +54,7 @@ export default function ExpensesPage() {
                     <td className="px-6 py-4 font-medium text-slate-900">{item.expenseReference || "-"}</td>
                     <td className="px-6 py-4">{item.category}</td>
                     <td className="px-6 py-4">{new Date(item.date || item.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 font-medium text-red-500">-${item.amount?.$numberDecimal || 0}</td>
+                    <td className="px-6 py-4 font-medium text-red-500">-{formatCurrency(item.amount)}</td>
                     <td className="px-6 py-4 max-w-[200px] truncate">{item.description || "-"}</td>
                     <td className="px-6 py-4">
                       <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">

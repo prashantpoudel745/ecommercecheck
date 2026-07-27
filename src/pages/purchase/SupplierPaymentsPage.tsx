@@ -3,6 +3,7 @@ import { fetchSupplierPayments } from "@/services/purchase.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function SupplierPaymentsPage() {
   const [data, setData] = useState([]);
@@ -55,7 +56,7 @@ export default function SupplierPaymentsPage() {
                     <td className="px-6 py-4">{item.supplierName}</td>
                     <td className="px-6 py-4">{new Date(item.paymentDate || item.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">{item.paymentMethod?.replace("_", " ") || "BANK TRANSFER"}</td>
-                    <td className="px-6 py-4 font-medium text-red-500">-${item.amount?.$numberDecimal || 0}</td>
+                    <td className="px-6 py-4 font-medium text-red-500">-{formatCurrency(item.amount)}</td>
                     <td className="px-6 py-4">
                       <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">
                         {item.status || "COMPLETED"}
