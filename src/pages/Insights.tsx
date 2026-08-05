@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -26,7 +26,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
@@ -81,7 +81,7 @@ function MetricTile({
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">{value}</p>
+          <p className="mt-2 text-xl sm:text-2xl font-semibold tracking-tight text-slate-950">{value}</p>
         </div>
         <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", tone)}>{icon}</div>
       </div>
@@ -295,14 +295,14 @@ export default function Insights() {
   }
 
   return (
-    <div className="mx-auto max-w-[1520px] space-y-6">
+    <div className="mx-auto max-w-[1520px] space-y-4 sm:space-y-5 lg:space-y-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           {/* <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
             <BrainCircuit className="h-4 w-4 text-indigo-600" />
             Business intelligence
           </div> */}
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 ">Dashboards and Insights</h1>
+          <h1 className="mt-3 text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-950 ">Dashboards and Insights</h1>
         </div>
         <p className="text-xs text-slate-500">
           Updated{" "}
@@ -317,7 +317,7 @@ export default function Insights() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 xl:grid-cols-4">
         <MetricTile
           label="Today net"
           value={formatCurrency(snapshot.finance.todayNet)}
@@ -348,9 +348,9 @@ export default function Insights() {
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.45fr_0.9fr]">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.45fr_0.9fr]">
         <InsightPanel title="Revenue, expenses, and net position" subtitle="Compare yesterday, today, and current month performance.">
-          <div className="h-[330px]">
+          <div className="h-[240px] sm:h-[280px] lg:h-[330px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={derived.financeTrend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
@@ -376,7 +376,7 @@ export default function Insights() {
         </InsightPanel>
 
         <InsightPanel title="Business health" subtitle="A quick operating score from live company signals.">
-          <div className="h-[330px]">
+          <div className="h-[240px] sm:h-[280px] lg:h-[330px]">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={derived.healthRadar}>
                 <PolarGrid stroke="#CBD5E1" />
@@ -390,10 +390,10 @@ export default function Insights() {
         </InsightPanel>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
         <InsightPanel title="Inventory risk" subtitle="Stock pressure by product status.">
           {derived.inventoryRisk.length > 0 ? (
-            <div className="h-[280px]">
+            <div className="h-[220px] sm:h-[260px] lg:h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={derived.inventoryRisk} dataKey="value" nameKey="name" innerRadius={62} outerRadius={96} paddingAngle={3}>
@@ -411,7 +411,7 @@ export default function Insights() {
         </InsightPanel>
 
         <InsightPanel title="Highest-value inventory" subtitle="Capital currently tied to stock.">
-          <div className="h-[280px]">
+          <div className="h-[220px] sm:h-[260px] lg:h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={derived.topInventory} layout="vertical" margin={{ top: 0, right: 14, left: 20, bottom: 0 }}>
                 <CartesianGrid stroke="#E2E8F0" horizontal={false} />

@@ -191,14 +191,14 @@ const KpiCard = ({
   value: number;
   accent: string;
 }) => (
-  <div className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
+  <div className="flex-1 min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 sm:px-4 sm:py-3 dark:border-slate-800 dark:bg-slate-900">
     <div className="flex items-center gap-1.5">
       <span className="h-1.5 w-1.5 rounded-[2px]" style={{ backgroundColor: accent }} />
-      <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+      <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-slate-400">
         {label}
       </span>
     </div>
-    <p className="mt-1.5 text-xl font-semibold tabular-nums tracking-tight text-slate-900 dark:text-slate-50">
+    <p className="mt-1 sm:mt-1.5 text-base sm:text-lg lg:text-xl font-semibold tabular-nums tracking-tight text-slate-900 dark:text-slate-50 truncate">
       {formatCount(value)}
     </p>
   </div>
@@ -464,7 +464,7 @@ export function InventoryStatusChart({
   const StickyHeader = ({ showHint = false }: { showHint?: boolean }) => (
     <div className=" mb-5 flex flex-col gap-3 bg-white/95 px-1 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-slate-950/95 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
-        <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
+        <h3 className="text-base sm:text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
           Inventory status
         </h3>
         <SyncBadge />

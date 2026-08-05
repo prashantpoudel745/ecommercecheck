@@ -47,7 +47,7 @@ export const createAccountGroup = async (data: Partial<AccountGroup>) => {
 // Accounts
 export const getAccounts = async (): Promise<Account[]> => {
   const response = await api.get("/erp/accounts");
-  return response.data;
+  return response.data?.accounts ?? response.data ?? [];
 };
 
 export const createAccount = async (data: Partial<Account>) => {
@@ -83,7 +83,18 @@ export const approveVoucher = async (id: string) => {
 };
 
 // Partial Payments
-export const recordPayment = async (voucherId: string, data: { amount: number; paymentAccountId: string; narration?: string; title?: string; description?: string }) => {
+export const recordPayment = async (
+  voucherId: string,
+  data: {
+    amount: number;
+    paymentAccountId: string;
+    paymentMethod?: string;
+    transactionId?: string;
+    narration?: string;
+    title?: string;
+    description?: string;
+  }
+) => {
   const response = await api.post(`/erp/vouchers/${voucherId}/payment`, data);
   return response.data;
 };
@@ -149,6 +160,7 @@ export const getAgingReportAP = async () => {
 
 export const getVatReport = async (params?: { startDate?: string; endDate?: string }): Promise<VatReport> => {
   const response = await api.get("/erp/reports/vat", { params });
+  console.log(response.data);
   return response.data;
 };
 
@@ -191,6 +203,7 @@ async (params?: { startDate?: string; endDate?: string }):Promise<AccountingStat
         getAccounts(),
 
     ]);
+    console.log("pnl : ",pnl);
     //---------------------
     // Revenue
     //---------------------
@@ -402,8 +415,8 @@ export const calculateRevenueExpenses = (transactions: Transaction[]) => {
     if (category === "sales" || type === "sales" || category === "revenue") {
       revenue = revenue.plus(amount);
     } else if (
-      ["expenses", "expense"].includes(category) ||
-      ["expenses", "expense"].includes(type)
+      ["expenses", "expense", "purchase", "purchases", "supplier payment", "supplier-payment", "supplier_payment"].includes(category) ||
+      ["expenses", "expense", "purchase", "purchases", "supplier payment", "supplier-payment", "supplier_payment"].includes(type)
     ) {
       expenses = expenses.plus(amount);
     }

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Activity } from "../../../types";
-import { getCurrencySymbol } from "@/utils/formatCurrency";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 const API_BASE = import.meta.env.VITE_API_URL||"";

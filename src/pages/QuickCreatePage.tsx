@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { 
   createQuotation, 
   createSalesOrder, 
@@ -16,6 +16,7 @@ export default function QuickCreatePage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const [panError, setPanError] = useState("");
 
   // Map URL parameters to display titles and API functions
   const getEntityConfig = () => {
@@ -45,6 +46,15 @@ export default function QuickCreatePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // IRD Compliance: validate PAN/VAT before submission
+    const panVal = formData.vatNo || formData.taxNumber || "";
+    if (panVal && !/^\d{9}$/.test(panVal)) {
+      setPanError("PAN/VAT must be exactly 9 numeric digits (IRD Nepal requirement).");
+      return;
+    }
+    setPanError("");
+
     setLoading(true);
     
     try {
@@ -131,6 +141,30 @@ export default function QuickCreatePage() {
                 <label className="text-sm font-medium text-slate-700">Phone</label>
                 <input name="phone" type="tel" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
               </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  PAN / VAT Number
+                  <span className="ml-1 text-xs text-amber-600 font-normal">(9 digits — IRD Required)</span>
+                </label>
+                <input
+                  name="vatNo"
+                  maxLength={9}
+                  pattern="\d{9}"
+                  onChange={(e) => {
+                    handleInputChange(e);
+                    if (e.target.value && !/^\d{9}$/.test(e.target.value)) {
+                      setPanError("PAN/VAT must be exactly 9 numeric digits.");
+                    } else {
+                      setPanError("");
+                    }
+                  }}
+                  className={`w-full rounded-md border p-2 focus:ring-2 outline-none ${
+                    panError ? "border-red-400 focus:ring-red-400" : "focus:ring-emerald-500"
+                  }`}
+                  placeholder="e.g. 123456789"
+                />
+                {panError && <p className="text-xs text-red-500 mt-1">{panError}</p>}
+              </div>
             </div>
           </>
         );
@@ -140,13 +174,13 @@ export default function QuickCreatePage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
+    <div className="p-3 sm:p-4 lg:p-6 max-w-5xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Create New {config.title}</h1>
-        <p className="text-slate-500 mt-1">Fill out the details below to create a new record.</p>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Create New {config.title}</h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">Fill out the details below to create a new record.</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 lg:p-6">
         <form onSubmit={handleSubmit} className="space-y-8">
           {renderFormFields()}
           

@@ -26,7 +26,7 @@ const writePersistedUser = (userData: User | null) => {
 
   try {
     if (userData) {
-      window.sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
+      window.sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData.currencySymbol));
     } else {
       window.sessionStorage.removeItem(AUTH_STORAGE_KEY);
     }

@@ -35,11 +35,16 @@ export default function AccountingDashboard({ startDate, endDate, dateRangeLabel
   };
   const mappedTransactions = (recentVouchers || []).map(v => ({
   id: v._id,
+  _id: v._id,
   date: v.date,
   description: v.narration || v.description || v.title || v.voucherNumber,
   clientname: v.partyName,
   amount: CurrencyUtil.format(v.totalAmount),
+  totalAmount: CurrencyUtil.format(v.totalAmount),
   type: v.type,
+  voucherNumber: v.voucherNumber,
+  referenceNumber: v.referenceNumber,
+  paymentStatus: v.paymentStatus,
   updatedBy: v.updatedBy,
 }));
 

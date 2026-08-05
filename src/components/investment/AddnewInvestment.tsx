@@ -1,6 +1,6 @@
 ﻿// src/components/Dashboard/AddnewInvestment.jsx
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { createInvestment } from "@/services/investmentService";
 
 const AddInvestmentForm = ({ onAddInvestment, userId }) => {

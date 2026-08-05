@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { createCreditNote } from "@/services/sales.service";
 
 export default function CreateCreditNotePage() {
@@ -31,7 +31,7 @@ export default function CreateCreditNotePage() {
   return (
     <div className="p-6 max-w-5xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Create New Credit Note</h1>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Create New Credit Note</h1>
         <p className="text-slate-500 mt-1">Fill out the details below to issue a credit note.</p>
       </div>
 
@@ -41,6 +41,10 @@ export default function CreateCreditNotePage() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Customer Name</label>
               <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Invoice Reference (Optional)</label>
+              <input name="invoiceRef" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. INV-12345" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Credit Amount</label>

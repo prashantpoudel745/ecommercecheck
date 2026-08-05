@@ -6,7 +6,7 @@ import {
   Loader2,
   LockKeyhole,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { Link, useNavigate } from "react-router-dom";
 import Authsidebar from "@/components/authcomponents/authsidebar";
 import { useAuth } from "@/context/AuthContext";

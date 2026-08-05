@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { createPurchaseBill } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
 import { Plus, Trash2 } from "lucide-react";
@@ -13,14 +13,34 @@ export default function CreatePurchaseBillPage() {
   const [formData, setFormData] = useState<any>({
     paymentStatus: "due",
     amountPaid: 0,
-    taxRate: 0,
-    items: [{ itemName: "", quantity: 1, price: 0, amount: 0 }],
+    paymentMethod: "BANK_TRANSFER",
+    transactionId: "",
+    supplierPAN: "",
+    supplierPhone: "",
+    taxRate: 15,
+    taxIncluded: false,
+    items: [{ itemName: "", quantity: 1, price: 0, amount: 0, vatExempt: false }],
   });
   const [accounts, setAccounts] = useState<any[]>([]);
 
   useEffect(() => {
     getAccounts()
-      .then((data) => setAccounts(data || []))
+      .then((accountsList) => {
+        setAccounts(accountsList);
+        if (accountsList.length > 0) {
+          const defaultCashAccount = accountsList.find((account: any) => {
+            const name = account.name?.toLowerCase?.() || "";
+            const groupName = account.accountGroup?.name?.toLowerCase?.() || "";
+            return (
+              account.type === "ASSET" &&
+              (name.includes("cash") || name.includes("bank") || groupName.includes("cash") || groupName.includes("bank"))
+            );
+          });
+          if (defaultCashAccount) {
+            setFormData((prev: any) => ({ ...prev, paymentAccountId: defaultCashAccount._id }));
+          }
+        }
+      })
       .catch(() => setAccounts([]));
   }, []);
 
@@ -41,14 +61,15 @@ export default function CreatePurchaseBillPage() {
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const value = e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value;
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   const updateItems = (items: any[]) => {
     setFormData({ ...formData, items });
   };
 
-  const handleItemChange = (index: number, field: string, value: string | number) => {
+  const handleItemChange = (index: number, field: string, value: string | number | boolean) => {
     const items = [...formData.items];
     const nextItem = { ...items[index], [field]: value };
     const quantity = Number(nextItem.quantity || 0);
@@ -59,7 +80,7 @@ export default function CreatePurchaseBillPage() {
   };
 
   const addItem = () => {
-    updateItems([...formData.items, { itemName: "", quantity: 1, price: 0, amount: 0 }]);
+    updateItems([...formData.items, { itemName: "", quantity: 1, price: 0, amount: 0, vatExempt: false }]);
   };
 
   const removeItem = (index: number) => {
@@ -67,9 +88,18 @@ export default function CreatePurchaseBillPage() {
     updateItems(formData.items.filter((_: any, itemIndex: number) => itemIndex !== index));
   };
 
-  const subtotal = formData.items.reduce((sum: number, item: any) => sum + Number(item.amount || 0), 0);
-  const tax = (subtotal * Number(formData.taxRate || 0)) / 100;
-  const totalAmount = subtotal + tax;
+  const taxableAmount = formData.items.reduce((sum: number, item: any) => {
+    return item.vatExempt ? sum : sum + Number(item.amount || 0);
+  }, 0);
+  const exemptAmount = formData.items.reduce((sum: number, item: any) => {
+    return item.vatExempt ? sum + Number(item.amount || 0) : sum;
+  }, 0);
+  const ratePercent = Number(formData.taxRate || 0) / 100;
+  const grossTaxable = taxableAmount;
+  const netTaxable = formData.taxIncluded && ratePercent > 0 ? grossTaxable / (1 + ratePercent) : grossTaxable;
+  const tax = formData.taxIncluded && ratePercent > 0 ? grossTaxable - netTaxable : grossTaxable * ratePercent;
+  const subtotal = netTaxable + exemptAmount;
+  const totalAmount = formData.taxIncluded ? grossTaxable + exemptAmount : subtotal + tax;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,6 +116,8 @@ export default function CreatePurchaseBillPage() {
         items: validItems,
         subtotal,
         tax,
+        taxableAmount,
+        exemptAmount,
         totalAmount,
       });
       toast.success("Purchase Bill recorded successfully!");
@@ -100,7 +132,7 @@ export default function CreatePurchaseBillPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Record Purchase Bill</h1>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Record Purchase Bill</h1>
         <p className="text-slate-500 mt-1">Record a bill received from a supplier.</p>
       </div>
 
@@ -112,8 +144,16 @@ export default function CreatePurchaseBillPage() {
               <input name="supplierName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Enter supplier name" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Bill Number (from Supplier)</label>
-              <input name="billNumber" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. INV-2023-01" />
+              <label className="text-sm font-medium text-slate-700">Supplier VAT Bill Number</label>
+              <input name="supplierBillNumber" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. INV-2023-01" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Supplier PAN / VAT Number</label>
+              <input name="supplierPAN" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Enter supplier PAN or VAT" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Supplier Phone</label>
+              <input name="supplierPhone" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. 977-01-1234567" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Due Date</label>
@@ -147,25 +187,48 @@ export default function CreatePurchaseBillPage() {
                 />
               </div>
             )}
-            {formData.paymentStatus !== "due" && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Payment Account</label>
-                <select
-                  name="paymentAccountId"
-                  required
-                  onChange={(e) => setFormData({ ...formData, paymentAccountId: e.target.value })}
-                  className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                  defaultValue=""
-                >
-                  <option value="" disabled>Select cash/bank account</option>
-                  {cashBankAccounts.map((account) => (
-                    <option key={account._id} value={account._id}>
-                      {account.name} {account.code ? `(${account.code})` : ""}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Payment Account</label>
+              <select
+                name="paymentAccountId"
+                required={formData.paymentStatus !== "due"}
+                value={formData.paymentAccountId || ""}
+                onChange={(e) => setFormData({ ...formData, paymentAccountId: e.target.value })}
+                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+              >
+                <option value="" disabled>Select cash/bank account</option>
+                {cashBankAccounts.map((account) => (
+                  <option key={account._id} value={account._id}>
+                    {account.name} {account.code ? `(${account.code})` : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Payment Method</label>
+              <select
+                name="paymentMethod"
+                value={formData.paymentMethod}
+                onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+              >
+                <option value="CASH">Cash</option>
+                <option value="BANK_TRANSFER">Bank Transfer</option>
+                <option value="CHEQUE">Cheque</option>
+                <option value="CREDIT_CARD">Credit/Debit Card</option>
+                <option value="DIGITAL_WALLET">Digital Wallet</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Transaction ID</label>
+              <input
+                name="transactionId"
+                value={formData.transactionId}
+                onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
+                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                placeholder="Optional"
+              />
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -184,6 +247,7 @@ export default function CreatePurchaseBillPage() {
                     <th className="w-24 p-3">Qty</th>
                     <th className="w-32 p-3">Cost</th>
                     <th className="w-32 p-3">Amount</th>
+                    <th className="w-24 p-3 text-center">VAT</th>
                     <th className="w-12 p-3"></th>
                   </tr>
                 </thead>
@@ -224,6 +288,15 @@ export default function CreatePurchaseBillPage() {
                         {formatCurrency(item.amount)}
                       </td>
                       <td className="p-2 text-center">
+                        <input
+                          type="checkbox"
+                          checked={!item.vatExempt}
+                          onChange={(e) => handleItemChange(index, "vatExempt", !e.target.checked)}
+                          className="h-4 w-4 rounded border-gray-300 text-emerald-600"
+                          title="VAT applicable"
+                        />
+                      </td>
+                      <td className="p-2 text-center">
                         <button type="button" onClick={() => removeItem(index)} className="p-1 text-red-400 hover:text-red-600">
                           <Trash2 size={16} />
                         </button>
@@ -246,6 +319,27 @@ export default function CreatePurchaseBillPage() {
                     onChange={(e) => setFormData({ ...formData, taxRate: Number(e.target.value) })}
                     className="w-20 rounded border p-1 text-right outline-none"
                   />
+                </div>
+                <div className="flex items-center gap-2 text-slate-600">
+                  <input
+                    id="taxIncluded"
+                    name="taxIncluded"
+                    type="checkbox"
+                    checked={Boolean(formData.taxIncluded)}
+                    onChange={(e) => setFormData({ ...formData, taxIncluded: e.target.checked })}
+                    className="rounded border-gray-300 w-4 h-4 text-emerald-600"
+                  />
+                  <label htmlFor="taxIncluded" className="text-sm font-medium text-slate-700 mb-0">
+                    Prices include VAT
+                  </label>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Taxable:</span>
+                  <span>{formatCurrency(taxableAmount)}</span>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Non-taxable:</span>
+                  <span>{formatCurrency(exemptAmount)}</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Subtotal:</span>

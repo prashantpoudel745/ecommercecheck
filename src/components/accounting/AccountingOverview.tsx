@@ -37,7 +37,6 @@ export default function AccountingOverview() {
             <TabButton id="fiscal" label="Fiscal Periods" icon={CalendarRange} />
         </div>
 
-        {/* Content Area — scrolls normally underneath the sticky nav */}
         <ErrorBoundary key={activeTab}>
           {activeTab === "dashboard" && <AccountingDashboard />}
           {activeTab === "coa" && <ChartOfAccounts />}

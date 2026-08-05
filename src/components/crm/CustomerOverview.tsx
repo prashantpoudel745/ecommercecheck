@@ -327,9 +327,9 @@ const CustomerOverview = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
       {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <StatCard
           title="Total Client"
           value={memoizedStats.totalClients}
@@ -360,7 +360,7 @@ const CustomerOverview = () => {
 
       {/* All Clients Table */}
       <Card>
-        <CardHeader className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+        <CardHeader className="flex flex-wrap items-center justify-between gap-3">
           <CardTitle>All Clients</CardTitle>
           <div className="flex flex-wrap items-center gap-2">
             <select

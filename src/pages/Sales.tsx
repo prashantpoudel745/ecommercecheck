@@ -146,7 +146,7 @@ export default function Sales() {
             <h3 className="text-lg font-semibold text-slate-950">Send us a message</h3>
 
             <form className="mt-6 space-y-5" onSubmit={(e) => { e.preventDefault(); }}>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">First name</label>
                   <input

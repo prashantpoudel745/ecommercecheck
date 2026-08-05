@@ -133,23 +133,27 @@ code {
   }
 
   .enterprise-panel {
-    @apply rounded-[1.5rem] border border-slate-200/80 bg-white/90 shadow-soft backdrop-blur-xl;
+    @apply rounded-2xl sm:rounded-[1.5rem] border border-slate-200/80 bg-white/90 shadow-soft backdrop-blur-xl;
   }
 
   .enterprise-kicker {
-    @apply inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600;
+    @apply inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-slate-200 bg-white px-2.5 py-1 sm:px-3 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600;
   }
 
   .enterprise-title {
-    @apply text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl;
+    @apply text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl lg:text-4xl;
   }
 
   .enterprise-subtitle {
-    @apply text-sm leading-6 text-slate-600 sm:text-base;
+    @apply text-xs leading-5 text-slate-600 sm:text-sm sm:leading-6;
   }
 
   .metric-card {
-    @apply rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm;
+    @apply rounded-xl sm:rounded-2xl border border-slate-200 bg-white px-3 py-3 sm:px-4 sm:py-4 shadow-sm;
+  }
+
+  .responsive-panel {
+    @apply p-3 sm:p-4 lg:p-6;
   }
 }
 

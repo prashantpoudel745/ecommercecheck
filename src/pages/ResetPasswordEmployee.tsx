@@ -1,6 +1,6 @@
 ﻿import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 const API_URL = import.meta.env.VITE_API_URL||"";

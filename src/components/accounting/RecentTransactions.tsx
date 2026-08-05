@@ -15,9 +15,10 @@ export default function RecentTransactions({
   onTransactionAdded: (t: Transaction) => void;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const [filter, setFilter] = useState<"PAYMENT" | "EXPENSE" | "SALES" | "RECEIPT" | "OTHER">("SALES");
+  const [filter, setFilter] = useState<"ALL" | "PAYMENT" | "EXPENSE" | "SALES" | "RECEIPT" | "OTHER">("ALL");
 
   const filteredTransactions = (transactions || []).filter((t) => {
+    if (filter === "ALL") return true;
     if (filter === "SALES") return t.type === "SALES" || t.category?.toLowerCase() === "sales";
     if (filter === "EXPENSE") return ["EXPENSE", "PURCHASE"].includes(t.type || "") || ["expense", "expenses", "purchase", "purchases"].includes(t.category?.toLowerCase() || "");
     if (filter === "PAYMENT") return t.type === "PAYMENT";
@@ -61,6 +62,16 @@ export default function RecentTransactions({
           </div>
           
           <div className="flex flex-wrap gap-1.5 bg-slate-100/80 p-1 rounded-xl w-fit border border-slate-200/50">
+            <button
+              onClick={() => setFilter("ALL")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                filter === "ALL"
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-900"
+              }`}
+            >
+              All
+            </button>
             <button
               onClick={() => setFilter("SALES")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
@@ -122,7 +133,7 @@ export default function RecentTransactions({
         ) : (
           <SearchComponent
             data={displayedTransactions}
-            searchFields={["description", "clientname", "category"]}
+            searchFields={["description", "clientname", "category", "type", "voucherNumber", "referenceNumber"]}
             placeholder="Search transactions..."
             renderResults={(filteredTransactions) => (
               <TransactionTable 

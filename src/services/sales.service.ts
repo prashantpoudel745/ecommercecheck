@@ -5,8 +5,28 @@ export const createQuotation = async (data: any) => {
   return response.data;
 };
 
+export const updateQuotationStatus = async (id: string, status: string) => {
+  const response = await api.patch(`/sales/quotations/${id}/status`, { status });
+  return response.data;
+};
+
+export const sendQuotationEmail = async (id: string, email: string, taxRate: number = 0) => {
+  const response = await api.post(`/sales/quotations/${id}/send`, { email, taxRate });
+  return response.data;
+};
+
 export const createSalesOrder = async (data: any) => {
   const response = await api.post("/sales/orders", data);
+  return response.data;
+};
+
+export const convertQuotationToSalesOrder = async (id: string) => {
+  const response = await api.post(`/sales/quotations/${id}/convert-to-sales-order`);
+  return response.data;
+};
+
+export const convertSalesOrderToInvoice = async (id: string) => {
+  const response = await api.post(`/sales/orders/${id}/convert-to-invoice`);
   return response.data;
 };
 
@@ -51,6 +71,16 @@ export const fetchInvoices = async () => {
   return response.data;
 };
 
+export const fetchInvoiceById = async (id: string) => {
+  const response = await api.get(`/sales/invoices/${id}`);
+  return response.data;
+};
+
+export const convertInvoiceToPayment = async (id: string, data: any) => {
+  const response = await api.post(`/sales/invoices/${id}/convert-to-payment`, data);
+  return response.data;
+};
+
 export const fetchCreditNotes = async () => {
   const response = await api.get("/sales/credit-notes");
   return response.data;
@@ -63,5 +93,16 @@ export const fetchCustomerPayments = async () => {
 
 export const fetchCustomers = async () => {
   const response = await api.get("/sales/customers");
+  return response.data;
+};
+
+// --- IRD Compliance: Void Bill ---
+export const voidInvoice = async (id: string, reason: string, approvedBy?: string) => {
+  const response = await api.post(`/sales/invoices/${id}/void`, { reason, approvedBy });
+  return response.data;
+};
+
+export const incrementPrintCount = async (id: string) => {
+  const response = await api.patch(`/sales/invoices/${id}/print`, {});
   return response.data;
 };

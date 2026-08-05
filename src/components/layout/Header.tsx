@@ -18,8 +18,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ChangeSignature from "@/lib/Changesignature";
-import { BellRing, LogOut, Globe, DollarSign, UserPen, KeyRound } from "lucide-react";
-import { toast } from "sonner";
+import { BellRing, LogOut, Globe, DollarSign, UserPen, KeyRound, Menu } from "lucide-react";
+import { toast } from "@/utils/notify";
 import { InstallButton } from "../pwa/InstallButton";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -41,7 +41,11 @@ const sectionLabels: Record<string, string> = {
   "/prediction": "Growth planning",
 };
 
-export function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -138,19 +142,29 @@ export function Header() {
   return (
     <>
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1520px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-4">
+      <div className="mx-auto flex max-w-[1520px] items-center justify-between gap-2 sm:gap-4 px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+          {/* Mobile hamburger menu */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden h-9 w-9 shrink-0 rounded-full border border-slate-200 bg-white/80 p-0 hover:bg-slate-50"
+            onClick={onMenuClick}
+            title="Toggle menu"
+          >
+            <Menu className="h-5 w-5 text-slate-600" />
+          </Button>
           {/* <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
             <img src="/images/logo.png" alt="Logo" className="h-9 w-9 object-contain" />
           </div> */}
           <div className="min-w-0">
             <div className="flex itemps-center gap-2">
-              <h1 className="truncate text-[15px] font-semibold tracking-tight text-slate-950">Bebasthapan</h1>
+              <h1 className="truncate text-[13px] sm:text-[15px] font-semibold tracking-tight text-slate-950">Bebasthapan</h1>
               {/* <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:inline-flex">
                 Enterprise
               </span> */}
             </div>
-            <p className="mt-1 truncate text-xs text-slate-500">
+            <p className="mt-0.5 sm:mt-1 truncate text-[10px] sm:text-xs text-slate-500">
               {sectionLabels[location.pathname] || "Operations workspace"}
             </p>
           </div>
@@ -161,7 +175,7 @@ export function Header() {
           {/* <InstallButton /> */}
         </div>
             
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
                               <BusinessAssistant />
 
           <Dialog open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>

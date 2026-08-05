@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import { formatCurrency, CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 import { JournalEntry,Account } from "../../../types/accounting.types";

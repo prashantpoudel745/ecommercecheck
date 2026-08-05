@@ -1,6 +1,6 @@
 // src/components/Dashboard/InvestmentsTable.jsx
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import AddInvestmentForm from "./AddnewInvestment";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useAuth } from "@/context/AuthContext";

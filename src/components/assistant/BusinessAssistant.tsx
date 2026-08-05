@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {ChatMessage , Snapshot,ChatRole} from "../../../types/businessassistant.types"

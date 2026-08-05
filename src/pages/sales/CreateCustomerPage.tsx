@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { createCustomer } from "@/services/sales.service";
 
 export default function CreateCustomerPage() {
@@ -31,7 +31,7 @@ export default function CreateCustomerPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Add New Customer</h1>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Add New Customer</h1>
         <p className="text-slate-500 mt-1">Fill out the details below to add a new customer.</p>
       </div>
 

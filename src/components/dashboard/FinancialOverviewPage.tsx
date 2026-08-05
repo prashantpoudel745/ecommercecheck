@@ -131,18 +131,18 @@ const KpiCard = ({
   accent: string;
   emphasis?: boolean;
 }) => (
-  <div className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
+  <div className="flex-1 min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 sm:px-4 sm:py-3 dark:border-slate-800 dark:bg-slate-900">
     <div className="flex items-center gap-1.5">
       <span
         className="h-1.5 w-1.5 rounded-[2px]"
         style={{ backgroundColor: accent }}
       />
-      <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+      <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-slate-400">
         {label}
       </span>
     </div>
     <p
-      className="mt-1.5 text-xl font-semibold tabular-nums tracking-tight"
+      className="mt-1 sm:mt-1.5 text-sm sm:text-base lg:text-xl font-semibold tabular-nums tracking-tight truncate"
       style={{ color: emphasis ? accent : COLOR.textPrimary }}
     >
       {emphasis && value >= 0 ? "+" : emphasis && value < 0 ? "\u2212" : ""}
@@ -516,7 +516,7 @@ export default function FinancialOverviewPage({
   return (
     <div className="flex h-full w-full flex-col">
       {/* Header */}
-      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 sm:mb-5 flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Breadcrumb
             viewMode={viewMode}
@@ -525,7 +525,7 @@ export default function FinancialOverviewPage({
             onOverview={goToOverview}
             onYear={goToYear}
           />
-          <h2 className="mt-0.5 text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
+          <h2 className="mt-0.5 text-base sm:text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
             {chartTitle}
           </h2>
         </div>
@@ -566,7 +566,7 @@ export default function FinancialOverviewPage({
       </div>
 
       {/* KPI summary strip */}
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-5">
+      <div className="mb-4 sm:mb-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
         <KpiCard label="Revenue (excl. VAT)" value={totals.income} accent={COLOR.income} />
         <KpiCard label="Expenses (excl. VAT)" value={totals.expenses} accent={COLOR.expense} />
         <KpiCard label="Revenue (incl. VAT)" value={totals.incomeWithTax} accent={COLOR.income} />

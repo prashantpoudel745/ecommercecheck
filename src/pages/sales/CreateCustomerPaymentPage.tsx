@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { createCustomerPayment } from "@/services/sales.service";
 import { getAccounts } from "@/services/accounting.service";
 
@@ -13,7 +13,10 @@ export default function CreateCustomerPaymentPage() {
 
   useEffect(() => {
     getAccounts()
-      .then((data) => setAccounts(data || []))
+      .then((data) => {
+        const accountsList = Array.isArray(data) ? data : data?.accounts ?? [];
+        setAccounts(accountsList);
+      })
       .catch(() => setAccounts([]));
   }, []);
 
@@ -55,7 +58,7 @@ export default function CreateCustomerPaymentPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Record Customer Payment</h1>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Record Customer Payment</h1>
         <p className="text-slate-500 mt-1">Fill out the details below to record an incoming payment.</p>
       </div>
 

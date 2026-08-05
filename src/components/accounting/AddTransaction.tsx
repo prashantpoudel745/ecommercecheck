@@ -19,7 +19,7 @@ import {
   CombinedDialogProps,
 } from "../../../types/inventory.types";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { useTransactionForm } from "@/hooks/useTransactionForm";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import * as accountingService from "@/services/accounting.service";
@@ -27,7 +27,7 @@ import BillScanner from "./BillScanner";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { CurrencyUtil } from "@/utils/currency.util";
 import { BillData } from "../../../types/ocr.types";
-const API_URL = import.meta.env.VITE_API_URL|| "";
+import { fetchInventoryItem } from "@/hooks/fetchInventoryItems";
 
 export default function CombinedAddDialog({
   onTransactionAdded,
@@ -75,10 +75,7 @@ export default function CombinedAddDialog({
   const fetchInventoryItems = async () => {
     setIsLoadingInventory(true);
     try {
-      const response = await fetch(`${API_URL}/api/inventory`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetchInventoryItem();
       if (response.ok) {
         const data = await response.json();
         setInventoryItems(data.inventory || []);
@@ -466,6 +463,22 @@ export default function CombinedAddDialog({
                 <div className="space-y-2 col-span-2 sm:col-span-1">
                   <Label htmlFor="vatBillNo">VAT Bill #*</Label>
                   <Input id="vatBillNo" name="vatBillNo" value={formData.vatBillNo} onChange={handleChange} placeholder="Invoice/Bill Number" disabled={isSubmitting} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="taxRate">VAT Rate (%)</Label>
+                  <Input id="taxRate" name="taxRate" type="number" value={formData.taxRate} onChange={handleChange} placeholder="13" disabled={isSubmitting} />
+                </div>
+                <div className="space-y-2 flex items-end gap-2">
+                  <input
+                    id="taxIncluded"
+                    name="taxIncluded"
+                    type="checkbox"
+                    checked={Boolean(formData.taxIncluded)}
+                    onChange={(e) => setFormData({ ...formData, taxIncluded: e.target.checked })}
+                    className="rounded border-gray-300 w-4 h-4 text-emerald-600"
+                    disabled={isSubmitting}
+                  />
+                  <Label htmlFor="taxIncluded" className="mb-0">Prices include VAT</Label>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="category">Type</Label>

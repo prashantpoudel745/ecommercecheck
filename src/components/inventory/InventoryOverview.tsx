@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Database, Upload, BarChart3, Mail, AlertTriangle } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import SearchComponent from "../Search";
 import { UpdateInventory } from "./UpdateInventory";
 import { DeleteInventory } from "./DeleteInventory";
@@ -406,9 +406,9 @@ export function InventoryOverview() {
 
       <Card>
 
-      <CardHeader className="sticky flex flex-row items-center justify-between -top-7 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 ">
-          <CardTitle className="font-bold text-4xl ">Inventory Status</CardTitle>
-          <div className="flex flex-col md:flex-row  items-center gap-2">
+      <CardHeader className="sticky flex flex-wrap items-center justify-between -top-7 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 gap-3">
+          <CardTitle className="font-bold text-xl sm:text-2xl lg:text-3xl">Inventory Status</CardTitle>
+          <div className="flex flex-col sm:flex-row items-center gap-2">
             {/* <div className="bg-gray-50 p-2 rounded-md">
               <BulkUpload />
             </div> */}
@@ -429,8 +429,9 @@ export function InventoryOverview() {
                     No matching inventory items found.
                   </p>
                 ) : (
-                  <Table>
-                    <TableHeader>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
                       <TableRow>
                         <TableHead>Product</TableHead>
                         <TableHead>Category</TableHead>
@@ -529,7 +530,8 @@ export function InventoryOverview() {
                         );
                       })}
                     </TableBody>
-                  </Table>
+                    </Table>
+                  </div>
                 )}
               </>
             )}

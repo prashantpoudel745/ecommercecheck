@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lock, Plus, RefreshCw, Calendar, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import api from "@/utils/api";
 import { FiscalPeriod } from "../../../types/accounting.types";
 

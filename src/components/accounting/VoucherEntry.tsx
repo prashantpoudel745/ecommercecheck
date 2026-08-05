@@ -3,7 +3,7 @@ import { getAccounts, createVoucher } from "../../services/accounting.service";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 import { CurrencyUtil } from "@/utils/currency.util";
 import { Plus, Trash2, Save, AlertCircle, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

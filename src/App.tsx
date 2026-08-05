@@ -1,4 +1,4 @@
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster as RadixToaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -25,15 +25,14 @@ const QuotationsPage = lazy(() => import("./pages/sales/QuotationsPage"));
 const SalesOrdersPage = lazy(() => import("./pages/sales/SalesOrdersPage"));
 const InvoicesPage = lazy(() => import("./pages/sales/InvoicesPage"));
 const CreditNotesPage = lazy(() => import("./pages/sales/CreditNotesPage"));
-const CustomerPaymentsPage = lazy(() => import("./pages/sales/CustomerPaymentsPage"));
 const CustomersPage = lazy(() => import("./pages/sales/CustomersPage"));
 
 // Sales Create Pages
 const CreateQuotationPage = lazy(() => import("./pages/sales/CreateQuotationPage"));
 const CreateSalesOrderPage = lazy(() => import("./pages/sales/CreateSalesOrderPage"));
 const CreateInvoicePage = lazy(() => import("./pages/sales/CreateInvoicePage"));
+const CreateClientPaymentPage = lazy(() => import("./pages/sales/CreateClientPaymentPage"));
 const CreateCreditNotePage = lazy(() => import("./pages/sales/CreateCreditNotePage"));
-const CreateCustomerPaymentPage = lazy(() => import("./pages/sales/CreateCustomerPaymentPage"));
 const CreateCustomerPage = lazy(() => import("./pages/sales/CreateCustomerPage"));
 
 // Purchase View Pages
@@ -47,8 +46,15 @@ const SuppliersPage = lazy(() => import("./pages/purchase/SuppliersPage"));
 const CreatePurchaseOrderPage = lazy(() => import("./pages/purchase/CreatePurchaseOrderPage"));
 const CreatePurchaseBillPage = lazy(() => import("./pages/purchase/CreatePurchaseBillPage"));
 const CreateExpensePage = lazy(() => import("./pages/purchase/CreateExpensePage"));
+const ExpenseDetailPage = lazy(() => import("./pages/purchase/ExpenseDetailPage"));
 const CreateSupplierPaymentPage = lazy(() => import("./pages/purchase/CreateSupplierPaymentPage"));
 const CreateSupplierPage = lazy(() => import("./pages/purchase/CreateSupplierPage"));
+
+// IRD Compliance Pages
+const DebitNotesPage       = lazy(() => import("./pages/purchase/DebitNotesPage"));
+const CreateDebitNotePage  = lazy(() => import("./pages/purchase/CreateDebitNotePage"));
+const CompanySettingsPage  = lazy(() => import("./pages/CompanySettingsPage"));
+const BackupPage           = lazy(() => import("./pages/BackupPage"));
 
 const CRM = lazy(() => import("./pages/CRM"));
 
@@ -98,15 +104,14 @@ const App = () => {
       { id: "sales-orders", paths: ["/sales/orders"], render: () => <SalesOrdersPage /> },
       { id: "sales-invoice", paths: ["/sales/invoice"], render: () => <InvoicesPage /> },
       { id: "sales-credit", paths: ["/sales/credit-notes"], render: () => <CreditNotesPage /> },
-      { id: "sales-payment", paths: ["/sales/customer-payment"], render: () => <CustomerPaymentsPage /> },
       { id: "sales-customers", paths: ["/sales/customers"], render: () => <CustomersPage /> },
 
       // Sales Create Routes
       { id: "create-quotation", paths: ["/sales/quotations/new"], render: () => <CreateQuotationPage /> },
       { id: "create-sales-order", paths: ["/sales/orders/new"], render: () => <CreateSalesOrderPage /> },
       { id: "create-invoice", paths: ["/sales/invoice/new"], render: () => <CreateInvoicePage /> },
+      { id: "create-client-payment", paths: ["/sales/client-payment/new"], render: () => <CreateClientPaymentPage /> },
       { id: "create-credit-note", paths: ["/sales/credit-notes/new"], render: () => <CreateCreditNotePage /> },
-      { id: "create-customer-payment", paths: ["/sales/customer-payment/new"], render: () => <CreateCustomerPaymentPage /> },
       { id: "create-customer", paths: ["/sales/customers/new"], render: () => <CreateCustomerPage /> },
 
       // Purchase View Routes
@@ -122,6 +127,12 @@ const App = () => {
       { id: "create-expense", paths: ["/purchase/expenses/new"], render: () => <CreateExpensePage /> },
       { id: "create-supplier-payment", paths: ["/purchase/supplier-payment/new"], render: () => <CreateSupplierPaymentPage /> },
       { id: "create-supplier", paths: ["/purchase/suppliers/new"], render: () => <CreateSupplierPage /> },
+
+      // IRD Compliance Routes
+      { id: "purchase-debit-notes",        paths: ["/purchase/debit-notes"],       render: () => <DebitNotesPage /> },
+      { id: "create-debit-note",           paths: ["/purchase/debit-notes/new"],   render: () => <CreateDebitNotePage /> },
+      { id: "settings-company",            paths: ["/settings/company"],           render: () => <CompanySettingsPage /> },
+      { id: "settings-backup",             paths: ["/settings/backup"],            render: () => <BackupPage /> },
 
       // Inventory Routes
       { id: "inventory", paths: ["/inventory", "/inventory/products"], render: () => <Inventory /> },
@@ -150,7 +161,8 @@ const App = () => {
       <GlobalDataStoreProvider>
         <AuthProvider>
           <TooltipProvider>
-            <Sonner />
+            {/* Radix-based Toaster (top-center) */}
+            <RadixToaster />
           <BrowserRouter>
             <Suspense fallback={<div className="flex h-screen w-screen items-center justify-center">Loading...</div>}>
             <Routes>
@@ -164,6 +176,14 @@ const App = () => {
                       element={
                         <ProtectedRoute>
                           <EditEmployee onSuccess={() => {}} />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/purchase/expenses/view/:id"
+                      element={
+                        <ProtectedRoute>
+                          <ExpenseDetailPage />
                         </ProtectedRoute>
                       }
                     />
@@ -303,7 +323,6 @@ const App = () => {
             />
             </Routes>
             </Suspense>
-            <Sonner position="top-center" />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>

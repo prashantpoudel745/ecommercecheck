@@ -27,7 +27,7 @@ export default function AccountingStats({ stats, startDate, endDate, dateRangeLa
   const performancePeriodText = formatDateLabel();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Performance Section */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
@@ -39,7 +39,7 @@ export default function AccountingStats({ stats, startDate, endDate, dateRangeLa
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           <StatCard
             title="Revenue (excl. VAT)"
             value={formatCurrency(stats.totalRevenue)}
@@ -80,7 +80,7 @@ export default function AccountingStats({ stats, startDate, endDate, dateRangeLa
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {stats.accountsReceivable !== undefined && (
               <StatCard
                 title="Accounts Receivable"

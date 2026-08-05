@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { createSupplier } from "@/services/purchase.service";
 
 export default function CreateSupplierPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const [panError, setPanError] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,6 +16,15 @@ export default function CreateSupplierPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // IRD Compliance: validate PAN/VAT before submission
+    const panVal = formData.taxNumber || "";
+    if (panVal && !/^\d{9}$/.test(panVal)) {
+      setPanError("PAN/VAT must be exactly 9 numeric digits (IRD Nepal requirement).");
+      return;
+    }
+    setPanError("");
+
     setLoading(true);
     
     try {
@@ -31,7 +41,7 @@ export default function CreateSupplierPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Register New Supplier</h1>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Register New Supplier</h1>
         <p className="text-slate-500 mt-1">Add a new vendor to your supplier database.</p>
       </div>
 
@@ -55,8 +65,28 @@ export default function CreateSupplierPage() {
               <input name="phone" type="tel" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Tax / VAT Number</label>
-              <input name="taxNumber" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <label className="text-sm font-medium text-slate-700">
+                PAN / VAT Number
+                <span className="ml-1 text-xs text-amber-600 font-normal">(9 digits — IRD Required)</span>
+              </label>
+              <input
+                name="taxNumber"
+                maxLength={9}
+                pattern="\d{9}"
+                onChange={(e) => {
+                  handleInputChange(e);
+                  if (e.target.value && !/^\d{9}$/.test(e.target.value)) {
+                    setPanError("PAN/VAT must be exactly 9 numeric digits.");
+                  } else {
+                    setPanError("");
+                  }
+                }}
+                className={`w-full rounded-md border p-2 focus:ring-2 outline-none ${
+                  panError ? "border-red-400 focus:ring-red-400" : "focus:ring-emerald-500"
+                }`}
+                placeholder="e.g. 123456789"
+              />
+              {panError && <p className="text-xs text-red-500 mt-1">{panError}</p>}
             </div>
             <div className="space-y-2 col-span-2">
               <label className="text-sm font-medium text-slate-700">Address</label>

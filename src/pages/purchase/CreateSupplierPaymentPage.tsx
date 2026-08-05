@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { createSupplierPayment } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
 
@@ -13,7 +13,10 @@ export default function CreateSupplierPaymentPage() {
 
   useEffect(() => {
     getAccounts()
-      .then((data) => setAccounts(data || []))
+      .then((data) => {
+        const accountsList = Array.isArray(data) ? data : [];
+        setAccounts(accountsList);
+      })
       .catch(() => setAccounts([]));
   }, []);
 
@@ -55,7 +58,7 @@ export default function CreateSupplierPaymentPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Record Supplier Payment</h1>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Record Supplier Payment</h1>
         <p className="text-slate-500 mt-1">Log a payment made to a supplier.</p>
       </div>
 

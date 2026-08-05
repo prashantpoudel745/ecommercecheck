@@ -13,6 +13,59 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => attachAuthHeader(config));
 
+// ── Silent Token Refresh on 401 ──────────────────────────────
+// When the 30-min access token expires, any API call returns 401.
+// This interceptor transparently calls POST /refresh (which reads
+// the 7-day httpOnly refreshToken cookie) and retries the request.
+let isRefreshing = false;
+let failedQueue: { resolve: (v: any) => void; reject: (e: any) => void }[] = [];
+
+const processQueue = (error: any) => {
+  failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(undefined)));
+  failedQueue = [];
+};
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Only intercept 401s that are NOT from /refresh, /login, /signup, /getme
+    const skipPaths = ["/refresh", "/login", "/signup", "/getme"];
+    if (
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      skipPaths.some((p) => originalRequest.url?.includes(p))
+    ) {
+      return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      // Queue this request until the refresh completes
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      }).then(() => api(originalRequest));
+    }
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      await axios.post(`${API_BASE}/api/refresh`, {}, { withCredentials: true });
+      processQueue(null);
+      return api(originalRequest); // retry original
+    } catch (refreshError) {
+      processQueue(refreshError);
+      // Refresh failed — session is truly expired
+      window.location.href = "/login";
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
+  }
+);
+
+
 export const get = async (url: string): Promise<AxiosResponse> => {
   return api.get(`/attendance/${url}`);
 };

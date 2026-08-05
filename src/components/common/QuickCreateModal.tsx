@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { 
   createQuotation, 
   createSalesOrder, 
@@ -11,23 +11,33 @@ import {
   createCustomer 
 } from "@/services/sales.service";
 
-interface QuickCreateModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  entityType: string; // e.g., "Quotations", "Sales Orders", etc.
-}
-
-export function QuickCreateModal({ isOpen, onClose, entityType }: QuickCreateModalProps) {
+export default function QuickCreatePage() {
+  const { module, entityType } = useParams();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState({});
 
-  if (!isOpen) return null;
-
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
+  // Map URL parameters to display titles and API functions
+  const getEntityConfig = () => {
+    switch (entityType) {
+      case "quotations":
+        return { title: "Quotation", submit: createQuotation, type: "sales" };
+      case "orders":
+        return { title: module === "sales" ? "Sales Order" : "Purchase Order", submit: module === "sales" ? createSalesOrder : async () => {}, type: module };
+      case "invoice":
+        return { title: "Invoice", submit: createInvoice, type: "sales" };
+      case "credit-notes":
+        return { title: "Credit Note", submit: createCreditNote, type: "sales" };
+      case "customer-payment":
+        return { title: "Customer Payment", submit: createCustomerPayment, type: "sales" };
+      case "customers":
+        return { title: "Customer", submit: createCustomer, type: "sales" };
+      default:
+        return { title: "Item", submit: async () => {}, type: "unknown" };
     }
   };
+
+  const config = getEntityConfig();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,17 +48,11 @@ export function QuickCreateModal({ isOpen, onClose, entityType }: QuickCreateMod
     setLoading(true);
     
     try {
-      if (entityType === "Quotations") await createQuotation(formData);
-      else if (entityType === "Sales Orders") await createSalesOrder(formData);
-      else if (entityType === "Invoice") await createInvoice(formData);
-      else if (entityType === "Credit Notes") await createCreditNote(formData);
-      else if (entityType === "Customer Payment") await createCustomerPayment(formData);
-      else if (entityType === "Customers") await createCustomer(formData);
-
-      toast.success(`${entityType} created successfully!`);
-      onClose();
-    } catch (error: any) {
-      toast.error(`Failed to create ${entityType}: ${error.message}`);
+      await config.submit(formData);
+      toast.success(`${config.title} created successfully!`);
+      navigate(`/${module}/${entityType}`); // Navigate back to list view
+    } catch (error) {
+      toast.error(`Failed to create ${config.title}: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -56,87 +60,114 @@ export function QuickCreateModal({ isOpen, onClose, entityType }: QuickCreateMod
 
   const renderFormFields = () => {
     switch (entityType) {
-      case "Quotations":
-      case "Sales Orders":
-      case "Invoice":
+      case "quotations":
+      case "orders":
+      case "invoice":
         return (
           <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Customer Name</label>
-              <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Total Amount</label>
-              <input name="totalAmount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Customer Name</label>
+                <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Enter customer name" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Customer Email</label>
+                <input name="customerEmail" type="email" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="customer@example.com" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Customer Phone</label>
+                <input name="customerPhone" type="tel" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. 977-9812345678" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Total Amount</label>
+                <input name="totalAmount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="0.00" />
+              </div>
             </div>
           </>
         );
-      case "Credit Notes":
+      case "credit-notes":
         return (
           <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Customer Name</label>
-              <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Credit Amount</label>
-              <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Customer Name</label>
+                <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Credit Amount</label>
+                <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <label className="text-sm font-medium text-slate-300">Reason</label>
+                <input name="reason" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
             </div>
           </>
         );
-      case "Customer Payment":
+      case "customer-payment":
         return (
           <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Customer Name</label>
-              <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Amount</label>
-              <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Customer Name</label>
+                <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Payment Amount</label>
+                <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
             </div>
           </>
         );
-      case "Customers":
+      case "customers":
         return (
           <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Full Name</label>
-              <input name="name" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Email</label>
-              <input name="email" type="email" required onChange={handleInputChange} className="w-full rounded-md border p-2" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Full Name</label>
+                <input name="name" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Email</label>
+                <input name="email" type="email" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Phone</label>
+                <input name="phone" type="tel" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              </div>
             </div>
           </>
         );
       default:
-        return <p>Form coming soon.</p>;
+        return <div className="p-4 bg-white/[0.02] rounded-lg text-slate-400">Creation form for {config.title} is coming soon.</div>;
     }
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity"
-      onClick={handleOverlayClick}
-    >
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900">Create {entityType}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-slate-100">
-            <X size={20} className="text-slate-500" />
-          </Button>
-        </div>
+    <div className="p-6 max-w-5xl mx-auto w-full">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white">Create New {config.title}</h1>
+        <p className="text-slate-400 mt-1">Fill out the details below to create a new record.</p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {renderFormFields()}
           
-          <div className="mt-8 flex justify-end gap-3">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+          <div className="flex items-center gap-4 pt-4 border-t border-white/[0.04]">
+            <Button 
+              type="submit" 
+              disabled={loading} 
+              className="bg-emerald-500 hover:bg-emerald-600 text-white min-w-[120px]"
+            >
+              {loading ? "Saving..." : "Save Record"}
             </Button>
-            <Button type="submit" disabled={loading} className="bg-emerald-500 hover:bg-emerald-600">
-              {loading ? "Saving..." : "Create"}
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => navigate(-1)}
+            >
+              Cancel
             </Button>
           </div>
         </form>

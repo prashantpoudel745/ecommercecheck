@@ -197,11 +197,14 @@ export interface TransactionFormData {
   paymentAccountId: string;
   partyAccountGroupId?: string;
   vatBillNo: string;
+  taxRate?: number;
+  taxIncluded?: boolean;
   items: {
     itemName: string;
     quantity: number;
     price: number;
     amount: number;
     productCategory: string;
+    vatExempt?: boolean;
   }[];
 }

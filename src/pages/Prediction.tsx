@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { formatCurrencyShort } from "@/utils/formatCurrency";
 import { Target } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import { ClipLoader } from "react-spinners";
-import { Product, Transaction } from "../../types";
+import { Transaction } from "../../types";
+import { Product } from "../../types/inventory.types";
 import TargetSettingsDialog from "@/components/prediction/targetsettingdialog";
 import { toDecimal, toNumber } from "@/utils/helpers/decimalhelper";
 import { useAuth } from "@/context/AuthContext";
@@ -413,8 +414,8 @@ export default function UnifiedDashboard() {
       <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-sky-50 via-cyan-50 to-indigo-50 px-4 py-4 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Goals</h1>
-            <p className="text-sm text-slate-600">Track progress against monthly and yearly targets in separate views.</p>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Goals</h1>
+            <p className="text-xs sm:text-sm text-slate-600">Track progress against monthly and yearly targets in separate views.</p>
           </div>
         <button
           onClick={() => setIsDialogOpen(true)}
@@ -429,7 +430,7 @@ export default function UnifiedDashboard() {
       {/* === PERFORMANCE SECTION === */}
       <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-slate-100">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-3">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200">
             Performance Dashboard
           </h2>
           <div className="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1">
@@ -461,11 +462,11 @@ export default function UnifiedDashboard() {
         </p>
 
         {/* âœ… RECHARTS LINE CHART */}
-        <div className="h-80 mb-1 p-3 rounded-lg bg-slate-50/60">
+        <div className="h-56 sm:h-72 lg:h-80 mb-1 p-2 sm:p-3 rounded-lg bg-slate-50/60">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={selectedChartData}
-              margin={{ top: 10, right: 30, left: 30, bottom: 0 }}
+              margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="label" />
@@ -504,7 +505,7 @@ export default function UnifiedDashboard() {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
         <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-4 shadow-sm">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">Monthly Goals</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-blue-900 mb-3">Monthly Goals</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="bg-white p-3 rounded-lg border border-blue-100">
               <p className="text-xs uppercase tracking-wide text-slate-500">Revenue</p>
@@ -528,7 +529,7 @@ export default function UnifiedDashboard() {
         </div>
 
         <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-4 shadow-sm">
-          <h3 className="text-lg font-semibold text-emerald-900 mb-3">Yearly Goals</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-emerald-900 mb-3">Yearly Goals</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="bg-white p-3 rounded-lg border border-emerald-100">
               <p className="text-xs uppercase tracking-wide text-slate-500">Revenue</p>

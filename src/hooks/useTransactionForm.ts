@@ -16,6 +16,8 @@ export function useTransactionForm(onSuccess?: () => void) {
     amountPaid: 0,
     paymentAccountId: "",
     vatBillNo: "",
+    taxRate: 13,
+    taxIncluded: false,
     items: [{ itemName: "", quantity: 1, price: 0, amount: 0, productCategory: "Raw Materials" }],
   });
   const [loading, setLoading] = useState(false);
@@ -35,6 +37,8 @@ export function useTransactionForm(onSuccess?: () => void) {
       amountPaid: 0,
       paymentAccountId: "",
       vatBillNo: "",
+      taxRate: 13,
+      taxIncluded: false,
       items: [{ itemName: "", quantity: 1, price: 0, amount: 0, productCategory: "Raw Materials" }],
     });
     setError(null);

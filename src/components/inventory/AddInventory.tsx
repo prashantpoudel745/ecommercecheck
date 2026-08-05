@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
+import { toast } from "@/utils/notify";
 import BillScanner from "../accounting/BillScanner";
 import { BillData } from "../../../types/ocr.types";
 import { AddInventoryButtonProps } from "../../../types/inventory.types";
