@@ -6,11 +6,11 @@ export function StatCard({ title, value, change, icon, details, className }: Sta
   return (
     <Card className={cn("flex flex-col overflow-hidden", className)}>
       <CardContent className="flex flex-1 items-center justify-between p-4 sm:p-5 lg:p-6">
-        <div className="space-y-1 min-w-0">
-          <p className="text-xs sm:text-sm font-medium text-slate-500 truncate">
+        <div className="space-y-1 min-w-0 flex-1 pr-2">
+          <p className="text-xs sm:text-sm font-medium text-slate-500 break-words">
             {title}
           </p>
-          <h3 className="text-base font-semibold tracking-tight text-slate-950 sm:text-lg lg:text-xl truncate">
+          <h3 className="text-sm sm:text-base lg:text-lg font-semibold tracking-tight text-slate-950 break-words line-clamp-2">
             {value}
           </h3>
         </div>

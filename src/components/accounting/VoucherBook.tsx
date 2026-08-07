@@ -18,6 +18,7 @@ import {
   Undo2
 } from "lucide-react";
 import { toast } from "@/utils/notify";
+import { EmailConfirmationDialog } from "@/components/common/EmailConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,22 +62,24 @@ export default function VoucherBook() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [activeTab, setActiveTab] = useState("ALL");
   const [sendingInvoice, setSendingInvoice] = useState(false);
+  const [emailConfirmData, setEmailConfirmData] = useState<{ id: string; email: string; name: string } | null>(null);
 
-  const handleSendInvoice = async () => {
-    if (!selectedVoucher) return;
-    
-    // Check if the voucher has a linked party to use for email
-    const emailPrompt = prompt("Enter client email address to send invoice:");
-    if (!emailPrompt) return;
+  const handleSendInvoice = async (id: string, email: string) => {
+    if (!email) {
+      const emailPrompt = prompt("Enter client email address to send invoice:");
+      if (!emailPrompt) return;
+      email = emailPrompt;
+    }
 
     setSendingInvoice(true);
     try {
-      await sendInvoice(selectedVoucher._id, { email: emailPrompt, currencySymbol: CURRENCY_SYMBOL });
+      await sendInvoice(id, { email: email, currencySymbol: CURRENCY_SYMBOL });
       toast.success("Invoice generated and sent successfully!");
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to send invoice");
     } finally {
       setSendingInvoice(false);
+      setEmailConfirmData(null);
     }
   };
 
@@ -203,8 +206,15 @@ export default function VoucherBook() {
 
   return (
     <div className="space-y-6">
+      <EmailConfirmationDialog
+        isOpen={!!emailConfirmData}
+        onOpenChange={(open) => !open && !sendingInvoice && setEmailConfirmData(null)}
+        customerName={emailConfirmData?.name || ""}
+        isProcessing={sendingInvoice}
+        onConfirm={() => emailConfirmData && handleSendInvoice(emailConfirmData.id, emailConfirmData.email)}
+      />
       {/* STICKY HEADER GROUP: title, new voucher button, search, status filter */}
-<div className="sticky -top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
+      <div className="sticky -top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div className=" mx-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="mx-4">
             <h2 className="text-3xl font-bold tracking-tight bg-black bg-clip-text text-transparent">
@@ -472,7 +482,7 @@ export default function VoucherBook() {
               {selectedVoucher.type === "SALES" && (
                 <Button 
                   variant="secondary" 
-                  onClick={handleSendInvoice}
+                  onClick={() => setEmailConfirmData({ id: selectedVoucher._id, email: selectedVoucher.partyName?.split(" (")[1]?.replace(")", "") || "", name: selectedVoucher.partyName || "Client" })}
                   disabled={sendingInvoice}
                   className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
                 >

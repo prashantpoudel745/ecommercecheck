@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Mail, Loader2, ArrowRight } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { toast } from "@/utils/notify";
+import { EmailConfirmationDialog } from "@/components/common/EmailConfirmationDialog";
 
 type QuotationRow = {
   _id: string;
@@ -24,6 +25,7 @@ type QuotationRow = {
 export default function QuotationsPage() {
   const queryClient = useQueryClient();
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [emailConfirmData, setEmailConfirmData] = useState<{ id: string; email: string; name: string } | null>(null);
 
   const { data: response, isLoading: loading } = useQuery({
     queryKey: ["sales", "quotations"],
@@ -75,6 +77,7 @@ export default function QuotationsPage() {
       await emailMutation.mutateAsync({ id, email });
     } finally {
       setProcessingId(null);
+      setEmailConfirmData(null);
     }
   };
 
@@ -89,6 +92,14 @@ export default function QuotationsPage() {
 
   return (
     <div className="p-3 sm:p-4 lg:p-6">
+      <EmailConfirmationDialog
+        isOpen={!!emailConfirmData}
+        onOpenChange={(open) => !open && !processingId && setEmailConfirmData(null)}
+        customerName={emailConfirmData?.name || ""}
+        isProcessing={processingId === emailConfirmData?.id}
+        onConfirm={() => emailConfirmData && handleSendEmail(emailConfirmData.id, emailConfirmData.email)}
+      />
+
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
         <div>
           <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Quotations</h1>
@@ -161,7 +172,7 @@ export default function QuotationsPage() {
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        onClick={() => handleSendEmail(item._id, item.customerEmail)}
+                        onClick={() => setEmailConfirmData({ id: item._id, email: item.customerEmail, name: item.customerName })}
                         disabled={processingId === item._id || !!item.convertedSalesOrderId || !!item.convertedInvoiceId}
                         className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50"
                         title={item.convertedSalesOrderId ? "Cannot resend after converting to Sales Order" : "Send PDF via Email"}

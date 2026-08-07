@@ -74,9 +74,9 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats, period }) => {
               <div className={`p-2 rounded-lg ${card.bgColor}`}>
                 <card.icon className={`w-5 h-5 ${card.color}`} />
               </div>
-              <div>
-                <p className="text-sm text-gray-600">{card.title}</p>
-                <p className="text-lg font-semibold text-gray-900">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-600 break-words">{card.title}</p>
+                <p className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 break-words line-clamp-2">
                   {card.value}
                 </p>
               </div>

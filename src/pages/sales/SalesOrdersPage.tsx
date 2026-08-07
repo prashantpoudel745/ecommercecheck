@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchSalesOrders, convertSalesOrderToInvoice } from "@/services/sales.service";
+import { fetchSalesOrders, convertSalesOrderToInvoice, sendSalesOrderEmail } from "@/services/sales.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Plus, ArrowRight, Loader2 } from "lucide-react";
+import { Plus, ArrowRight, Loader2, Mail } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { toast } from "@/utils/notify";
+import { EmailConfirmationDialog } from "@/components/common/EmailConfirmationDialog";
 
 export default function SalesOrdersPage() {
   const queryClient = useQueryClient();
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [emailConfirmData, setEmailConfirmData] = useState<{ id: string; email: string; name: string } | null>(null);
 
   const { data: response, isLoading: loading } = useQuery({
     queryKey: ["sales", "orders"],
@@ -46,8 +48,42 @@ export default function SalesOrdersPage() {
     }
   };
 
+  const emailMutation = useMutation({
+    mutationFn: ({ id, email }: { id: string; email: string }) => sendSalesOrderEmail(id, email),
+    onSuccess: () => {
+      toast.success("Sales Order emailed successfully!");
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Failed to send email");
+    },
+  });
+
+  const handleSendEmail = async (id: string, email: string) => {
+    if (!email) {
+      const manualEmail = prompt("Please enter customer email:");
+      if (!manualEmail) return;
+      email = manualEmail;
+    }
+    
+    setProcessingId(`email-${id}`);
+    try {
+      await emailMutation.mutateAsync({ id, email });
+    } finally {
+      setProcessingId(null);
+      setEmailConfirmData(null);
+    }
+  };
+
   return (
     <div className="p-3 sm:p-4 lg:p-6">
+      <EmailConfirmationDialog
+        isOpen={!!emailConfirmData}
+        onOpenChange={(open) => !open && !processingId && setEmailConfirmData(null)}
+        customerName={emailConfirmData?.name || ""}
+        isProcessing={!!processingId && processingId.startsWith("email-")}
+        onConfirm={() => emailConfirmData && handleSendEmail(emailConfirmData.id, emailConfirmData.email)}
+      />
+
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
         <div>
           <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Sales Orders</h1>
@@ -114,6 +150,16 @@ export default function SalesOrdersPage() {
                           {processingId === item._id ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowRight className="w-3 h-3 mr-1" />} To Invoice
                         </Button>
                       )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-indigo-600 hover:bg-indigo-50 h-8 "
+                        onClick={() => setEmailConfirmData({ id: item._id, email: item.customerEmail, name: item.customerName })}
+                        disabled={processingId === `email-${item._id}`}
+                        title="Email Sales Order"
+                      >
+                        {processingId === `email-${item._id}` ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Mail className="w-3 h-3 " />}
+                      </Button>
                     </td>
                   </tr>
                 ))

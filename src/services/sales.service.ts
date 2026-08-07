@@ -15,6 +15,11 @@ export const sendQuotationEmail = async (id: string, email: string, taxRate: num
   return response.data;
 };
 
+export const sendSalesOrderEmail = async (id: string, email: string) => {
+  const response = await api.post(`/sales/orders/${id}/send`, { email });
+  return response.data;
+};
+
 export const createSalesOrder = async (data: any) => {
   const response = await api.post("/sales/orders", data);
   return response.data;
