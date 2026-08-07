@@ -4,7 +4,6 @@ import {
   Database,
   DollarSign,
   Upload,
-  ReceiptText,
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { useEffect, useState, useCallback, lazy, Suspense } from "react";
@@ -15,12 +14,11 @@ import {
   InventoryStatusSkeleton,
   RecentActivitySkeleton,
 } from "@/skeleton/dashboardSkeleton/dashboardSkeleton";
-import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { CurrencyUtil } from "@/utils/currency.util";
 import { useGlobalDataStore } from "@/store/GlobalDataStore";
 import { useAuth } from "@/context/AuthContext";
 import { getDashboardStats } from "@/services/accounting.service";
-import { cn } from "@/lib/utils";
 
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
