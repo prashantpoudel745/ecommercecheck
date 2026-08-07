@@ -13,21 +13,41 @@ const COLOR = {
   defaultBg: "#F1F5F9",
 };
 
-type ActivityKind = "accounting" | "inventory" | "default";
+type ActivityKind = "accounting" | "inventory" | "expense" | "default";
 
-const getActivityStyle = (collection: string): { color: string; bg: string; kind: ActivityKind } => {
-  switch (collection) {
-    case "accounting":
-      return { color: COLOR.accounting, bg: COLOR.accountingBg, kind: "accounting" };
-    case "inventory":
-      return { color: COLOR.inventory, bg: COLOR.inventoryBg, kind: "inventory" };
-    default:
-      return { color: COLOR.default, bg: COLOR.defaultBg, kind: "default" };
+const getActivityStyle = (collection: string, category?: string): { color: string; bg: string; kind: ActivityKind } => {
+  const normalizedCategory = String(category || "").trim().toLowerCase();
+  if (collection === "inventory") {
+    return { color: COLOR.inventory, bg: COLOR.inventoryBg, kind: "inventory" };
   }
+
+  if (collection === "accounting") {
+    if (normalizedCategory === "sales") {
+      return { color: COLOR.accounting, bg: COLOR.accountingBg, kind: "accounting" };
+    }
+    if (["expense", "expenses", "purchase", "purchases"].includes(normalizedCategory)) {
+      return { color: "#dc2626", bg: "#fee2e2", kind: "expense" };
+    }
+    return { color: COLOR.accounting, bg: COLOR.accountingBg, kind: "accounting" };
+  }
+
+  return { color: COLOR.default, bg: COLOR.defaultBg, kind: "default" };
 };
 
 const ActivityIcon = ({ kind, color }: { kind: ActivityKind; color: string }) => {
   if (kind === "accounting") {
+    return (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke={color}>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.75}
+          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m9-4a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    );
+  }
+  if (kind === "expense") {
     return (
       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke={color}>
         <path
@@ -80,7 +100,7 @@ const formatQuantity = (value: number) =>
 // ---------------------------------------------------------------------------
 
 const ActivityRow = ({ activity }: { activity: Activity }) => {
-  const { color, bg, kind } = getActivityStyle(activity.collection);
+  const { color, bg, kind } = getActivityStyle(activity.collection, activity.category);
 
   // Handles both Number and String values coming from the backend.
   const amount =
@@ -125,7 +145,7 @@ const ActivityRow = ({ activity }: { activity: Activity }) => {
           {hasAmount && (
             <span
               className="ml-1.5 font-semibold tabular-nums"
-              style={{ color: COLOR.accounting }}
+              style={{ color }}
             >
               {formatCurrency(amount)}
             </span>

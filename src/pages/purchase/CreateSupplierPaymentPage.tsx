@@ -1,12 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
 import { createSupplierPayment } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
 
+type SupplierPaymentRow = {
+  _id: string;
+  paymentReference?: string;
+  supplierName?: string;
+  amount?: number | string;
+  createdAt?: string;
+  pending?: boolean;
+};
+
 export default function CreateSupplierPaymentPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<any>({ paymentMethod: "BANK_TRANSFER" });
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -36,6 +47,34 @@ export default function CreateSupplierPaymentPage() {
     [accounts]
   );
 
+  const resetForm = () => setFormData({ paymentMethod: "BANK_TRANSFER" });
+
+  const createMutation = useMutation({
+    mutationFn: (payload: unknown) => createSupplierPayment(payload),
+    onMutate: async (payload: any) => {
+      await queryClient.cancelQueries({ queryKey: ["purchase", "payments"] });
+      const previous = queryClient.getQueryData<{ data: SupplierPaymentRow[] }>(["purchase", "payments"]);
+      const optimisticRow: SupplierPaymentRow = {
+        _id: `temp-payment-${Date.now()}`,
+        paymentReference: payload.paymentReference || `PAY-${Date.now()}`,
+        supplierName: payload.supplierName,
+        amount: payload.amount,
+        createdAt: new Date().toISOString(),
+        pending: true,
+      };
+      queryClient.setQueryData<{ data: SupplierPaymentRow[] }>(["purchase", "payments"], (old) => ({
+        data: [optimisticRow, ...(old?.data || [])],
+      }));
+      return { previous };
+    },
+    onError: (_err, _payload, context) => {
+      queryClient.setQueryData<{ data: SupplierPaymentRow[] }>(["purchase", "payments"], context?.previous);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["purchase", "payments"] });
+    },
+  });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -45,8 +84,9 @@ export default function CreateSupplierPaymentPage() {
     setLoading(true);
     
     try {
-      await createSupplierPayment(formData);
+      await createMutation.mutateAsync(formData);
       toast.success("Payment recorded successfully!");
+      resetForm();
       navigate("/purchase/supplier-payment");
     } catch (error: any) {
       toast.error(`Failed to record Payment: ${error.message}`);
@@ -56,26 +96,26 @@ export default function CreateSupplierPaymentPage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-8">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full">
+      <div className="mb-6 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
         <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Record Supplier Payment</h1>
-        <p className="text-slate-500 mt-1">Log a payment made to a supplier.</p>
+        <p className="text-slate-500 mt-1">Log payment details in a clearer, more structured entry form.</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Supplier Name</label>
-              <input name="supplierName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Enter supplier name" />
+              <input name="supplierName" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="Enter supplier name" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Amount Paid</label>
-              <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="0.00" />
+              <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="0.00" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Payment Method</label>
-              <select name="paymentMethod" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none">
+              <select name="paymentMethod" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100">
                 <option value="BANK_TRANSFER">Bank Transfer</option>
                 <option value="CASH">Cash</option>
                 <option value="CHEQUE">Cheque</option>
@@ -88,7 +128,7 @@ export default function CreateSupplierPaymentPage() {
                 name="paymentAccountId"
                 required
                 onChange={handleInputChange}
-                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 defaultValue=""
               >
                 <option value="" disabled>Select cash/bank account</option>
@@ -99,9 +139,9 @@ export default function CreateSupplierPaymentPage() {
                 ))}
               </select>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <label className="text-sm font-medium text-slate-700">Payment Reference</label>
-              <input name="paymentReference" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. Transaction ID" />
+              <input name="paymentReference" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="e.g. Transaction ID" />
             </div>
           </div>
           
@@ -109,7 +149,7 @@ export default function CreateSupplierPaymentPage() {
             <Button 
               type="submit" 
               disabled={loading} 
-              className="bg-emerald-500 hover:bg-emerald-600 text-white min-w-[120px]"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white min-w-[120px] rounded-xl shadow-sm"
             >
               {loading ? "Saving..." : "Save Record"}
             </Button>
@@ -117,6 +157,7 @@ export default function CreateSupplierPaymentPage() {
               type="button" 
               variant="outline" 
               onClick={() => navigate("/purchase/supplier-payment")}
+              className="rounded-xl"
             >
               Cancel
             </Button>

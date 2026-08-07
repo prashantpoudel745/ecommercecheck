@@ -160,7 +160,11 @@ export const getAgingReportAP = async () => {
 
 export const getVatReport = async (params?: { startDate?: string; endDate?: string }): Promise<VatReport> => {
   const response = await api.get("/erp/reports/vat", { params });
-  console.log(response.data);
+  return response.data;
+};
+
+export const getVatDashboard = async (params?: { startDate?: string; endDate?: string }): Promise<VatReport> => {
+  const response = await api.get("/erp/reports/vat", { params });
   return response.data;
 };
 

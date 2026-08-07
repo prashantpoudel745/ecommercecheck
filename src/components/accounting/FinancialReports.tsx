@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TBAccount } from "../../../types/accounting.types";
+import VatDashboard from "./VatDashboard";
 
 export default function FinancialReports() {
   const getInitialDates = () => {

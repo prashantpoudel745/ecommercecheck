@@ -1,37 +1,46 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchSalesOrders, convertSalesOrderToInvoice } from "@/services/sales.service";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, ArrowRight, Loader2 } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { toast } from "@/utils/notify";
 
 export default function SalesOrdersPage() {
-  const navigate = useNavigate();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  const loadData = () => {
-    setLoading(true);
-    fetchSalesOrders()
-      .then((res) => setData(res.data || []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  };
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["sales", "orders"],
+    queryFn: fetchSalesOrders,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const data = (response?.data || []) as any[];
+
+  const convertMutation = useMutation({
+    mutationFn: (id: string) => convertSalesOrderToInvoice(id),
+    onSuccess: (_, id) => {
+      queryClient.setQueryData<{ data: any[] }>(["sales", "orders"], (old) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((row) => row._id === id ? { ...row, linkedInvoiceId: id } : row),
+        };
+      });
+      toast.success("Successfully converted to Invoice!");
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Failed to convert to Invoice");
+    },
+  });
 
   const handleConvertToInvoice = async (id: string) => {
     setProcessingId(id);
     try {
-      await convertSalesOrderToInvoice(id);
-      toast.success("Successfully converted to Invoice!");
-      loadData();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to convert to Invoice");
+      await convertMutation.mutateAsync(id);
     } finally {
       setProcessingId(null);
     }

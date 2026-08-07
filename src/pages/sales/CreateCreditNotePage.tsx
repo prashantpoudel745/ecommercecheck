@@ -29,30 +29,30 @@ export default function CreateCreditNotePage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-8">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full">
+      <div className="mb-6 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
         <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Create New Credit Note</h1>
         <p className="text-slate-500 mt-1">Fill out the details below to issue a credit note.</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Customer Name</label>
-              <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input name="customerName" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Invoice Reference (Optional)</label>
-              <input name="invoiceRef" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. INV-12345" />
+              <input name="invoiceRef" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="e.g. INV-12345" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Credit Amount</label>
-              <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input name="amount" type="number" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
             </div>
             <div className="space-y-2 col-span-2">
               <label className="text-sm font-medium text-slate-700">Reason</label>
-              <input name="reason" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input name="reason" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
             </div>
           </div>
           

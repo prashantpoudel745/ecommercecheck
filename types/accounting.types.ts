@@ -115,6 +115,32 @@ export interface VatReport {
     inputVat: DecimalValue;
     totalAmount: DecimalValue;
   }>;
+  outputVatVouchers?: Array<{
+    voucherNumber: string;
+    type: string;
+    date: string;
+    partyName?: string;
+    taxableAmount: DecimalValue;
+    outputVat: DecimalValue;
+    inputVat: DecimalValue;
+    totalAmount: DecimalValue;
+  }>;
+  inputVatVouchers?: Array<{
+    voucherNumber: string;
+    type: string;
+    date: string;
+    partyName?: string;
+    taxableAmount: DecimalValue;
+    outputVat: DecimalValue;
+    inputVat: DecimalValue;
+    totalAmount: DecimalValue;
+  }>;
+  summary?: {
+    salesCount?: number;
+    purchaseCount?: number;
+    creditNoteCount?: number;
+    debitNoteCount?: number;
+  };
 }
 
 export interface AccountingHealth {

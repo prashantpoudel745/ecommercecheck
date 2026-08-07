@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
@@ -32,8 +33,21 @@ type SalesOrderItem = {
   amount?: { _bsontype?: string; toString?: () => string } | number | string;
 };
 
+type InvoiceRow = {
+  _id: string;
+  invoiceNumber?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  totalAmount?: number | string;
+  status?: string;
+  createdAt?: string;
+  pending?: boolean;
+};
+
 export default function CreateInvoicePage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const location = useLocation();
   const sourceSalesOrder = location.state?.sourceSalesOrder;
   const FIXED_VAT_RATE = 13;
@@ -66,6 +80,61 @@ export default function CreateInvoicePage() {
   const [customerPhone, setCustomerPhone] = useState(sourceSalesOrder?.customerPhone || "");
   const [vatNo, setVatNo] = useState(sourceSalesOrder?.vatNo || "");
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
+
+  const resetForm = () => {
+    setSendEmail(false);
+    setTaxIncluded(sourceSalesOrder?.taxIncluded || false);
+    setPaymentStatus(sourceSalesOrder?.paymentStatus || "due");
+    setAmountPaid(Number(sourceSalesOrder?.amountPaid || 0));
+    setItems(sourceSalesOrder?.items?.map((item: SalesOrderItem) => ({
+      itemName: item.itemName || "",
+      quantity: item.quantity || 1,
+      price:
+        typeof item.price === "object" && item.price?._bsontype === "Decimal128"
+          ? item.price.toString()
+          : item.price || 0,
+      amount:
+        typeof item.amount === "object" && item.amount?._bsontype === "Decimal128"
+          ? item.amount.toString()
+          : item.amount || 0,
+    })) || [{ itemName: "", quantity: 1, price: 0, amount: 0 }]);
+    setCustomerName(sourceSalesOrder?.customerName || "");
+    setCustomerEmail(sourceSalesOrder?.customerEmail || "");
+    setCustomerPhone(sourceSalesOrder?.customerPhone || "");
+    setVatNo(sourceSalesOrder?.vatNo || "");
+    setSubtotal(0);
+    setTax(0);
+    setTotalAmount(0);
+  };
+
+  const createMutation = useMutation({
+    mutationFn: (payload: unknown) => createInvoice(payload),
+    onMutate: async (payload: any) => {
+      await queryClient.cancelQueries({ queryKey: ["sales", "invoices"] });
+      const previous = queryClient.getQueryData<{ data: InvoiceRow[] }>(["sales", "invoices"]);
+      const optimisticRow: InvoiceRow = {
+        _id: `temp-invoice-${Date.now()}`,
+        invoiceNumber: `INV-${Date.now()}`,
+        customerName: payload.customerName,
+        customerEmail: payload.customerEmail,
+        customerPhone: payload.customerPhone,
+        totalAmount: payload.totalAmount,
+        status: "SENT",
+        createdAt: new Date().toISOString(),
+        pending: true,
+      };
+      queryClient.setQueryData<{ data: InvoiceRow[] }>(["sales", "invoices"], (old) => ({
+        data: [optimisticRow, ...(old?.data || [])],
+      }));
+      return { previous };
+    },
+    onError: (_err, _payload, context) => {
+      queryClient.setQueryData<{ data: InvoiceRow[] }>(["sales", "invoices"], context?.previous);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["sales", "invoices"] });
+    },
+  });
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -167,16 +236,16 @@ export default function CreateInvoicePage() {
         amountPaid,
         sourceSalesOrderId: sourceSalesOrder?._id || undefined,
       };
-
-      const res = await createInvoice(invoiceData);
+      const res = await createMutation.mutateAsync(invoiceData);
       toast.success("Invoice created successfully!");
 
-      if (sendEmail && customerEmail && res.data?._id) {
+      if (sendEmail && customerEmail && res?._id) {
         toast.info("Generating and sending PDF...");
         await api.post(`/sales/invoices/${res.data._id}/send`, { email: customerEmail, taxRate });
         toast.success("Invoice emailed to customer!");
       }
 
+      resetForm();
       navigate("/sales/invoice");
     } catch (error) {
       const message =
@@ -192,14 +261,14 @@ export default function CreateInvoicePage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-8">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full">
+      <div className="mb-6 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
         <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Create New Invoice</h1>
         <p className="text-slate-500 mt-1">Generate an invoice with line items.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Customer Name *</label>
@@ -207,7 +276,7 @@ export default function CreateInvoicePage() {
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 required
-                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 placeholder="Enter customer name"
               />
             </div>
@@ -218,7 +287,7 @@ export default function CreateInvoicePage() {
                 onChange={(e) => setCustomerEmail(e.target.value)}
                 type="email"
                 required={sendEmail}
-                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 placeholder="customer@example.com"
               />
             </div>
@@ -228,7 +297,7 @@ export default function CreateInvoicePage() {
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 type="tel"
-                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 placeholder="e.g. 977-9812345678"
               />
             </div>
@@ -237,7 +306,7 @@ export default function CreateInvoicePage() {
               <input
                 value={vatNo}
                 onChange={(e) => setVatNo(e.target.value)}
-                className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 placeholder="Enter buyer VAT or PAN"
               />
             </div>
@@ -248,7 +317,7 @@ export default function CreateInvoicePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Payment Status</label>
-              <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none">
+              <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100">
                 <option value="due">Due / Unpaid</option>
                 <option value="partial">Partial</option>
                 <option value="paid">Paid</option>
@@ -257,7 +326,7 @@ export default function CreateInvoicePage() {
             {paymentStatus === "partial" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Amount Paid</label>
-                <input type="number" min="0" step="0.01" value={amountPaid} onChange={(e) => setAmountPaid(Number(e.target.value))} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                <input type="number" min="0" step="0.01" value={amountPaid} onChange={(e) => setAmountPaid(Number(e.target.value))} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
               </div>
             )}
           </div>
@@ -288,7 +357,7 @@ export default function CreateInvoicePage() {
                         required
                         value={item.itemName}
                         onChange={(e) => handleItemChange(index, "itemName", e.target.value)}
-                        className="w-full rounded border p-2 text-sm outline-none bg-white"
+                        className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                       >
                         <option value="">Select Item...</option>
                         {inventoryItems.map((inv) => (
@@ -305,7 +374,7 @@ export default function CreateInvoicePage() {
                         min="1"
                         value={item.quantity}
                         onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
-                        className="w-full rounded border p-2 text-sm outline-none"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                       />
                     </td>
                     <td className="p-2">
@@ -316,7 +385,7 @@ export default function CreateInvoicePage() {
                         step="0.01"
                         value={item.price}
                         onChange={(e) => handleItemChange(index, "price", e.target.value)}
-                        className="w-full rounded border p-2 text-sm outline-none"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                       />
                     </td>
                     <td className="p-2 font-medium text-slate-700">{formatCurrency(item.amount)}</td>

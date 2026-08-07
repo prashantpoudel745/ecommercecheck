@@ -165,6 +165,7 @@ const CustomerOverview = () => {
         credentials: "include",
       });
       const data = await response.json();
+      console.log(data);
       if (data.success) {
         setClients(data.clients);
         const totalClients = data.clients.length;

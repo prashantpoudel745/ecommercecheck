@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
@@ -8,8 +9,21 @@ import { Plus, Trash2 } from "lucide-react";
 import { CURRENCY_SYMBOL, formatCurrency } from "@/utils/formatCurrency";
 import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
 
+type OrderRow = {
+  _id: string;
+  orderNumber?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  totalAmount?: number | string;
+  paymentStatus?: string;
+  createdAt?: string;
+  pending?: boolean;
+};
+
 export default function CreateSalesOrderPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const sourceQuotation = location.state?.sourceQuotation;
@@ -48,6 +62,56 @@ export default function CreateSalesOrderPage() {
   const [subtotal, setSubtotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  const resetForm = () => {
+    setCustomerName(sourceQuotation?.customerName || "");
+    setCustomerEmail(sourceQuotation?.customerEmail || "");
+    setCustomerPhone(sourceQuotation?.customerPhone || "");
+    setDeliveryDate("");
+    setItems(
+      sourceQuotation?.items?.map((item: any) => ({
+        itemName: item.itemName || "",
+        quantity: item.quantity || 1,
+        price: item.price?.$numberDecimal || item.price || 0,
+        amount: item.amount?.$numberDecimal || item.amount || 0,
+      })) || [{ itemName: "", quantity: 1, price: 0, amount: 0 }]
+    );
+    setTaxIncluded(sourceQuotation?.taxIncluded || false);
+    setPaymentStatus(sourceQuotation?.paymentStatus || "due");
+    setAmountPaid(Number(sourceQuotation?.amountPaid || 0));
+    setSubtotal(0);
+    setTax(0);
+    setTotalAmount(0);
+  };
+
+  const createMutation = useMutation({
+    mutationFn: (payload: unknown) => createSalesOrder(payload),
+    onMutate: async (payload: any) => {
+      await queryClient.cancelQueries({ queryKey: ["sales", "orders"] });
+      const previous = queryClient.getQueryData<{ data: OrderRow[] }>(["sales", "orders"]);
+      const optimisticRow: OrderRow = {
+        _id: `temp-order-${Date.now()}`,
+        orderNumber: `SO-${Date.now()}`,
+        customerName: payload.customerName,
+        customerEmail: payload.customerEmail,
+        customerPhone: payload.customerPhone,
+        totalAmount: payload.totalAmount,
+        paymentStatus: payload.paymentStatus,
+        createdAt: new Date().toISOString(),
+        pending: true,
+      };
+      queryClient.setQueryData<{ data: OrderRow[] }>(["sales", "orders"], (old) => ({
+        data: [optimisticRow, ...(old?.data || [])],
+      }));
+      return { previous };
+    },
+    onError: (_err, _payload, context) => {
+      queryClient.setQueryData<{ data: OrderRow[] }>(["sales", "orders"], context?.previous);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["sales", "orders"] });
+    },
+  });
 
   useEffect(() => {
     let newSubtotal = 0;
@@ -124,50 +188,86 @@ export default function CreateSalesOrderPage() {
         amountPaid,
         sourceQuotationId: sourceQuotation?._id || undefined
       };
-      await createSalesOrder(data);
+      await createMutation.mutateAsync(data);
       toast.success("Sales Order created successfully!");
+      resetForm();
       navigate("/sales/orders");
     } catch (error: any) {
-      toast.error(`Error: ${error.message}`);
+      toast.error(`Error: ${error?.response?.data?.message || error.message || "Unable to create sales order"}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-8">
-        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Create Sales Order</h1>
-        <p className="text-slate-500 mt-1">Generate a confirmed sales order with dynamic line items.</p>
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto w-full">
+      <div className="mb-6 rounded-[32px] border border-slate-200 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-6 shadow-sm">
+        <div className="max-w-3xl">
+          <span className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-600">Sales</span>
+          <h1 className="mt-3 text-3xl font-semibold text-slate-900">Create Sales Order</h1>
+          <p className="mt-2 text-slate-600">Capture sales order details with delivery, payment, and item line items.</p>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Customer Name *</label>
-              <input value={customerName} onChange={e => setCustomerName(e.target.value)} required className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Enter customer name" />
+        <section className="grid gap-6">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-emerald-600">Customer details</p>
+                <h2 className="mt-2 text-xl font-semibold text-slate-900">Buyer information</h2>
+              </div>
+              <p className="text-sm text-slate-500">Optional sales order source quotation data is prefilled.</p>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Customer Email</label>
-              <input value={customerEmail} onChange={e => setCustomerEmail(e.target.value)} type="email" className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="customer@example.com" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Customer Phone</label>
-              <input value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} type="tel" className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. 977-9812345678" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Expected Delivery</label>
-              <input value={deliveryDate} onChange={e => setDeliveryDate(e.target.value)} type="date" className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Customer Name *</label>
+                <input
+                  value={customerName}
+                  onChange={e => setCustomerName(e.target.value)}
+                  required
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                  placeholder="Enter customer name"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Customer Email</label>
+                <input
+                  value={customerEmail}
+                  onChange={e => setCustomerEmail(e.target.value)}
+                  type="email"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                  placeholder="customer@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Customer Phone</label>
+                <input
+                  value={customerPhone}
+                  onChange={e => setCustomerPhone(e.target.value)}
+                  type="tel"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                  placeholder="977-9812345678"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-3 lg:col-span-1">
+                <label className="text-sm font-medium text-slate-700">Expected Delivery</label>
+                <input
+                  value={deliveryDate}
+                  onChange={e => setDeliveryDate(e.target.value)}
+                  type="date"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Payment Status</label>
-              <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none">
+              <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100">
                 <option value="due">Due / Unpaid</option>
                 <option value="partial">Partial</option>
                 <option value="paid">Paid</option>
@@ -176,7 +276,7 @@ export default function CreateSalesOrderPage() {
             {paymentStatus === "partial" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Amount Paid</label>
-                <input type="number" min="0" step="0.01" value={amountPaid} onChange={(e) => setAmountPaid(Number(e.target.value))} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                <input type="number" min="0" step="0.01" value={amountPaid} onChange={(e) => setAmountPaid(Number(e.target.value))} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
               </div>
             )}
           </div>
@@ -207,7 +307,7 @@ export default function CreateSalesOrderPage() {
                                       required 
                                       value={item.itemName} 
                                       onChange={e => handleItemChange(index, "itemName", e.target.value)} 
-                                      className="w-full rounded border p-2 text-sm outline-none bg-white"
+                                      className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                                     >
                                       <option value="">Select Item...</option>
                                       {inventoryItems.map((inv) => (
@@ -218,10 +318,10 @@ export default function CreateSalesOrderPage() {
                                     </select>
                                   </td>
                                   <td className="p-2">
-                                    <input required type="number" min="1" value={item.quantity} onChange={e => handleItemChange(index, "quantity", e.target.value)} className="w-full rounded border p-2 text-sm outline-none" />
+                                    <input required type="number" min="1" value={item.quantity} onChange={e => handleItemChange(index, "quantity", e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
                                   </td>
                                   <td className="p-2">
-                                    <input required type="number" min="0" step="0.01" value={item.price} onChange={e => handleItemChange(index, "price", e.target.value)} className="w-full rounded border p-2 text-sm outline-none" />
+                                    <input required type="number" min="0" step="0.01" value={item.price} onChange={e => handleItemChange(index, "price", e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
                                   </td>
                                   <td className="p-2 font-medium text-slate-700">
                                     {formatCurrency(item.amount)}
@@ -264,7 +364,8 @@ export default function CreateSalesOrderPage() {
             </div>
           </div>
         </div>
-        
+        </section>
+
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex justify-end items-center gap-4">
           <Button type="button" variant="outline" onClick={() => navigate("/sales/orders")}>
             Cancel

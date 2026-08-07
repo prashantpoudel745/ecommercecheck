@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPurchaseBills, convertPurchaseBillToPayment } from "@/services/purchase.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,8 +14,33 @@ import { CurrencyUtil } from "@/utils/currency.util";
 import { Account } from "../../../types/accounting.types";
 import { toast } from "@/utils/notify";
 export default function PurchaseBillsPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["purchase", "bills"],
+    queryFn: fetchPurchaseBills,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const data = (response?.data || []) as any[];
+
+  const paymentMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: any }) => convertPurchaseBillToPayment(id, payload),
+    onSuccess: (_, { id }) => {
+      queryClient.setQueryData<{ data: any[] }>(["purchase", "bills"], (old) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((bill) => bill._id === id ? { ...bill, status: "PAID", amountPaid: bill.totalAmount, amountDue: 0 } : bill),
+        };
+      });
+      toast.success("Successfully processed payment for this bill!");
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Failed to process payment");
+    },
+  });
 
   // Payment Modal State
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -45,16 +71,7 @@ export default function PurchaseBillsPage() {
     return CurrencyUtil.sub(parseAmount(bill.totalAmount), parseAmount(bill.amountPaid));
   };
 
-  const loadData = () => {
-    setLoading(true);
-    fetchPurchaseBills()
-      .then((res) => setData(res.data || []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  };
-
   useEffect(() => {
-    loadData();
     getAccounts()
       .then((res) => {
         const accountsList = Array.isArray(res) ? res : [];
@@ -100,15 +117,16 @@ export default function PurchaseBillsPage() {
     
     setProcessing(true);
     try {
-      await convertPurchaseBillToPayment(selectedBill._id, {
-        ...paymentData,
-        amount: CurrencyUtil.format(paymentData.amount),
+      await paymentMutation.mutateAsync({
+        id: selectedBill._id,
+        payload: {
+          ...paymentData,
+          amount: CurrencyUtil.format(paymentData.amount),
+        },
       });
-      toast.success("Successfully processed payment for this bill!");
       setShowPaymentModal(false);
-      loadData();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to process payment");
+      // handled in mutation error
     } finally {
       setProcessing(false);
     }

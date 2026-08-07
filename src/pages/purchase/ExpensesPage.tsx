@@ -1,36 +1,60 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchExpenses, approveExpense } from "@/services/purchase.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "@/utils/notify";
+type ExpenseRow = {
+  _id: string;
+  expenseReference?: string;
+  category?: string;
+  date?: string;
+  createdAt?: string;
+  amount?: number | string;
+  description?: string;
+  proofImageUrl?: string;
+  approvalStatus?: string;
+  status?: string;
+};
+
 export default function ExpensesPage() {
   const { user } = useAuth();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [approvingId, setApprovingId] = useState<string | null>(null);
 
-  const loadExpenses = () => {
-    setLoading(true);
-    fetchExpenses()
-      .then((res) => setData(res.data || []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  };
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["purchase", "expenses"],
+    queryFn: fetchExpenses,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    loadExpenses();
-  }, []);
+  const data = (response?.data || []) as ExpenseRow[];
+
+  const approveMutation = useMutation({
+    mutationFn: (expenseId: string) => approveExpense(expenseId),
+    onSuccess: (_, expenseId) => {
+      queryClient.setQueryData<{ data: ExpenseRow[] }>(["purchase", "expenses"], (old) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((expense) => expense._id === expenseId ? { ...expense, approvalStatus: "APPROVED" } : expense),
+        };
+      });
+    },
+    onError: (error: unknown) => {
+      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
+      toast.error(apiError?.response?.data?.message || apiError.message || "Unable to verify expense.");
+    },
+  });
 
   const handleApprove = async (expenseId: string) => {
     try {
       setApprovingId(expenseId);
-      await approveExpense(expenseId);
-      loadExpenses();
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || error.message || "Unable to verify expense.");
+      await approveMutation.mutateAsync(expenseId);
     } finally {
       setApprovingId(null);
     }
@@ -71,7 +95,7 @@ export default function ExpensesPage() {
               ) : data.length === 0 ? (
                 <tr><td colSpan={7} className="px-6 py-8 text-center text-slate-400">No expenses found.</td></tr>
               ) : (
-                data.map((item: any) => (
+                data.map((item: ExpenseRow) => (
                   <tr key={item._id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-900">{item.expenseReference || "-"}</td>
                     <td className="px-3 py-3 sm:px-6 sm:py-4">{item.category}</td>

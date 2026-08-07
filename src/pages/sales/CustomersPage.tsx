@@ -1,20 +1,19 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchCustomers } from "@/services/sales.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function CustomersPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["sales", "customers"],
+    queryFn: fetchCustomers,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    fetchCustomers()
-      .then((res) => setData(res.data || []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
-
+  const data = (response?.data || []) as any[];
+console.log(data);
   return (
     <div className="p-3 sm:p-4 lg:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">

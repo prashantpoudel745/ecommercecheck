@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchCreditNotes } from "@/services/sales.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,15 +6,14 @@ import { Plus } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function CreditNotesPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["sales", "credit-notes"],
+    queryFn: fetchCreditNotes,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    fetchCreditNotes()
-      .then((res) => setData(res.data || []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+  const data = (response?.data || []) as any[];
 
   return (
     <div className="p-3 sm:p-4 lg:p-6">

@@ -74,6 +74,7 @@ export default function CreateClientPaymentPage() {
     setFormData((prev: any) => ({
       ...prev,
       customerName: invoice.customerName || prev.customerName || "",
+      customerPhone: invoice.customerPhone || invoice.phone || prev.customerPhone || "",
       amount: dueAmount > 0 ? dueAmount.toFixed(2) : "0.00",
       paymentAccountId: prev.paymentAccountId || defaultAccount,
     }));
@@ -112,6 +113,7 @@ export default function CreateClientPaymentPage() {
       await convertInvoiceToPayment(invoice._id, {
         ...formData,
         amount,
+        customerPhone: formData.customerPhone || invoice.customerPhone || invoice.phone || "",
       });
       toast.success("Invoice payment recorded successfully!");
       navigate("/sales/invoice");
@@ -127,14 +129,14 @@ export default function CreateClientPaymentPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-8">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full">
+      <div className="mb-6 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
         <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Client Payment</h1>
         <p className="text-slate-500 mt-1">Settle this invoice partially or in full.</p>
       </div>
 
       {invoice ? (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 rounded-xl border border-slate-100 p-4">
             <div>
               <p className="text-xs text-slate-500">Invoice</p>
@@ -196,13 +198,13 @@ export default function CreateClientPaymentPage() {
                   value={paymentType === "COMPLETE" ? dueAmount.toFixed(2) : formData.amount}
                   onChange={handleInputChange}
                   disabled={paymentType === "COMPLETE"}
-                  className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none disabled:bg-slate-50"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100 disabled:bg-slate-50"
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Method</label>
-                <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none">
+                <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100">
                   <option value="BANK_TRANSFER">Bank Transfer</option>
                   <option value="CASH">Cash</option>
                   <option value="CHEQUE">Cheque</option>
@@ -216,7 +218,7 @@ export default function CreateClientPaymentPage() {
                   name="paymentAccountId"
                   value={formData.paymentAccountId || ""}
                   onChange={handleInputChange}
-                  className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 >
                   <option value="" disabled>Select cash/bank account</option>
                   {cashBankAccounts.map((account) => (
@@ -229,12 +231,12 @@ export default function CreateClientPaymentPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Reference</label>
-                <input name="paymentReference" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. Transaction ID" />
+                <input name="paymentReference" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="e.g. Transaction ID" />
               </div>
 
               <div className="space-y-2 md:col-span-2">
                 <label className="text-sm font-medium text-slate-700">Notes</label>
-                <input name="notes" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Optional payment note" />
+                <input name="notes" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="Optional payment note" />
               </div>
             </div>
 

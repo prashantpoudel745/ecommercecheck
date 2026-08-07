@@ -53,6 +53,7 @@ export const approveExpense = async (id: string) => {
 export const createExpense = async (data: ApiPayload) => {
   const config = data instanceof FormData ? { headers: { "Content-Type": undefined } } : {};
   const response = await api.post("/purchase/expenses", data, config);
+  console.log(response.data);
   return response.data;
 };
 

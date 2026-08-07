@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchInvoices } from "@/services/sales.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,23 +21,22 @@ type InvoiceRow = {
 };
 
 export default function InvoicesPage() {
-  const [data, setData] = useState<InvoiceRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["sales", "invoices"],
+    queryFn: fetchInvoices,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-  const parseMoney = (value: any) => {
+  const data = (response?.data || []) as InvoiceRow[];
+  console.log("data :",data)
+  const parseMoney = (value: number | string | { $numberDecimal?: number | string } | null | undefined) => {
     if (value == null) return 0;
     if (typeof value === "object" && "$numberDecimal" in value) {
       return Number(value.$numberDecimal) || 0;
     }
     return Number(value) || 0;
   };
-
-  useEffect(() => {
-    fetchInvoices()
-      .then((res) => setData((res.data || []) as InvoiceRow[]))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
 
   return (
     <div className="p-3 sm:p-4 lg:p-6">

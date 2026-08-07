@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { fetchQuotations, updateQuotationStatus, sendQuotationEmail, convertQuotationToSalesOrder } from "@/services/sales.service";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchQuotations, sendQuotationEmail, convertQuotationToSalesOrder } from "@/services/sales.service";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Mail, Loader2, ArrowRight } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -21,22 +22,46 @@ type QuotationRow = {
 };
 
 export default function QuotationsPage() {
-  const [data, setData] = useState<QuotationRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  const loadData = () => {
-    setLoading(true);
-    fetchQuotations()
-      .then((res) => setData((res.data || []) as QuotationRow[]))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  };
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["sales", "quotations"],
+    queryFn: fetchQuotations,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const data = (response?.data || []) as QuotationRow[];
 
+  const convertMutation = useMutation({
+    mutationFn: (id: string) => convertQuotationToSalesOrder(id),
+    onSuccess: (_, id) => {
+      queryClient.setQueryData<{ data: QuotationRow[] }>(["sales", "quotations"], (old) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((row) => row._id === id ? { ...row, convertedSalesOrderId: id } : row),
+        };
+      });
+      toast.success("Successfully converted to Sales Order!");
+    },
+    onError: (err: unknown) => {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || "Failed to convert to Sales Order");
+    },
+  });
+
+  const emailMutation = useMutation({
+    mutationFn: ({ id, email }: { id: string; email: string }) => sendQuotationEmail(id, email),
+    onSuccess: () => {
+      toast.success("Quotation emailed successfully!");
+    },
+    onError: (err: unknown) => {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || "Failed to send email");
+    },
+  });
 
   const handleSendEmail = async (id: string, email: string) => {
     if (!email) {
@@ -47,11 +72,7 @@ export default function QuotationsPage() {
     
     setProcessingId(id);
     try {
-      await sendQuotationEmail(id, email);
-      toast.success("Quotation emailed successfully!");
-      loadData();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to send email");
+      await emailMutation.mutateAsync({ id, email });
     } finally {
       setProcessingId(null);
     }
@@ -60,11 +81,7 @@ export default function QuotationsPage() {
   const handleConvertToSO = async (id: string) => {
     setProcessingId(id);
     try {
-      await convertQuotationToSalesOrder(id);
-      toast.success("Successfully converted to Sales Order!");
-      loadData();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to convert to Sales Order");
+      await convertMutation.mutateAsync(id);
     } finally {
       setProcessingId(null);
     }

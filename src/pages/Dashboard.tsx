@@ -55,7 +55,6 @@ const quickLinks = [
   { label: "Sales Order", url: "sales/orders/new", icon: Receipt, color: "text-amber-400", bg: "bg-amber-700" },
   { label: "Invoices", url: "sales/invoice/new", icon: ReceiptText, color: "text-violet-400", bg: "bg-violet-700" },
   { label: "Credit Notes", url: "sales/credit-notes/new", icon: WalletCards, color: "text-rose-400", bg: "bg-rose-700" },
-  { label: "Customer Payment", url: "sales/customer-payment/new", icon: Banknote, color: "text-cyan-400", bg: "bg-cyan-700" },
   { label: "Customers", url: "sales/customers/new", icon: ShoppingCart, color: "text-orange-400", bg: "bg-orange-700" },
   { label: "Purchase Order", url: "purchase/orders/new", icon: Truck, color: "text-blue-400", bg: "bg-blue-700" },
   { label: "Purchase Bills", url: "purchase/bills/new", icon: Warehouse, color: "text-pink-400", bg: "bg-pink-700" },
