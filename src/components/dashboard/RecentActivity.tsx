@@ -230,7 +230,7 @@ const RecentActivity = ({ userId }: { userId: string }) => {
           throw new Error(`Failed to fetch activities: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data);
+
         setActivities(Array.isArray(data) ? data : []);
       } catch (err) {
         setError("Failed to load recent activity.");

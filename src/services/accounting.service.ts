@@ -207,7 +207,6 @@ async (params?: { startDate?: string; endDate?: string }):Promise<AccountingStat
         getAccounts(),
 
     ]);
-    console.log("pnl : ",pnl);
     //---------------------
     // Revenue
     //---------------------

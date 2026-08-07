@@ -29,7 +29,6 @@ export default function InvoicesPage() {
   });
 
   const data = (response?.data || []) as InvoiceRow[];
-  console.log("data :",data)
   const parseMoney = (value: number | string | { $numberDecimal?: number | string } | null | undefined) => {
     if (value == null) return 0;
     if (typeof value === "object" && "$numberDecimal" in value) {

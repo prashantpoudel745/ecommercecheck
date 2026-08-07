@@ -327,14 +327,14 @@ export default function Insights() {
         />
         <MetricTile
           label="Receivables"
-          value={formatCurrencyShort(snapshot.customers.totalDueAmount)}
+          value={formatCurrency(snapshot.customers.totalDueAmount)}
           helper={`${snapshot.customers.dueCustomers.length} clients need follow-up`}
           icon={<Wallet className="h-5 w-5" />}
           tone="bg-sky-50 text-sky-700"
         />
         <MetricTile
           label="Inventory value"
-          value={formatCurrencyShort(snapshot.inventory.inventoryValue)}
+          value={formatCurrency(snapshot.inventory.inventoryValue)}
           helper={`${snapshot.inventory.lowStockItems.length} low-stock products`}
           icon={<Boxes className="h-5 w-5" />}
           tone="bg-amber-50 text-amber-700"

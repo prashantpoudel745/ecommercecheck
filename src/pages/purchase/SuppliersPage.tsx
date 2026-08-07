@@ -15,7 +15,7 @@ export default function SuppliersPage() {
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
-console.log(data)
+
   return (
     <div className="p-3 sm:p-4 lg:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">

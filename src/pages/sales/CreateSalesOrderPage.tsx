@@ -39,7 +39,6 @@ export default function CreateSalesOrderPage() {
     const response = await fetchInventoryItem();
     if(response.ok){
       const data = await response.json();
-      console.log(data);
       setInventoryItems(data.inventory || [])
     }
   }
