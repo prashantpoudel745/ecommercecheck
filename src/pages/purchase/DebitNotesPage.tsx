@@ -36,10 +36,10 @@ export default function DebitNotesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <div>
             <h1 className="text-2xl font-bold text-white">Debit Notes</h1>
             <p className="text-slate-400 text-sm mt-1">Purchase adjustments & supplier returns — IRD Compliant</p>
@@ -51,7 +51,7 @@ export default function DebitNotesPage() {
         </div>
 
         {/* Stats strip */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-3">
           {[
             { label: "Total Notes", value: notes.length, color: "text-white" },
             { label: "Issued",      value: notes.filter((n) => n.status === "ISSUED").length,  color: "text-blue-400"    },
@@ -65,10 +65,10 @@ export default function DebitNotesPage() {
         </div>
 
         {/* Search */}
-        <div className="relative mb-6">
+        <div className="relative mb-3">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
           <input value={search} onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Search by note number or supplier name…" />
         </div>
 
@@ -89,36 +89,36 @@ export default function DebitNotesPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/10 text-slate-400 text-xs uppercase tracking-wider">
-                    <th className="px-6 py-4 text-left">Debit Note #</th>
-                    <th className="px-6 py-4 text-left">Supplier</th>
-                    <th className="px-6 py-4 text-left">Miti (BS)</th>
-                    <th className="px-6 py-4 text-left">Reason</th>
-                    <th className="px-6 py-4 text-right">Taxable</th>
-                    <th className="px-6 py-4 text-right">VAT</th>
-                    <th className="px-6 py-4 text-right">Total</th>
-                    <th className="px-6 py-4 text-center">Status</th>
+                    <th className="px-4 py-4 text-left">Debit Note #</th>
+                    <th className="px-4 py-4 text-left">Supplier</th>
+                    <th className="px-4 py-4 text-left">Miti (BS)</th>
+                    <th className="px-4 py-4 text-left">Reason</th>
+                    <th className="px-4 py-4 text-right">Taxable</th>
+                    <th className="px-4 py-4 text-right">VAT</th>
+                    <th className="px-4 py-4 text-right">Total</th>
+                    <th className="px-4 py-4 text-center">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {filtered.map((note) => (
                     <tr key={note._id} className="hover:bg-white/5 transition-colors">
-                      <td className="px-6 py-4 font-mono text-blue-300 text-xs">{note.debitNoteNumber}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4 font-mono text-blue-300 text-xs">{note.debitNoteNumber}</td>
+                      <td className="px-4 py-4">
                         <p className="font-medium text-white">{note.supplierName}</p>
                         {note.supplierPAN && <p className="text-xs text-slate-400">PAN: {note.supplierPAN}</p>}
                       </td>
-                      <td className="px-6 py-4 text-slate-300">{note.miti || "—"}</td>
-                      <td className="px-6 py-4 text-slate-300">{REASON_LABELS[note.reason] || note.reason}</td>
-                      <td className="px-6 py-4 text-right text-slate-300">
+                      <td className="px-4 py-4 text-slate-300">{note.miti || "—"}</td>
+                      <td className="px-4 py-4 text-slate-300">{REASON_LABELS[note.reason] || note.reason}</td>
+                      <td className="px-4 py-4 text-right text-slate-300">
                         Rs. {Number(note.taxableAmount ?? 0).toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-right text-amber-400">
+                      <td className="px-4 py-4 text-right text-amber-400">
                         Rs. {Number(note.vatAmount ?? 0).toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-right font-semibold text-white">
+                      <td className="px-4 py-4 text-right font-semibold text-white">
                         Rs. {Number(note.totalAmount ?? 0).toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-4 py-4 text-center">
                         <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${STATUS_COLORS[note.status] || ""}`}>
                           {note.status}
                         </span>

@@ -31,7 +31,7 @@ const TooltipRow = ({
   label: string;
   value: number;
 }) => (
-  <div className="flex items-center justify-between gap-6 py-0.5">
+  <div className="flex items-center justify-between gap-3 py-0.5">
     <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
       <span
         className="h-1.5 w-1.5 rounded-[2px]"
@@ -61,7 +61,7 @@ const BarTooltip = React.memo(({ active, payload, label }: any) => {
       <TooltipRow color={COLOR.income} label="Income" value={income} />
       <TooltipRow color={COLOR.expense} label="Expenses" value={expenses} />
       <div className="my-1.5 h-px bg-slate-100 dark:bg-slate-800" />
-      <div className="flex items-center justify-between gap-6">
+      <div className="flex items-center justify-between gap-3">
         <span className="text-[11px] font-semibold text-slate-500">Net</span>
         <span
           className="text-[12px] font-bold tabular-nums"
@@ -91,7 +91,7 @@ const TrendTooltip = React.memo(({ active, payload, label }: any) => {
       <TooltipRow color={COLOR.income} label="Income" value={income} />
       <TooltipRow color={COLOR.expense} label="Expenses" value={expenses} />
       <div className="my-1.5 h-px bg-slate-100 dark:bg-slate-800" />
-      <div className="flex items-center justify-between gap-6 py-0.5">
+      <div className="flex items-center justify-between gap-3 py-0.5">
         <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <span
             className="h-1.5 w-1.5 rounded-[2px]"
@@ -107,7 +107,7 @@ const TrendTooltip = React.memo(({ active, payload, label }: any) => {
           {formatCurrency(Math.abs(netReal))}
         </span>
       </div>
-      <div className="flex items-center justify-between gap-6 py-0.5">
+      <div className="flex items-center justify-between gap-3 py-0.5">
         <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <span className="h-1.5 w-1.5 rounded-[2px]" style={{ backgroundColor: COLOR.netAbs }} />
           Net
@@ -490,7 +490,7 @@ export default function FinancialOverviewPage({
 
   if (error || rawData.length === 0) {
     return (
-      <div className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-200 py-16 dark:border-slate-800">
+      <div className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-200 py-4 dark:border-slate-800">
         <svg
           className="h-8 w-8 text-slate-300 dark:text-slate-700"
           fill="none"
@@ -516,7 +516,7 @@ export default function FinancialOverviewPage({
   return (
     <div className="flex h-full w-full flex-col">
       {/* Header */}
-      <div className="mb-4 sm:mb-5 flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 sm:mb-3 flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Breadcrumb
             viewMode={viewMode}
@@ -566,7 +566,7 @@ export default function FinancialOverviewPage({
       </div>
 
       {/* KPI summary strip */}
-      <div className="mb-4 sm:mb-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+      <div className="mb-4 sm:mb-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
         <KpiCard label="Revenue (excl. VAT)" value={totals.income} accent={COLOR.income} />
         <KpiCard label="Expenses (excl. VAT)" value={totals.expenses} accent={COLOR.expense} />
         <KpiCard label="Revenue (incl. VAT)" value={totals.incomeWithTax} accent={COLOR.income} />

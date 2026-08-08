@@ -205,7 +205,7 @@ export default function VoucherBook() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <EmailConfirmationDialog
         isOpen={!!emailConfirmData}
         onOpenChange={(open) => !open && !sendingInvoice && setEmailConfirmData(null)}
@@ -267,7 +267,7 @@ export default function VoucherBook() {
               placeholder="Search vouchers..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-white border-none shadow-sm focus-visible:ring-indigo-500"
+              className="pl-4 bg-white border-none shadow-sm focus-visible:ring-indigo-500"
             />
           </div>
           <select
@@ -289,32 +289,32 @@ export default function VoucherBook() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50/50 border-b">
                 <tr>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Date</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Voucher No</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Party / Type</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Doc Status</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Payment</th>
-                  <th className="px-6 py-4 text-right font-semibold text-gray-600">Amount</th>
-                  <th className="px-6 py-4 text-center font-semibold text-gray-600">Action</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Date</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Voucher No</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Party / Type</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Doc Status</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Payment</th>
+                  <th className="px-4 py-4 text-right font-semibold text-gray-600">Amount</th>
+                  <th className="px-4 py-4 text-center font-semibold text-gray-600">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400 italic">
+                    <td colSpan={6} className="px-4 py-4 text-center text-gray-400 italic">
                       Loading your financial history...
                     </td>
                   </tr>
                 ) : filteredVouchers.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400 italic">
+                    <td colSpan={6} className="px-4 py-4 text-center text-gray-400 italic">
                       No vouchers found.
                     </td>
                   </tr>
                 ) : (
                   filteredVouchers.map((voucher) => (
                     <tr key={voucher._id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-3.5 h-3.5 text-gray-400" />
                           <span className="text-gray-900 font-medium">
@@ -332,29 +332,29 @@ export default function VoucherBook() {
                         </Button>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
                           {voucher.voucherNumber}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <div className="flex flex-col">
                           <span className="font-semibold text-gray-900">{voucher.partyName || "General"}</span>
                           <span className="text-[10px] uppercase text-gray-500 font-bold">{voucher.type}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <td className="px-4 py-4 text-center whitespace-nowrap">
                         {getDocStatusBadge(voucher.status)}
                       </td>
-                      <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <td className="px-4 py-4 text-center whitespace-nowrap">
                         {getPaymentStatusBadge(voucher.paymentStatus || "PAID")}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 py-4 text-right">
                         <span className="font-bold text-lg text-gray-900">
                            {CURRENCY_SYMBOL}{CurrencyUtil.format(voucher.totalAmount)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-4 py-4 text-center">
                         <div className="flex justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Button variant="ghost" size="icon" onClick={() => setSelectedVoucher(voucher)}>
                             <Eye className="w-4 h-4 text-blue-600" title="View" />
@@ -422,7 +422,7 @@ export default function VoucherBook() {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-4 space-y-3">
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 text-center">
                   <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Total</p>
@@ -610,7 +610,7 @@ export default function VoucherBook() {
           
           <div className="flex justify-end gap-3 mt-4">
             <Button variant="ghost" onClick={() => setShowPaymentModal(false)}>Cancel</Button>
-            <Button onClick={handleRecordPayment} disabled={paymentLoading || !paymentData.paymentAccountId} className="font-bold px-6">
+            <Button onClick={handleRecordPayment} disabled={paymentLoading || !paymentData.paymentAccountId} className="font-bold px-4">
               {paymentLoading ? "Saving..." : "Confirm & Pay Now"}
             </Button>
           </div>

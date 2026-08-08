@@ -38,8 +38,8 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
+    <div className="p-3 sm:p-4 lg:p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-3">
         <div>
           <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Invoices</h1>
           <p className="text-xs sm:text-sm text-slate-500">Manage all customer invoices</p>
@@ -57,19 +57,19 @@ export default function InvoicesPage() {
           <table className="w-full text-xs sm:text-sm text-left">
             <thead className="bg-slate-50 text-slate-600 font-medium border-b border-slate-200">
                 <tr>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Invoice Number</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Customer</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Date</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Total Amount</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Status</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4 text-center">Actions</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Invoice Number</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Customer</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Date</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Total Amount</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Status</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-700">
               {loading ? (
-                <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Loading...</td></tr>
+                <tr><td colSpan={6} className="px-4 py-4 text-center text-slate-400">Loading...</td></tr>
               ) : data.length === 0 ? (
-                <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">No invoices found.</td></tr>
+                <tr><td colSpan={6} className="px-4 py-4 text-center text-slate-400">No invoices found.</td></tr>
               ) : (
                 data.map((item) => {
                   const totalAmount = parseMoney(item.totalAmount);
@@ -78,14 +78,14 @@ export default function InvoicesPage() {
 
                   return (
                     <tr key={item._id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-slate-900">{item.invoiceNumber}</td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4">
+                      <td className="px-4 py-4 font-medium text-slate-900">{item.invoiceNumber}</td>
+                      <td className="px-3 py-3 sm:px-4 sm:py-4">
                         <div className="font-medium text-slate-900">{item.customerName}</div>
                         <div className="text-xs text-slate-500">{item.customerEmail || ""}{item.customerEmail && item.customerPhone ? " • " : ""}{item.customerPhone || ""}</div>
                       </td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4">{new Date(item.date || item.createdAt).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 font-medium">{formatCurrency(totalAmount)}</td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4 space-y-1">
+                      <td className="px-3 py-3 sm:px-4 sm:py-4">{new Date(item.date || item.createdAt).toLocaleDateString()}</td>
+                      <td className="px-4 py-4 font-medium">{formatCurrency(totalAmount)}</td>
+                      <td className="px-3 py-3 sm:px-4 sm:py-4 space-y-1">
                         <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">
                           {item.status || "SENT"}
                         </span>
@@ -98,7 +98,7 @@ export default function InvoicesPage() {
                           Due: {formatCurrency(amountDue)}
                         </div>
                       </td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4 text-center">
+                      <td className="px-3 py-3 sm:px-4 sm:py-4 text-center">
                         {canPay ? (
                           <Link to={`/sales/client-payment/new?invoiceId=${item._id}`} state={{ invoice: item }}>
                             <Button variant="outline" size="sm" className="text-emerald-600 border-emerald-200 hover:bg-emerald-50 h-8 px-3">

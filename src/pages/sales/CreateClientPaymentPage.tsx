@@ -125,18 +125,18 @@ export default function CreateClientPaymentPage() {
   };
 
   if (invoiceLoading) {
-    return <div className="p-6 max-w-5xl mx-auto w-full text-slate-500">Loading invoice...</div>;
+    return <div className="p-4 max-w-5xl mx-auto w-full text-slate-500">Loading invoice...</div>;
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-6 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
+    <div className="p-4 sm:p-4 max-w-5xl mx-auto w-full">
+      <div className="mb-3 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
         <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Client Payment</h1>
         <p className="text-slate-500 mt-1">Settle this invoice partially or in full.</p>
       </div>
 
       {invoice ? (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7 space-y-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-7 space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 rounded-xl border border-slate-100 p-4">
             <div>
               <p className="text-xs text-slate-500">Invoice</p>
@@ -164,8 +164,8 @@ export default function CreateClientPaymentPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Type</label>
                 <div className="flex gap-3">
@@ -249,7 +249,7 @@ export default function CreateClientPaymentPage() {
           </form>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-slate-500">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 text-slate-500">
           No invoice was selected. Return to the invoice list and choose <span className="font-medium text-slate-700">To Pay</span> for a due invoice.
         </div>
       )}

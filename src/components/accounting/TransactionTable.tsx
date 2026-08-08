@@ -55,7 +55,7 @@ export default function TransactionTable({
 
   if (transactions.length === 0)
     return (
-      <div className="text-center py-12 text-slate-400 italic bg-white/50 backdrop-blur-sm rounded-xl border border-dashed">
+      <div className="text-center py-4 text-slate-400 italic bg-white/50 backdrop-blur-sm rounded-xl border border-dashed">
         <Receipt className="w-12 h-12 mx-auto mb-3 opacity-20" />
         No transactions found
       </div>
@@ -66,7 +66,7 @@ export default function TransactionTable({
       {/* Success Overlay */}
       {showSuccess && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in zoom-in-95 duration-300">
+          <div className="bg-emerald-500 text-white px-4 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in zoom-in-95 duration-300">
             <CheckCircle2 className="w-6 h-6" />
             <span className="font-bold tracking-tight">Transaction Cancelled Successfully</span>
           </div>
@@ -76,7 +76,7 @@ export default function TransactionTable({
       {/* Delete Confirmation Modal */}
       {deletingId && !showSuccess && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 space-y-6 animate-in zoom-in-95 duration-200 border border-slate-100">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-4 space-y-3 animate-in zoom-in-95 duration-200 border border-slate-100">
             <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-8 h-8 text-rose-500" />
             </div>
@@ -121,7 +121,7 @@ export default function TransactionTable({
       <Table>
         <TableHeader className="bg-slate-50/50">
           <TableRow>
-            <TableHead className="text-[10px] font-black uppercase text-slate-500 tracking-wider h-12 lg:pl-6">
+            <TableHead className="text-[10px] font-black uppercase text-slate-500 tracking-wider h-12 lg:pl-4">
               <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3"/> Date</div>
             </TableHead>
             <TableHead className="text-[10px] font-black uppercase text-slate-500 tracking-wider h-12">
@@ -134,7 +134,7 @@ export default function TransactionTable({
               <div className="flex items-center gap-1.5"><Tag className="w-3 h-3"/> Type</div>
             </TableHead>
             <TableHead className="text-right text-[10px] font-black uppercase text-slate-500 tracking-wider h-12">Amount</TableHead>
-            <TableHead className="text-center text-[10px] font-black uppercase text-slate-500 tracking-wider h-12 w-20 lg:pr-6">Actions</TableHead>
+            <TableHead className="text-center text-[10px] font-black uppercase text-slate-500 tracking-wider h-12 w-20 lg:pr-4">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -146,7 +146,7 @@ export default function TransactionTable({
             })
             .map((transaction: any) => (
               <TableRow key={transaction._id || transaction.id} className="hover:bg-indigo-50/30 transition-colors group">
-                <TableCell className="text-slate-500 font-medium whitespace-nowrap py-4 lg:pl-6">
+                <TableCell className="text-slate-500 font-medium whitespace-nowrap py-4 lg:pl-4">
                   {formatDate(transaction.date || transaction.updatedAt)}
                 </TableCell>
                 <TableCell className="py-4">
@@ -208,7 +208,7 @@ export default function TransactionTable({
                 >
                   {formatCurrency(transaction.totalAmount || transaction.amount)}
                 </TableCell>
-                <TableCell className="text-center py-4 lg:pr-6">
+                <TableCell className="text-center py-4 lg:pr-4">
                   <button
                     onClick={() => setDeletingId(transaction._id || transaction.id)}
                     className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all flex items-center justify-center opacity-0 group-hover:opacity-100"

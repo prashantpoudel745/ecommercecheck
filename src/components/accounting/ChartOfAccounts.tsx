@@ -125,7 +125,7 @@ export default function ChartOfAccounts() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Sticky page header: title + Seed/Add Group/Add Ledger buttons */}
       <div className="sticky -top-6 z-30  backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-3 border-b border-gray-100">
         <div className="mx-5">
@@ -213,7 +213,7 @@ export default function ChartOfAccounts() {
               </div>
               <div className="md:col-span-4 flex justify-end gap-2 pt-2">
                 <Button type="button" variant="ghost" onClick={() => setShowGroupForm(false)}>Cancel</Button>
-                <Button type="submit" className="px-8 shadow-lg">Save Group</Button>
+                <Button type="submit" className="px-4 shadow-lg">Save Group</Button>
               </div>
             </form>
           </CardContent>
@@ -273,7 +273,7 @@ export default function ChartOfAccounts() {
               )}
               <div className="md:col-span-4 flex justify-end gap-2 pt-2">
                 <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
-                <Button type="submit" className="px-8 shadow-lg">Save Account</Button>
+                <Button type="submit" className="px-4 shadow-lg">Save Account</Button>
               </div>
             </form>
           </CardContent>
@@ -290,7 +290,7 @@ export default function ChartOfAccounts() {
               placeholder="Search accounts..." 
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10 bg-gray-50 border-none focus-visible:ring-blue-500"
+              className="pl-4 bg-gray-50 border-none focus-visible:ring-blue-500"
             />
           </div>
             <select
@@ -316,37 +316,37 @@ export default function ChartOfAccounts() {
               <table className="w-full text-sm">
                 <thead className="sticky top-0 z-10 bg-gray-50 border-b shadow-sm">
                   <tr>
-                    <th className="px-6 py-4 text-left font-semibold text-gray-600">Account Code</th>
-                    <th className="px-6 py-4 text-left font-semibold text-gray-600">Ledger Name</th>
-                    <th className="px-6 py-4 text-left font-semibold text-gray-600">Group</th>
-                    <th className="px-6 py-4 text-right font-semibold text-gray-600">Current Balance</th>
+                    <th className="px-4 py-4 text-left font-semibold text-gray-600">Account Code</th>
+                    <th className="px-4 py-4 text-left font-semibold text-gray-600">Ledger Name</th>
+                    <th className="px-4 py-4 text-left font-semibold text-gray-600">Group</th>
+                    <th className="px-4 py-4 text-right font-semibold text-gray-600">Current Balance</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {loading ? (
                     <tr>
-                      <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
+                      <td colSpan={4} className="px-4 py-4 text-center text-gray-400">
                         <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 opacity-20" />
                         Loading accounts...
                       </td>
                     </tr>
                   ) : filteredAccounts.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
+                      <td colSpan={4} className="px-4 py-4 text-center text-gray-400">
                         No accounts found.
                       </td>
                     </tr>
                   ) : (
                     filteredAccounts.map((account) => (
                       <tr key={account._id} className="hover:bg-blue-50/30 transition-colors group">
-                        <td className="px-6 py-4 font-mono text-xs text-blue-600 bg-blue-50/10">{account.code}</td>
-                        <td className="px-6 py-4 font-medium text-gray-900">{account.name}</td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 py-4 font-mono text-xs text-blue-600 bg-blue-50/10">{account.code}</td>
+                        <td className="px-4 py-4 font-medium text-gray-900">{account.name}</td>
+                        <td className="px-4 py-4">
                           <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
                             {account.accountGroup?.name || 'Uncategorized'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-4 py-4 text-right">
                           <div className="flex flex-col items-end">
                             <span className={`font-bold text-base ${CurrencyUtil.parse(account.currentBalance).greaterThanOrEqualTo(0) ? "text-green-600" : "text-red-600"}`}>
                               {formatCurrency(CurrencyUtil.parse(account.currentBalance).abs())}

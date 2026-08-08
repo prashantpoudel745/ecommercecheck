@@ -116,7 +116,7 @@ const InvestmentsTable = () => {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-3 gap-4">
         <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 drop-shadow-sm">Investments Directory</h3>
         <div className="flex space-x-3 w-full sm:w-auto">
           <input
@@ -134,11 +134,11 @@ const InvestmentsTable = () => {
       </div>
 
       {loading ? (
-        <div className="p-8 text-center text-zinc-500 dark:text-zinc-400">Loading directory...</div>
+        <div className="p-4 text-center text-zinc-500 dark:text-zinc-400">Loading directory...</div>
       ) : error ? (
-        <div className="p-8 text-center text-rose-500 dark:text-rose-400">{error}</div>
+        <div className="p-4 text-center text-rose-500 dark:text-rose-400">{error}</div>
       ) : investments.length === 0 ? (
-        <div className="p-8 text-center text-zinc-500 dark:text-zinc-400 font-medium italic">
+        <div className="p-4 text-center text-zinc-500 dark:text-zinc-400 font-medium italic">
           No investments found. Add your first investment!
         </div>
       ) : (
@@ -146,28 +146,28 @@ const InvestmentsTable = () => {
           <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
             <thead className="bg-zinc-50/80 dark:bg-zinc-800/50 backdrop-blur-md">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Client
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Description
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Amount
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Category
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Returns
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                <th className="px-4 py-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -175,29 +175,29 @@ const InvestmentsTable = () => {
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 bg-transparent">
               {filteredInvestments.map((investment) => (
                 <tr key={investment.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <div className="font-semibold text-zinc-900 dark:text-zinc-100">
                       {investment.client}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-600 dark:text-zinc-300">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-zinc-600 dark:text-zinc-300">
                     {investment.description}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-zinc-800 dark:text-zinc-200">
                     {investment.amount}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-600 dark:text-zinc-300">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-zinc-600 dark:text-zinc-300">
                     <span className="inline-flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 ring-1 ring-inset ring-zinc-500/10 dark:ring-zinc-400/20">
                       {investment.category}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                     {investment.returns}%
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">
                     {investment.date}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <span
                       className={`px-2.5 py-1 inline-flex text-[11px] leading-5 font-bold uppercase tracking-wider rounded-full ${getStatusClass(
                         investment.status
@@ -206,7 +206,7 @@ const InvestmentsTable = () => {
                       {investment.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm">
                     <button
                       className="text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 font-medium transition-colors"
                       onClick={() => handleDelete(investment.id)}

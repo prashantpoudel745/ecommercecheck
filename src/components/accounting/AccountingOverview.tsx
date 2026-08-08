@@ -26,7 +26,7 @@ export default function AccountingOverview() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
         {/* Sticky Navigation Tabs */}
         <div className="sticky top-0 z-10 flex space-x-2 bg-white p-2 rounded-lg shadow-sm border border-gray-100 overflow-x-auto">
             <TabButton id="dashboard" label="Overview" icon={LayoutDashboard} />

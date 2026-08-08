@@ -140,13 +140,13 @@ export default function AdminStatusManager() {
     .filter((a) => (statusFilter === "all" ? true : a.status === statusFilter));
 
   return (
-    <div className="p-8 w-full flex justify-center bg-gray-100 min-h-screen">
+    <div className="p-4 w-full flex justify-center bg-gray-100 min-h-screen">
       <div className="w-full max-w-6xl">
         <h2 className="text-3xl font-bold">Admin Directory</h2>
-        <p className="text-gray-600 mb-6">Manage admin registrations and status</p>
+        <p className="text-gray-600 mb-3">Manage admin registrations and status</p>
 
         {/* Search & Filter */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-4 mb-3">
           <Input
             className="w-full"
             placeholder="Search admins..."
@@ -171,9 +171,9 @@ export default function AdminStatusManager() {
         <Card className="rounded-xl shadow-sm">
           <CardContent className="p-0">
             {loadingAdmins ? (
-              <div className="p-8 text-center text-gray-500">Loading admins...</div>
+              <div className="p-4 text-center text-gray-500">Loading admins...</div>
             ) : filteredAdmins.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
+              <div className="p-4 text-center text-gray-500">
                 No admins found.
               </div>
             ) : (

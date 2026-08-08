@@ -38,13 +38,13 @@ export default function ExpenseDetailPage() {
   }, [id]);
 
   if (loading) {
-    return <div className="p-6 text-slate-600">Loading expense...</div>;
+    return <div className="p-4 text-slate-600">Loading expense...</div>;
   }
 
   if (!expense) {
     return (
-      <div className="p-6 max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-slate-700">
+      <div className="p-4 max-w-4xl mx-auto">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 text-slate-700">
           <p>Expense not found.</p>
           <Button className="mt-4" onClick={() => navigate("/purchase/expenses")}>Back to expenses</Button>
         </div>
@@ -53,8 +53,8 @@ export default function ExpenseDetailPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="p-4 max-w-4xl mx-auto">
+      <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Expense Details</h1>
           <p className="text-slate-500">Review the expense proof and record details.</p>
@@ -62,7 +62,7 @@ export default function ExpenseDetailPage() {
         <Button variant="outline" onClick={() => navigate("/purchase/expenses")}>Back to expenses</Button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-500">Reference</p>

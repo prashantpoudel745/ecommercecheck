@@ -22,7 +22,7 @@ export default function VatDashboard({ data }: { data: VatReport | null }) {
   }, [data]);
 
   if (!data) {
-    return <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400">No VAT data found for this period.</div>;
+    return <div className="rounded-2xl border border-slate-200 bg-white p-4 text-center text-sm text-slate-400">No VAT data found for this period.</div>;
   }
 
   const inputVoucherRows = data.inputVatVouchers || [];
@@ -34,7 +34,7 @@ export default function VatDashboard({ data }: { data: VatReport | null }) {
       : "No Net VAT";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -75,7 +75,7 @@ export default function VatDashboard({ data }: { data: VatReport | null }) {
       </div>
 
       <Card className="border-none shadow-lg bg-slate-950 text-white">
-        <CardContent className="p-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <CardContent className="p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-slate-400">VAT Position</p>
             <h3 className="text-2xl font-black">{netLabel}</h3>
@@ -86,7 +86,7 @@ export default function VatDashboard({ data }: { data: VatReport | null }) {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid gap-3 xl:grid-cols-2">
         <Card className="border-none shadow-md">
           <CardHeader>
             <CardTitle className="text-emerald-700">Output VAT Sources</CardTitle>

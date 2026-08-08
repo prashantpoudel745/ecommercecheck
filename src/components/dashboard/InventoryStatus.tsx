@@ -117,7 +117,7 @@ const TooltipRow = ({
   label: string;
   value: number;
 }) => (
-  <div className="flex items-center justify-between gap-6 py-0.5">
+  <div className="flex items-center justify-between gap-3 py-0.5">
     <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
       <span className="h-1.5 w-1.5 rounded-[2px]" style={{ backgroundColor: color }} />
       {label}
@@ -140,7 +140,7 @@ const CustomTooltip = React.memo(
         <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
           {label}
         </p>
-        <div className="flex items-center justify-between gap-6 py-0.5">
+        <div className="flex items-center justify-between gap-3 py-0.5">
           <span className="text-[11px] font-semibold text-slate-500">Total items</span>
           <span className="text-[12px] font-bold tabular-nums text-slate-900">
             {formatCount(currentData.totalItems)}
@@ -462,7 +462,7 @@ export function InventoryStatusChart({
 
   // Shared sticky header, used in every render branch ----------------------
   const StickyHeader = ({ showHint = false }: { showHint?: boolean }) => (
-    <div className=" mb-5 flex flex-col gap-3 bg-white/95 px-1 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-slate-950/95 sm:flex-row sm:items-center sm:justify-between">
+    <div className=" mb-3 flex flex-col gap-3 bg-white/95 px-1 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-slate-950/95 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <h3 className="text-base sm:text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
           Inventory status
@@ -503,11 +503,11 @@ export function InventoryStatusChart({
           {loading ? (
             <SkeletonLoader />
           ) : error ? (
-            <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-slate-200 px-8 py-10 dark:border-slate-800">
+            <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-slate-200 px-4 py-4 dark:border-slate-800">
               <p className="text-sm font-medium text-rose-700 dark:text-rose-400">{error}</p>
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-slate-200 px-8 py-10 dark:border-slate-800">
+            <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-slate-200 px-4 py-4 dark:border-slate-800">
               <svg className="h-8 w-8 text-slate-300 dark:text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -533,7 +533,7 @@ export function InventoryStatusChart({
       <StickyHeader showHint />
 
       {/* KPI summary strip */}
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mb-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <KpiCard label="Total items" value={totals.total} accent="#334155" />
         <KpiCard label="High stock" value={totals.high} accent={COLOR.high} />
         <KpiCard label="Medium stock" value={totals.medium} accent={COLOR.medium} />
@@ -643,7 +643,7 @@ export function InventoryStatusChart({
 
       {/* Detail panel */}
       {selectedData && (
-        <div className="mt-6">
+        <div className="mt-3">
           <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
             {selectedData.category} — item detail
           </p>

@@ -91,10 +91,10 @@ export default function CreateDebitNotePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-4">
           <button onClick={() => navigate(-1)}
             className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
             ←
@@ -111,9 +111,9 @@ export default function CreateDebitNotePage() {
         {error   && <div className="mb-4 p-4 bg-red-500/20 border border-red-500/40 rounded-xl text-red-300 text-sm">{error}</div>}
         {success && <div className="mb-4 p-4 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-300 text-sm">{success}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* Supplier Info */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4">
             <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-blue-400"></span>
               Supplier Information
@@ -158,7 +158,7 @@ export default function CreateDebitNotePage() {
           </div>
 
           {/* Reason */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4">
             <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-purple-400"></span>
               Adjustment Details
@@ -194,7 +194,7 @@ export default function CreateDebitNotePage() {
           </div>
 
           {/* Line Items */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
@@ -253,7 +253,7 @@ export default function CreateDebitNotePage() {
           </div>
 
           {/* Totals Summary */}
-          <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/20 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/20 rounded-2xl p-4">
             <h2 className="text-lg font-semibold text-white mb-4">IRD Totals Summary</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-slate-300">

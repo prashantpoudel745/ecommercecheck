@@ -18,7 +18,7 @@ const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
   const { todayOverview, lastUpdated } = data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Today’s Attendance Overview</h2>
         <button

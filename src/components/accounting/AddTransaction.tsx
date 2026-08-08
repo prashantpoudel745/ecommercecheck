@@ -366,7 +366,7 @@ export default function CombinedAddDialog({
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           {variant === "outline" ? (
-            <Button variant="outline" className="w-full flex items-center justify-center gap-2 py-6">
+            <Button variant="outline" className="w-full flex items-center justify-center gap-2 py-3">
               <Plus size={20} />
               <CardTitle className="text-lg font-semibold">{buttonLabel}</CardTitle>
             </Button>
@@ -374,7 +374,7 @@ export default function CombinedAddDialog({
             <Button variant="default">{buttonLabel}</Button>
           )}
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px] p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] p-4 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center justify-between">
               <DialogTitle className="text-2xl font-semibold">Add New Transaction</DialogTitle>
@@ -404,7 +404,7 @@ export default function CombinedAddDialog({
             onDataExtracted={handleBillDataExtracted}
           />
 
-          <form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} className="space-y-6">
+          <form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} className="space-y-3">
             <div className="space-y-4">
               <h3 className="text-lg font-medium border-b pb-2">Client & Payment</h3>
               <div className="grid grid-cols-2 gap-4">

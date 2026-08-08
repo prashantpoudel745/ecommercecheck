@@ -36,11 +36,11 @@ export default function BackupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-4">
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4">
           <div className="flex items-center gap-3 mb-1">
             <span className="text-3xl">💾</span>
             <h1 className="text-2xl font-bold text-white">Backup & Restore</h1>
@@ -54,14 +54,14 @@ export default function BackupPage() {
         </div>
 
         {/* IRD Compliance Note */}
-        <div className="bg-amber-900/20 border border-amber-500/30 rounded-2xl p-4 mb-6 text-sm text-amber-300">
+        <div className="bg-amber-900/20 border border-amber-500/30 rounded-2xl p-4 mb-3 text-sm text-amber-300">
           <p className="font-semibold mb-1">📋 IRD Requirement</p>
           <p>Nepal's Computerized Billing System Directives require all registered billing systems to maintain tamper-proof records for a minimum of 7 years. Export this backup periodically and store it in a secure, off-site location.</p>
         </div>
 
         {/* Stats */}
         {!loading && status && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
             {[
               { label: "Vouchers",    value: status.totalVouchers,  icon: "🧾" },
               { label: "Invoices",    value: status.totalInvoices,   icon: "📄" },
@@ -79,7 +79,7 @@ export default function BackupPage() {
 
         {/* Last Activity */}
         {status?.lastActivityAt && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 flex items-center gap-4">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-3 flex items-center gap-4">
             <span className="text-2xl">🕐</span>
             <div>
               <p className="text-sm text-slate-400">Last Activity</p>
@@ -91,14 +91,14 @@ export default function BackupPage() {
         )}
 
         {/* Export Card */}
-        <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/20 rounded-2xl p-8 mb-4 text-center">
+        <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/20 rounded-2xl p-4 mb-4 text-center">
           <div className="text-5xl mb-4">📦</div>
           <h2 className="text-xl font-bold text-white mb-2">Export Full Backup</h2>
-          <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
+          <p className="text-slate-400 text-sm mb-3 max-w-md mx-auto">
             Downloads a complete JSON snapshot of all your financial records, including the tamper-evident audit trail. The file is named by fiscal year and date.
           </p>
 
-          <div className="bg-white/5 rounded-xl p-4 mb-6 text-left space-y-2 text-sm text-slate-400">
+          <div className="bg-white/5 rounded-xl p-4 mb-3 text-left space-y-2 text-sm text-slate-400">
             {[
               "All vouchers & journal entries",
               "All invoices (including voided)",

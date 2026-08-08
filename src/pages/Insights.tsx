@@ -287,7 +287,7 @@ export default function Insights() {
 
   if (!snapshot || !derived) {
     return (
-      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center">
+      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-4 text-center">
         <p className="font-medium text-slate-900">No insight data available yet.</p>
         <p className="mt-1 text-sm text-slate-500">Add accounting, inventory, and CRM data to unlock analytics.</p>
       </div>
@@ -295,7 +295,7 @@ export default function Insights() {
   }
 
   return (
-    <div className="mx-auto max-w-[1520px] space-y-4 sm:space-y-5 lg:space-y-6">
+    <div className="mx-auto max-w-[1520px] space-y-4 sm:space-y-3 lg:space-y-3">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           {/* <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
@@ -348,7 +348,7 @@ export default function Insights() {
         />
       </div>
 
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.45fr_0.9fr]">
+      <div className="grid gap-4 sm:gap-3 lg:grid-cols-[1.45fr_0.9fr]">
         <InsightPanel title="Revenue, expenses, and net position" subtitle="Compare yesterday, today, and current month performance.">
           <div className="h-[240px] sm:h-[280px] lg:h-[330px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -390,7 +390,7 @@ export default function Insights() {
         </InsightPanel>
       </div>
 
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 sm:gap-3 md:grid-cols-2 xl:grid-cols-3">
         <InsightPanel title="Inventory risk" subtitle="Stock pressure by product status.">
           {derived.inventoryRisk.length > 0 ? (
             <div className="h-[220px] sm:h-[260px] lg:h-[280px]">
@@ -443,7 +443,7 @@ export default function Insights() {
         </InsightPanel>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      <div className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
         {/* <InsightPanel title="Focus board" subtitle="The areas most likely to move business results.">
           <div className="space-y-4">
             {[

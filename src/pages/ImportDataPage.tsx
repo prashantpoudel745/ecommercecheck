@@ -96,8 +96,8 @@ export default function ImportDataPage() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto w-full animate-fade-in">
-      <div className="mb-8">
+    <div className="p-4 max-w-6xl mx-auto w-full animate-fade-in">
+      <div className="mb-4">
         <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
           <Upload className="text-emerald-500" />
           Bulk Data Import
@@ -116,9 +116,9 @@ export default function ImportDataPage() {
         className="hidden"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {MODULES.map((mod) => (
-          <div key={mod.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between transition-all hover:shadow-md">
+          <div key={mod.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col justify-between transition-all hover:shadow-md">
             <div>
               <div className="flex items-start gap-3 mb-3">
                 <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-lg">
@@ -130,7 +130,7 @@ export default function ImportDataPage() {
                 </div>
               </div>
               
-              <div className="bg-slate-50 rounded p-3 mt-4 mb-6 border border-slate-100">
+              <div className="bg-slate-50 rounded p-3 mt-4 mb-3 border border-slate-100">
                 <p className="text-xs font-mono text-slate-600 break-all">
                   <span className="font-semibold text-slate-700">Headers:</span> {mod.templateHeaders}
                 </p>

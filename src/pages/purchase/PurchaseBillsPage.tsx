@@ -133,8 +133,8 @@ export default function PurchaseBillsPage() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
+    <div className="p-3 sm:p-4 lg:p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-3">
         <div>
           <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Purchase Bills</h1>
           <p className="text-xs sm:text-sm text-slate-500">Manage invoices and bills from your suppliers</p>
@@ -152,22 +152,22 @@ export default function PurchaseBillsPage() {
           <table className="w-full text-xs sm:text-sm text-left">
             <thead className="bg-slate-50 text-slate-600 font-medium border-b border-slate-200">
               <tr>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Bill Number</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Supplier Name</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Bill Date</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Due Date</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Total Amount</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Amount Paid</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Amount Due</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4">Status</th>
-                <th className="px-3 py-3 sm:px-6 sm:py-4 text-center">Actions</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Bill Number</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Supplier Name</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Bill Date</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Due Date</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Total Amount</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Amount Paid</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Amount Due</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Status</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-700">
               {loading ? (
-                <tr><td colSpan={9} className="px-6 py-8 text-center text-slate-400">Loading...</td></tr>
+                <tr><td colSpan={9} className="px-4 py-4 text-center text-slate-400">Loading...</td></tr>
               ) : data.length === 0 ? (
-                <tr><td colSpan={9} className="px-6 py-8 text-center text-slate-400">No purchase bills found.</td></tr>
+                <tr><td colSpan={9} className="px-4 py-4 text-center text-slate-400">No purchase bills found.</td></tr>
               ) : (
                 data.map((item) => {
                   const it = item as Record<string, unknown>;
@@ -189,24 +189,24 @@ export default function PurchaseBillsPage() {
 
                   return (
                     <tr key={key} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-slate-900">{billNumberDisplay}</td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4">
+                      <td className="px-4 py-4 font-medium text-slate-900">{billNumberDisplay}</td>
+                      <td className="px-3 py-3 sm:px-4 sm:py-4">
                         <div className="font-medium text-slate-900">{supplierNameDisplay}</div>
                         <div className="text-xs text-slate-500">{supplierContact}</div>
                       </td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4">{billDateStr}</td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4">{dueDateStr}</td>
-                      <td className="px-6 py-4 font-medium">{formatCurrency(totalAmount)}</td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4 text-emerald-600">{formatCurrency(amountPaid)}</td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4 text-red-500 font-medium">{formatCurrency(amountDue)}</td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4">
+                      <td className="px-3 py-3 sm:px-4 sm:py-4">{billDateStr}</td>
+                      <td className="px-3 py-3 sm:px-4 sm:py-4">{dueDateStr}</td>
+                      <td className="px-4 py-4 font-medium">{formatCurrency(totalAmount)}</td>
+                      <td className="px-3 py-3 sm:px-4 sm:py-4 text-emerald-600">{formatCurrency(amountPaid)}</td>
+                      <td className="px-3 py-3 sm:px-4 sm:py-4 text-red-500 font-medium">{formatCurrency(amountDue)}</td>
+                      <td className="px-3 py-3 sm:px-4 sm:py-4">
                         {isPaid ? (
                           <span className="text-xs font-medium px-2 py-1 rounded bg-green-100 text-green-700">Paid</span>
                         ) : (
                           <span className="text-xs font-medium px-2 py-1 rounded bg-amber-100 text-amber-700">Purchase Bill</span>
                         )}
                       </td>
-                      <td className="px-3 py-3 sm:px-6 sm:py-4 flex gap-2 justify-center items-center">
+                      <td className="px-3 py-3 sm:px-4 sm:py-4 flex gap-2 justify-center items-center">
                         {!isPaid && (
                           <Button
                             variant="outline"

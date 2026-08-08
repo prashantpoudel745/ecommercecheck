@@ -273,7 +273,7 @@ const RecentActivity = ({ userId }: { userId: string }) => {
           ))}
         </div>
       ) : error || activities.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-200 py-12 dark:border-slate-800">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-200 py-4 dark:border-slate-800">
           <svg className="h-7 w-7 text-slate-300 dark:text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
@@ -287,7 +287,7 @@ const RecentActivity = ({ userId }: { userId: string }) => {
           </p>
         </div>
       ) : filteredActivities.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-200 py-12 dark:border-slate-800">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-200 py-4 dark:border-slate-800">
           <svg className="h-7 w-7 text-slate-300 dark:text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"

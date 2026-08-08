@@ -23,7 +23,7 @@ export default function Sales() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.08),_transparent_26%),linear-gradient(180deg,_#f7f9fc_0%,_#eef2f7_100%)] text-slate-950">
       <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-4 lg:px-4">
           <div
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => navigate("/home")}
@@ -47,7 +47,7 @@ export default function Sales() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 pb-24 pt-4 sm:px-4 lg:px-4">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,26 +59,26 @@ export default function Sales() {
             Talk to sales
           </div>
 
-          <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl lg:leading-[1.05]">
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl lg:leading-[1.05]">
             Talk to Bebasthapan about business ERP software.
           </h1>
 
-          <p className="mt-6 text-base leading-7 text-slate-600 sm:text-lg">
+          <p className="mt-3 text-base leading-7 text-slate-600 sm:text-lg">
             Ready to connect accounting, inventory, sales, purchase, CRM, HR, attendance, and business insights? Contact Bebasthapan to discuss ERP software for your business.
           </p>
         </motion.div>
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="mt-4 grid gap-3 lg:grid-cols-[0.95fr_1.05fr]">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-6"
+            className="space-y-3"
           >
             <div className="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-950">Contact information</h3>
 
-              <div className="mt-6 space-y-5">
+              <div className="mt-3 space-y-3">
                 <a href="mailto:prashantpoudel745@gmail.com" className="flex items-start gap-4 group">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 transition-transform group-hover:-translate-y-0.5">
                     <Mail className="h-5 w-5 text-blue-600" />
@@ -120,7 +120,7 @@ export default function Sales() {
                 <ShieldCheck className="h-4 w-4 text-sky-300" />
                 Why upgrade to enterprise
               </div>
-              <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-300">                 
+              <ul className="mt-3 space-y-3 text-sm leading-6 text-slate-300">                 
                 <li className="flex gap-2">
                   <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
                   24/7 priority support
@@ -145,7 +145,7 @@ export default function Sales() {
           >
             <h3 className="text-lg font-semibold text-slate-950">Send us a message</h3>
 
-            <form className="mt-6 space-y-5" onSubmit={(e) => { e.preventDefault(); }}>
+            <form className="mt-3 space-y-3" onSubmit={(e) => { e.preventDefault(); }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">First name</label>
@@ -196,7 +196,7 @@ export default function Sales() {
 
               <button
                 type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)] transition-transform hover:-translate-y-0.5 hover:bg-slate-800"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)] transition-transform hover:-translate-y-0.5 hover:bg-slate-800"
               >
                 Send message
                 <Send className="h-4 w-4" />

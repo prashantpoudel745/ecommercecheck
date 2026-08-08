@@ -65,7 +65,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.08),_transparent_34%),linear-gradient(180deg,_#f7f9fc_0%,_#eef2f7_100%)] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.08),_transparent_34%),linear-gradient(180deg,_#f7f9fc_0%,_#eef2f7_100%)] px-4 py-3 sm:px-4 lg:px-4">
       <div className="absolute left-8 top-6 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl" />
       <div className="absolute bottom-0 right-0 h-72 w-80 rounded-full bg-slate-900/5 blur-3xl" />
 
@@ -73,14 +73,14 @@ export default function LoginPage() {
         <div className="grid w-full overflow-hidden rounded-[28px] border border-slate-200 bg-white/90 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl lg:grid-cols-[1fr_1fr]">
           <Authsidebar />
 
-          <div className="flex items-center justify-center px-6 py-10 sm:px-10 lg:px-12">
+          <div className="flex items-center justify-center px-4 py-4 sm:px-4 lg:px-4">
             <div className="w-full max-w-md">
               <div className="enterprise-kicker">
                 <LockKeyhole className="h-3.5 w-3.5" />
                 Secure access portal
               </div>
 
-              <div className="mt-6 space-y-3">
+              <div className="mt-3 space-y-3">
                 <h2 className="enterprise-title">
                   Log in to your workspace
                 </h2>
@@ -90,12 +90,12 @@ export default function LoginPage() {
               </div>
 
               {error && (
-                <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 shadow-sm">
+                <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 shadow-sm">
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <form onSubmit={handleSubmit} className="mt-3 space-y-4">
                 <div className="space-y-2">
                   <label
                     htmlFor="email"
@@ -127,7 +127,7 @@ export default function LoginPage() {
                       id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 pr-12 text-slate-950 shadow-sm outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 pr-4 text-slate-950 shadow-sm outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
                       placeholder="Enter your password"
                       required
                     />
@@ -178,7 +178,7 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-600">
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-slate-600">
                 <p>
                   New here?{" "}
                   <Link

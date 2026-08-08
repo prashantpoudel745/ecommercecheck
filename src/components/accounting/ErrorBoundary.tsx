@@ -23,7 +23,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex flex-col items-center justify-center p-8 min-h-[400px] space-y-4 bg-white rounded-xl border border-gray-100 shadow-sm animate-in fade-in duration-300">
+        <div className="flex flex-col items-center justify-center p-4 min-h-[400px] space-y-4 bg-white rounded-xl border border-gray-100 shadow-sm animate-in fade-in duration-300">
           <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center animate-bounce">
             <AlertCircle size={32} />
           </div>

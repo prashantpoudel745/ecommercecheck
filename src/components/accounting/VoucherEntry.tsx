@@ -81,9 +81,9 @@ export default function VoucherEntry({ onVoucherAdded }: { onVoucherAdded?: () =
   };
 
   return (
-    <div className="p-6 space-y-6 bg-slate-50/30">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="p-4 space-y-3 bg-slate-50/30">
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="space-y-2">
             <Label>Voucher Type</Label>
             <select 
@@ -198,7 +198,7 @@ export default function VoucherEntry({ onVoucherAdded }: { onVoucherAdded?: () =
               <Button type="button" variant="outline" size="sm" onClick={addRow} className="rounded-xl border-dashed border-slate-300 text-slate-700 hover:bg-slate-100">
                 <Plus className="w-4 h-4 mr-2" /> Add Entry Line
               </Button>
-              <div className="flex gap-8 text-sm">
+              <div className="flex gap-4 text-sm">
                 <div className="flex flex-col items-end">
                   <span className="text-[10px] uppercase font-bold text-slate-400">Total Debit</span>
                   <span className="font-bold text-emerald-600">{CURRENCY_SYMBOL}{totals.dr.toFixed(2)}</span>
@@ -238,7 +238,7 @@ export default function VoucherEntry({ onVoucherAdded }: { onVoucherAdded?: () =
           <Button 
             type="submit" 
             disabled={!isBalanced || isSubmitting}
-            className={`h-12 px-8 rounded-2xl font-bold shadow-lg transition-all ${
+            className={`h-12 px-4 rounded-2xl font-bold shadow-lg transition-all ${
               isBalanced 
                 ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' 
                 : 'bg-slate-200 text-slate-400 cursor-not-allowed'

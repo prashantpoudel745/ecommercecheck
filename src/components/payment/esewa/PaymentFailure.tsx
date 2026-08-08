@@ -65,11 +65,11 @@ export default function PaymentFailurePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-4">
       <div className="max-w-2xl mx-auto px-4">
         {/* Failure Header */}
-        <div className="text-center mb-12">
-          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="text-center mb-4">
+          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <XCircle className="w-12 h-12 text-red-600" />
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -81,8 +81,8 @@ export default function PaymentFailurePage() {
         </div>
 
         {/* Error Details Card */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-red-500 to-pink-600 p-6 text-white">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-4">
+          <div className="bg-gradient-to-r from-red-500 to-pink-600 p-4 text-white">
             <div className="flex items-center">
               <AlertTriangle className="w-8 h-8 mr-3" />
               <div>
@@ -94,7 +94,7 @@ export default function PaymentFailurePage() {
             </div>
           </div>
 
-          <div className="p-8">
+          <div className="p-4">
             <div className="space-y-4">
               {transactionId && (
                 <div className="flex justify-between items-center py-3 border-b border-gray-200">
@@ -139,8 +139,8 @@ export default function PaymentFailurePage() {
         </div>
 
         {/* Troubleshooting Tips */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+        <div className="bg-white rounded-xl shadow-lg p-4 mb-4">
+          <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
             <HelpCircle className="w-6 h-6 mr-2 text-blue-600" />
             Common Solutions
           </h3>
@@ -209,10 +209,10 @@ export default function PaymentFailurePage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
           <button
             onClick={handleRetryPayment}
-            className="flex items-center justify-center px-8 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 hover:text-slate-200 transition duration-200 font-semibold"
+            className="flex items-center justify-center px-4 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 hover:text-slate-200 transition duration-200 font-semibold"
           >
             <RefreshCw className="w-5 h-5 mr-2" />
             Try Payment Again
@@ -220,7 +220,7 @@ export default function PaymentFailurePage() {
 
           <button
             onClick={handleGoHome}
-            className="flex items-center justify-center px-8 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200 font-semibold"
+            className="flex items-center justify-center px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200 font-semibold"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
             Back to Home
@@ -228,11 +228,11 @@ export default function PaymentFailurePage() {
         </div>
 
         {/* Contact Support */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 text-center">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Still Having Issues?
           </h3>
-          <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+          <p className="text-gray-600 mb-3 max-w-lg mx-auto">
             Our support team is here to help you resolve any payment issues. We
             typically respond within 2-4 hours during business hours.
           </p>
@@ -240,20 +240,20 @@ export default function PaymentFailurePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={handleContactSupport}
-              className="flex items-center justify-center px-6 py-3 bg-white text-slate-900 border border-slate-200 rounded-lg hover:bg-slate-100 transition duration-200 font-semibold"
+              className="flex items-center justify-center px-4 py-3 bg-white text-slate-900 border border-slate-200 rounded-lg hover:bg-slate-100 transition duration-200 font-semibold"
             >
               Email Support
             </button>
 
             <a
               href="tel:+977-1-4567890"
-              className="flex items-center justify-center px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 hover:text-slate-200 transition duration-200 font-semibold"
+              className="flex items-center justify-center px-4 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 hover:text-slate-200 transition duration-200 font-semibold"
             >
               Call Support
             </a>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-blue-200">
+          <div className="mt-3 pt-4 border-t border-blue-200">
             <p className="text-sm text-gray-500">
               Support Hours: Monday - Friday, 9:00 AM - 6:00 PM (NPT)
             </p>

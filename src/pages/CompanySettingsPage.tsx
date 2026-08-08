@@ -196,11 +196,11 @@ export default function CompanySettingsPage() {
     : [];
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-4">
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4">
           <div className="flex items-center gap-3 mb-1">
             <h1 className="text-2xl font-bold ">Company Settings</h1>
             <span className="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full border border-red-500/30">
@@ -213,17 +213,17 @@ export default function CompanySettingsPage() {
         </div>
 
         {msg.text && (
-          <div className={`mb-6 p-4 rounded-xl text-sm border ${
+          <div className={`mb-3 p-4 rounded-xl text-sm border ${
             msg.type === "success"
               ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-300"
               : "bg-red-500/20 border-red-500/30 text-red-300"
           }`}>{msg.text}</div>
         )}
 
-        <form onSubmit={handleSave} className="space-y-6">
+        <form onSubmit={handleSave} className="space-y-3">
 
           {/* Basic Info */}
-          <section className="bg-white/5 border border-black rounded-2xl p-6">
+          <section className="bg-white/5 border border-black rounded-2xl p-4">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               Basic Information
             </h2>
@@ -284,7 +284,7 @@ export default function CompanySettingsPage() {
           </section>
 
           {/* Tax Masters */}
-          <section className="bg-white/5 border border-black rounded-2xl p-6">
+          <section className="bg-white/5 border border-black rounded-2xl p-4">
             <h2 className="text-lg font-semibold mb-4">Default VAT / Tax Masters</h2>
             <p className="text-sm text-slate-600 mb-4">
               Manage the default tax rate used for new sales and purchase documents. Active entries are used automatically by the accounting flow.
@@ -339,7 +339,7 @@ export default function CompanySettingsPage() {
               </button>
             </div>
 
-            <div className="mt-6 space-y-3">
+            <div className="mt-3 space-y-3">
               {taxMasters.map((master: any) => (
                 <div key={master._id} className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-white/70 p-3 md:flex-row md:items-center md:justify-between">
                   <div>
@@ -366,7 +366,7 @@ export default function CompanySettingsPage() {
           </section>
 
           {/* IRD Details */}
-          <section className="bg-white/5 border border-black rounded-2xl p-6">
+          <section className="bg-white/5 border border-black rounded-2xl p-4">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-red-400 inline-block"></span>
               IRD Registration Details
@@ -394,7 +394,7 @@ export default function CompanySettingsPage() {
           </section>
 
           {/* Address */}
-          <section className="bg-white/5 border border-black rounded-2xl p-6">
+          <section className="bg-white/5 border border-black rounded-2xl p-4">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>
               Company Address
@@ -485,7 +485,7 @@ export default function CompanySettingsPage() {
           </section>
 
           {/* Branch */}
-          <section className="bg-white/5 border border-black rounded-2xl p-6">
+          <section className="bg-white/5 border border-black rounded-2xl p-4">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-purple-400 inline-block"></span>
               Branch Information <span className="text-xs font-normal text-slate-500 ml-2">(Recommended by IRD)</span>

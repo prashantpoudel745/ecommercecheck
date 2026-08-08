@@ -41,7 +41,7 @@ export function EmailConfirmationDialog({
             <span className="font-semibold text-slate-800">{customerName || "this client"}</span>?
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="sm:justify-center sm:space-x-4 mt-6">
+        <AlertDialogFooter className="sm:justify-center sm:space-x-4 mt-3">
           <AlertDialogCancel 
             disabled={isProcessing}
             className="w-full sm:w-auto min-w-[100px]"

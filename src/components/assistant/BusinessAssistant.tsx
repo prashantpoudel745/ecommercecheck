@@ -315,7 +315,7 @@ export function BusinessAssistant() {
 
       <SheetContent side="right" className="w-full overflow-hidden border-slate-800 bg-slate-950 p-0 text-white sm:max-w-2xl">
         <div className="flex h-full flex-col bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.16),_transparent_34%),radial-gradient(circle_at_90%_10%,_rgba(168,85,247,0.12),_transparent_28%),linear-gradient(180deg,#020617_0%,#0f172a_100%)]">
-          <SheetHeader className="border-b border-white/10 px-6 py-2 text-left">
+          <SheetHeader className="border-b border-white/10 px-4 py-2 text-left">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-300">
@@ -336,7 +336,7 @@ export function BusinessAssistant() {
               onScroll={handleViewportScroll}
               className="h-full overflow-y-auto pr-3 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.15)_transparent]"
             >
-              <div className="space-y-4 pb-6">
+              <div className="space-y-4 pb-4">
                 {messages.map((message) => {
                   const isLastAssistant =
                     message.role === "assistant" &&
@@ -410,7 +410,7 @@ export function BusinessAssistant() {
             )}
           </div>
 
-          <div className="border-t border-white/10 bg-slate-950/70 px-4 py-4 backdrop-blur sm:px-6">
+          <div className="border-t border-white/10 bg-slate-950/70 px-4 py-4 backdrop-blur sm:px-4">
             <div className="mb-3 flex flex-wrap gap-2">
               {quickPrompts.map((prompt) => (
                 <Button

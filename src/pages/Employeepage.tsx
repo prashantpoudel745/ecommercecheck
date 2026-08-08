@@ -17,7 +17,7 @@ export default function EmployeePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Employee Management</h1>
       </div>

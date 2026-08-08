@@ -172,9 +172,9 @@ export default function AdminSignupPage() {
         <div className="flex overflow-hidden bg-white rounded-lg shadow-lg">
           {/* Left Column - Image & Stats */}
           <Authsidebar />
-          <div className="flex-1 px-8 py-12">
+          <div className="flex-1 px-4 py-4">
             <div className="max-w-md mx-auto">
-              <div className="mb-8">
+              <div className="mb-4">
                 <h2 className="text-2xl font-bold text-gray-800">
                   Create Your Account
                 </h2>
@@ -195,7 +195,7 @@ export default function AdminSignupPage() {
                 </div>
               )}
 
-              <div className="space-y-5">
+              <div className="space-y-3">
                 <div>
                   <label className="block mb-2 text-sm font-medium text-gray-700">
                     Email Address
@@ -334,7 +334,7 @@ export default function AdminSignupPage() {
                 </button>
               </div>
 
-              <p className="mt-8 text-center text-gray-600">
+              <p className="mt-4 text-center text-gray-600">
                 Already have an account?{" "}
                 <Link
                   to="/superadminlogin--34567"

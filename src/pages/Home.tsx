@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.08),_transparent_26%),linear-gradient(180deg,_#f7f9fc_0%,_#eef2f7_100%)] text-slate-950">
       <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-4 lg:px-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-950 text-sm font-semibold text-white shadow-sm">
               B
@@ -75,8 +75,8 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 pb-24 pt-12 sm:px-6 lg:px-8">
-        <section className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pt-8">
+      <main className="mx-auto max-w-7xl px-4 pb-24 pt-4 sm:px-4 lg:px-4">
+        <section className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pt-4">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -88,39 +88,39 @@ export default function Home() {
               Operational clarity for growing teams
             </div>
 
-            <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-7xl lg:leading-[1.02]">
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-7xl lg:leading-[1.02]">
               Bebasthapan ERP system for Nepal businesses.
             </h1>
 
-            <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
+            <p className="mt-3 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
               Bebasthapan ERP replaces disconnected accounting software, inventory tools, sales trackers, and customer spreadsheets with one structured business management platform for Nepal businesses. Manage financial reports, stock control, sales, purchase, customer dues, supplier payments, attendance, and AI-powered business insights from one system.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={() => navigate("/login")}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)] transition-transform hover:-translate-y-0.5 hover:bg-slate-800"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)] transition-transform hover:-translate-y-0.5 hover:bg-slate-800"
               >
                 Open dashboard
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 onClick={() => navigate("/contact-sales")}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
               >
                 Contact sales
                 <ChevronRight className="h-4 w-4 text-slate-400" />
               </button>
               <a
                 href="/erp-system-nepal"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
               >
                 ERP for Nepal
                 <ChevronRight className="h-4 w-4 text-slate-400" />
               </a>
             </div>
 
-            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {[
                 ["7 modules", "Accounting to operations"],
                 ["ERP reports", "Sales, purchase, and finance"],
@@ -141,7 +141,7 @@ export default function Home() {
             className="relative"
           >
             <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-tr from-sky-500/10 via-transparent to-slate-900/5 blur-3xl" />
-            <div className="relative rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
+            <div className="relative rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Command preview</p>
@@ -150,7 +150,7 @@ export default function Home() {
                 <div className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Healthy</div>
               </div>
 
-              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 {[
                   ["Revenue", "$128.4k", "Up 14% this month"],
                   ["Inventory risk", "12 items", "Below target threshold"],
@@ -165,7 +165,7 @@ export default function Home() {
                 ))}
               </div>
 
-              <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white">
+              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-slate-400">
                   <ShieldCheck className="h-4 w-4 text-sky-300" />
                   Controlled workspace
@@ -179,7 +179,7 @@ export default function Home() {
         </section>
 
         <section className="mt-20">
-          <div className="flex items-end justify-between gap-6">
+          <div className="flex items-end justify-between gap-3">
             <div>
               <div className="enterprise-kicker">
                 <Layers className="h-3.5 w-3.5" />
@@ -194,20 +194,20 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {features.map((feature) => (
-              <div key={feature.title} className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+              <div key={feature.title} className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50">
                   {feature.icon}
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-slate-950">{feature.title}</h3>
+                <h3 className="mt-3 text-lg font-semibold text-slate-950">{feature.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{feature.description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mt-20 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <section className="mt-20 grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <div className="enterprise-kicker">
               <Sparkles className="h-3.5 w-3.5" />
@@ -217,7 +217,7 @@ export default function Home() {
               Built for companies tired of separate accounting, inventory, and sales tools.
             </h2>
           </div>
-          <div className="space-y-5 text-sm leading-7 text-slate-600">
+          <div className="space-y-3 text-sm leading-7 text-slate-600">
             <p>
               Many businesses in Nepal manage distribution, accounting, inventory, sales, clients, invoices, and team attendance in separate systems. That creates duplicate work, unclear reports, and slow decisions.
             </p>
@@ -230,7 +230,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mt-20 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <section className="mt-20 grid gap-3 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm">
             <div className="enterprise-kicker">
               <Zap className="h-3.5 w-3.5" />
@@ -242,7 +242,7 @@ export default function Home() {
             <p className="mt-4 text-sm leading-6 text-slate-600">
               The interface prioritizes status, ownership, and next actions so teams can move faster without guessing where to go next.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-700">
+            <div className="mt-3 flex flex-wrap gap-3 text-sm text-slate-700">
               <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2">
                 <ShieldCheck className="h-4 w-4 text-emerald-500" />
                 Enterprise security
@@ -262,7 +262,7 @@ export default function Home() {
             <blockquote className="mt-4 text-2xl font-medium leading-tight text-slate-100">
               "The product feels organized, deliberate, and credible. It looks like software our team can trust every day."
             </blockquote>
-            <div className="mt-6 flex items-center gap-4 border-t border-white/10 pt-6">
+            <div className="mt-3 flex items-center gap-4 border-t border-white/10 pt-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-semibold text-white">
                 JD
               </div>

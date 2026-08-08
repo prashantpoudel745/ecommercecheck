@@ -251,18 +251,18 @@ export default function SignupPage() {
   const selectedPlanDetails = plans.find((plan) => plan.id === selectedPlan);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.08),_transparent_34%),linear-gradient(180deg,_#f7f9fc_0%,_#eef2f7_100%)] flex items-center justify-center p-4 sm:p-8 animate-fade-in">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.08),_transparent_34%),linear-gradient(180deg,_#f7f9fc_0%,_#eef2f7_100%)] flex items-center justify-center p-4 sm:p-4 animate-fade-in">
       <div className="w-full max-w-6xl mx-auto flex overflow-hidden rounded-[28px] shadow-[0_30px_90px_rgba(15,23,42,0.12)] bg-white border border-slate-200">
         {/* Left Column - Image & Stats */}
         <Authsidebar />
-        <div className="flex-1 px-6 py-6 sm:px-10 lg:px-12 flex flex-col justify-center">
+        <div className="flex-1 px-4 py-3 sm:px-4 lg:px-4 flex flex-col justify-center">
           <div className="w-full max-w-md mx-auto">
             <div className="enterprise-kicker">
               <LockKeyhole className="h-3.5 w-3.5" />
               Workspace onboarding
             </div>
 
-            <div className="mt-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+            <div className="mt-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
               <h2 className="enterprise-title">
                 Create account
               </h2>
@@ -272,13 +272,13 @@ export default function SignupPage() {
             </div>
 
             {error && (
-              <div className="mb-5 p-3 bg-red-50 text-red-600 rounded-2xl text-sm font-medium border border-red-200 animate-zoom-in">
+              <div className="mb-3 p-3 bg-red-50 text-red-600 rounded-2xl text-sm font-medium border border-red-200 animate-zoom-in">
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="mb-5 p-3 bg-emerald-50 text-emerald-600 rounded-2xl text-sm font-medium border border-emerald-200 animate-zoom-in">
+              <div className="mb-3 p-3 bg-emerald-50 text-emerald-600 rounded-2xl text-sm font-medium border border-emerald-200 animate-zoom-in">
                 {success}
               </div>
             )}
@@ -349,7 +349,7 @@ export default function SignupPage() {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-slate-950 shadow-sm focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-500 transition-all duration-200"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-4 text-slate-950 shadow-sm focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-500 transition-all duration-200"
                       placeholder="Create a password"
                     />
                     <button
@@ -374,7 +374,7 @@ export default function SignupPage() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-slate-950 shadow-sm focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-500 transition-all duration-200"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-4 text-slate-950 shadow-sm focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-500 transition-all duration-200"
                       placeholder="Confirm password"
                     />
                     <button
@@ -489,7 +489,7 @@ export default function SignupPage() {
               </button>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-slate-100 text-center animate-fade-up" style={{ animationDelay: '0.3s' }}>
+            <div className="pt-4 mt-3 border-t border-slate-100 text-center animate-fade-up" style={{ animationDelay: '0.3s' }}>
               <p className="text-sm text-slate-600">
                 Already have an account?{" "}
                 <Link

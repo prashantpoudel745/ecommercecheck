@@ -244,7 +244,7 @@ export function InventoryOverview() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Email Notification Controls */}
       <Card className="border-blue-200 bg-blue-50">
         <CardHeader>

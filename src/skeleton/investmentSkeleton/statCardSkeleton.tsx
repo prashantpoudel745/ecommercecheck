@@ -1,5 +1,5 @@
 export const StatCardSkeleton = () => (
-  <div className="bg-white p-6 rounded-lg shadow animate-pulse">
+  <div className="bg-white p-4 rounded-lg shadow animate-pulse">
     <div className="flex items-center justify-between">
       <div className="space-y-2">
         <div className="h-4 bg-gray-200 rounded w-24"></div>

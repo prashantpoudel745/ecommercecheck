@@ -142,7 +142,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   return (
     <>
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1520px] items-center justify-between gap-2 sm:gap-4 px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
+      <div className="mx-auto flex max-w-[1520px] items-center justify-between gap-2 sm:gap-4 px-3 py-2.5 sm:px-4 sm:py-3 lg:px-4">
         <div className="flex min-w-0 items-center gap-2 sm:gap-4">
           {/* Mobile hamburger menu */}
           <Button
@@ -189,7 +189,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               </Button>
             </DialogTrigger>
             <DialogContent className="max-h-[88vh] w-[95vw] max-w-2xl overflow-hidden rounded-[24px] border-slate-200 p-0 shadow-[0_24px_80px_rgba(15,23,42,0.16)]">
-              <DialogHeader className="border-b border-slate-200 px-6 py-5">
+              <DialogHeader className="border-b border-slate-200 px-4 py-3">
                 <DialogTitle className="text-lg font-semibold tracking-tight text-slate-950">
                   Notifications
                 </DialogTitle>
@@ -197,7 +197,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                   Recent activities and updates from your workspace.
                 </p>
               </DialogHeader>
-              <div className="max-h-[70vh] overflow-y-auto px-6 py-4">
+              <div className="max-h-[70vh] overflow-y-auto px-4 py-4">
                 <RecentActivity userId={user?._id || user?.id || user?.companyId || ""} />
               </div>
             </DialogContent>

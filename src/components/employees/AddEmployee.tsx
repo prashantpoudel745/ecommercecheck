@@ -73,7 +73,7 @@ const AddEmployeeForm = ({ onSuccess }) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-8 p-6 border rounded-lg shadow-md bg-white">
+    <div className="max-w-lg mx-auto mt-4 p-4 border rounded-lg shadow-md bg-white">
       <h2 className="text-xl font-semibold mb-4">Add New Employee</h2>
 
       {message && (
@@ -114,7 +114,7 @@ const AddEmployeeForm = ({ onSuccess }) => {
             placeholder="Generate a password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full border p-2 rounded pr-10"
+            className="w-full border p-2 rounded pr-4"
             required
           />
           <button

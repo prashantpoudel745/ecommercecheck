@@ -83,15 +83,15 @@ export default function CreateSupplierPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-6 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
+    <div className="p-4 sm:p-4 max-w-5xl mx-auto w-full">
+      <div className="mb-3 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-5 shadow-sm">
         <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Register New Supplier</h1>
         <p className="text-slate-500 mt-1">Capture the billing and tax detail you need for vendor management.</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7">
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-7">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Company Name</label>
               <input name="companyName" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="Supplier company name" />

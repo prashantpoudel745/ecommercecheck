@@ -181,8 +181,8 @@ export default function CreateQuotationPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-6xl mx-auto w-full">
-      <div className="mb-6 rounded-[32px] border border-slate-200 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-6 shadow-sm">
+    <div className="p-4 sm:p-4 max-w-6xl mx-auto w-full">
+      <div className="mb-3 rounded-[32px] border border-slate-200 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-4 shadow-sm">
         <div className="max-w-3xl">
           <span className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-600">Sales</span>
           <h1 className="mt-3 text-3xl font-semibold text-slate-900">Create New Quotation</h1>
@@ -190,10 +190,10 @@ export default function CreateQuotationPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <section className="grid gap-6">
-          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <section className="grid gap-3">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-4 shadow-sm">
+            <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-emerald-600">Customer Details</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-900">Buyer information</h2>
@@ -201,7 +201,7 @@ export default function CreateQuotationPage() {
               <p className="text-sm text-slate-500">Add contact details for the quotation recipient.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Customer Name *</label>
                 <input
@@ -235,8 +235,8 @@ export default function CreateQuotationPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-4 shadow-sm">
+            <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Quotation settings</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-900">Payment & item details</h2>
@@ -244,7 +244,7 @@ export default function CreateQuotationPage() {
               <p className="text-sm text-slate-500">Configure payment status and add line items.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Status</label>
                 <select

@@ -143,7 +143,7 @@ export default function FinancialReports() {
   );
 
   const renderTB = () => {
-    if (!data) return <div className="text-center py-12 text-slate-400 italic">No trial balance data found.</div>;
+    if (!data) return <div className="text-center py-4 text-slate-400 italic">No trial balance data found.</div>;
     const accountGroupKeys = ["ASSET", "LIABILITY", "EQUITY", "REVENUE", "EXPENSE"];
     const groupedAccounts = Array.isArray(data?.accounts)
       ? accountGroupKeys.reduce((groups, key) => {
@@ -159,10 +159,10 @@ export default function FinancialReports() {
         <table className="w-full text-sm">
           <thead>
             <tr>
-              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Account Ledger</th>
-              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Group</th>
-              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Debit</th>
-              <th className="sticky top-0 z-10 bg-slate-50 border-b px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Credit</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-4 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Account Ledger</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-4 py-4 text-left font-bold text-slate-500 uppercase text-[10px]">Group</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-4 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Debit</th>
+              <th className="sticky top-0 z-10 bg-slate-50 border-b px-4 py-4 text-right font-bold text-slate-500 uppercase text-[10px]">Credit</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -171,21 +171,21 @@ export default function FinancialReports() {
               if (!Array.isArray(accounts) || accounts.length === 0) return null;
               return accounts.map((acc: TBAccount, i: number) => (
                 <tr key={`${key}-${i}`} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4 font-semibold text-slate-900">{acc.name}</td>
-                  <td className="px-6 py-4 text-xs text-slate-400 font-medium lowercase">{key}</td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 py-4 font-semibold text-slate-900">{acc.name}</td>
+                  <td className="px-4 py-4 text-xs text-slate-400 font-medium lowercase">{key}</td>
+                  <td className="px-4 py-4 text-right">
                     {isPositive(getDebit(acc)) ? <Currency value={getDebit(acc)} /> : "-"}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 py-4 text-right">
                     {isPositive(getCredit(acc)) ? <Currency value={getCredit(acc)} /> : "-"}
                   </td>
                 </tr>
               ));
             })}
             <tr className="sticky bottom-0 z-10 bg-slate-900 text-white font-bold">
-              <td colSpan={2} className="px-6 py-4 text-right uppercase tracking-widest text-xs">Total Trial Balance</td>
-              <td className="px-6 py-4 text-right"><Currency value={data?.totalDebit || 0} className="text-white" /></td>
-              <td className="px-6 py-4 text-right"><Currency value={data?.totalCredit || 0} className="text-white" /></td>
+              <td colSpan={2} className="px-4 py-4 text-right uppercase tracking-widest text-xs">Total Trial Balance</td>
+              <td className="px-4 py-4 text-right"><Currency value={data?.totalDebit || 0} className="text-white" /></td>
+              <td className="px-4 py-4 text-right"><Currency value={data?.totalCredit || 0} className="text-white" /></td>
             </tr>
           </tbody>
         </table>
@@ -195,10 +195,10 @@ export default function FinancialReports() {
 );
   };
   const renderPL = () => {
-    if (!data) return <div className="text-center py-12 text-slate-400 italic">No P&L data found.</div>;
+    if (!data) return <div className="text-center py-4 text-slate-400 italic">No P&L data found.</div>;
     return (
-      <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-3 animate-in slide-in-from-bottom-4 duration-500">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Card className="border-none shadow-lg bg-emerald-50/30">
             <CardHeader className="pb-2 border-b border-emerald-100/50">
               <div className="flex justify-between items-center">
@@ -244,7 +244,7 @@ export default function FinancialReports() {
           </Card>
         </div>
 
-        <div className={`p-8 rounded-3xl text-center shadow-xl border-4 ${
+        <div className={`p-4 rounded-3xl text-center shadow-xl border-4 ${
           CurrencyUtil.parse(data?.netProfit || 0).greaterThanOrEqualTo(0) ? "bg-emerald-600 border-emerald-500 text-white" : "bg-rose-600 border-rose-500 text-white"
         }`}>
           <p className="text-xs uppercase font-black tracking-[0.2em] mb-2 opacity-80">Final Performance Result</p>
@@ -258,13 +258,13 @@ export default function FinancialReports() {
   };
 
   const renderBS = () => {
-    if (!data) return <div className="text-center py-12 text-slate-400 italic">No balance sheet data found.</div>;
+    if (!data) return <div className="text-center py-4 text-slate-400 italic">No balance sheet data found.</div>;
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in zoom-in-95 duration-500">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 animate-in zoom-in-95 duration-500">
+        <div className="space-y-3">
           <Section label="Assets" items={data.assets} total={data.totalAssets} color="emerald" icon={TrendingUp} />
         </div>
-        <div className="space-y-6">
+        <div className="space-y-3">
           <Section label="Equity" items={data.equity} color="indigo" extra={{ label: "Net Profit", val: data.netProfit }} />
           <Section label="Liabilities" items={data.liabilities} total={data.totalLiabilitiesAndEquity} color="rose" icon={TrendingDown} isTotalJoint={true} />
         </div>
@@ -278,10 +278,10 @@ export default function FinancialReports() {
   };
 
   const renderVAT = () => {
-    if (!data) return <div className="text-center py-12 text-slate-400 italic">No VAT data found.</div>;
+    if (!data) return <div className="text-center py-4 text-slate-400 italic">No VAT data found.</div>;
 
     return (
-      <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="space-y-3 animate-in fade-in duration-500">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
             ["Taxable Sales", data.taxableSales],
@@ -299,7 +299,7 @@ export default function FinancialReports() {
         </div>
 
         <Card className="border-none shadow-lg bg-slate-950 text-white">
-          <CardContent className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <CardContent className="p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Nepal VAT Position</p>
               <h3 className="text-2xl font-black">
@@ -343,7 +343,7 @@ export default function FinancialReports() {
   };
 
   const renderAging = (type: "ar" | "ap") => {
-    if (!data) return <div className="text-center py-12 text-slate-400 italic">No aging data found.</div>;
+    if (!data) return <div className="text-center py-4 text-slate-400 italic">No aging data found.</div>;
     const parties = [...(data.parties || [])];
     const details = data.details || [];
     const hasPartyAging = parties.length > 0 || data.bucketTotals;
@@ -377,7 +377,7 @@ export default function FinancialReports() {
     }
 
     return (
-      <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="space-y-3 animate-in fade-in duration-500">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             ["Total Outstanding", outstandingTotal],
@@ -408,7 +408,7 @@ export default function FinancialReports() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {parties.length === 0 ? (
-                  <tr><td colSpan={7} className="px-5 py-10 text-center text-slate-400 italic">No outstanding balances.</td></tr>
+                  <tr><td colSpan={7} className="px-5 py-4 text-center text-slate-400 italic">No outstanding balances.</td></tr>
                 ) : parties.map((p: any, i: number) => (
                   <tr key={i} className="hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-3 font-semibold text-slate-800">{p.partyName}</td>
@@ -440,11 +440,11 @@ export default function FinancialReports() {
   };
 
   const renderHealth = () => {
-    if (!data) return <div className="text-center py-12 text-slate-400 italic">No accounting health data found.</div>;
+    if (!data) return <div className="text-center py-4 text-slate-400 italic">No accounting health data found.</div>;
     const ready = Boolean(data.marketLaunchReady);
 
     return (
-      <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="space-y-3 animate-in fade-in duration-500">
         <Card className={`border-none shadow-lg ${ready ? "bg-emerald-600" : "bg-amber-600"} text-white`}>
           <CardContent className="p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div className="flex items-start gap-4">
@@ -468,7 +468,7 @@ export default function FinancialReports() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Card className="border-none shadow-md">
             <CardHeader>
               <CardTitle className="text-rose-700">Critical Issues</CardTitle>
@@ -510,11 +510,11 @@ export default function FinancialReports() {
 
   const Section = ({ label, items, total, color, icon: Icon, extra, isTotalJoint }: any) => (
     <Card className="border-none shadow-md bg-white">
-      <CardHeader className="pb-3 px-6 border-b border-slate-50 flex flex-row items-center justify-between">
+      <CardHeader className="pb-3 px-4 border-b border-slate-50 flex flex-row items-center justify-between">
         <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-400">{label}</CardTitle>
         {Icon && <Icon className={`w-4 h-4 text-${color}-500 opacity-50`} />}
       </CardHeader>
-      <CardContent className="px-6 py-4 space-y-2">
+      <CardContent className="px-4 py-4 space-y-2">
         {Array.isArray(items) && items.map((item: any, i: number) => (
           <div key={i} className="flex justify-between items-center text-sm py-1.5 border-b last:border-0 border-slate-50">
             <span className="text-slate-700 font-medium">{item.name}</span>
@@ -538,7 +538,7 @@ export default function FinancialReports() {
   );
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-4 pb-4">
       <div className="sticky -top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div className="ml-3">
           <h2 className="text-4xl font-semibold tracking-tighter bg-clip-text text-black">

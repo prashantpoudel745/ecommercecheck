@@ -6,8 +6,8 @@ import { AdminHeaderProps } from "../../../types/attendance.types";
 const AdminHeader: React.FC<AdminHeaderProps> = ({ user }) => {
   return (
     <div className="bg-white shadow-sm border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-4">
+        <div className="flex justify-between items-center py-3">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
               Attendance Management

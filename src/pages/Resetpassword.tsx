@@ -39,7 +39,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-xl flex flex-col items-center justify-center">
+    <div className="max-w-md mx-auto mt-4 p-4 bg-white shadow-md rounded-xl flex flex-col items-center justify-center">
       <h2 className="text-2xl font-semibold text-center mb-4">
         Reset Password
       </h2>
@@ -48,7 +48,7 @@ export default function ResetPassword() {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Enter new password"
-            className="w-full border p-2 rounded-md pr-10"
+            className="w-full border p-2 rounded-md pr-4"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -65,7 +65,7 @@ export default function ResetPassword() {
           <input
             type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirm new password"
-            className="w-full border p-2 rounded-md pr-10"
+            className="w-full border p-2 rounded-md pr-4"
             value={confirmpassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required

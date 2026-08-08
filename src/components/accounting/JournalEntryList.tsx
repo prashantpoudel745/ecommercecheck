@@ -122,7 +122,7 @@ export default function JournalEntryList() {
   const totalAmount = calculateTotal('debit');
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-3 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-3">
@@ -146,20 +146,20 @@ export default function JournalEntryList() {
             <CardDescription>Ensure total debits equal total credits before posting.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label className="text-slate-600 font-semibold">Entry Date</Label>
                   <div className="relative">
                     <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="pl-10 border-slate-200" required />
+                    <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="pl-4 border-slate-200" required />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-slate-600 font-semibold">Narrative / Description</Label>
                   <div className="relative">
                     <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <Input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Adjustment for..." className="pl-10 border-slate-200" required />
+                    <Input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Adjustment for..." className="pl-4 border-slate-200" required />
                   </div>
                 </div>
               </div>
@@ -246,7 +246,7 @@ export default function JournalEntryList() {
                     <Button
                       type="submit"
                       disabled={!isBalanced || totalAmount === 0 || isSubmitting}
-                      className="px-8 shadow-lg"
+                      className="px-4 shadow-lg"
                     >
                       {isSubmitting ? "Posting..." : "Authorize & Post Entry"}
                     </Button>
@@ -272,35 +272,35 @@ export default function JournalEntryList() {
             <table className="w-full text-sm">
               <thead className="bg-slate-50/80 border-y border-slate-100">
                 <tr>
-                  <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px] tracking-wider">Date</th>
-                  <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px] tracking-wider">Narrative</th>
-                  <th className="px-6 py-4 text-left font-bold text-slate-500 uppercase text-[10px] tracking-wider">Affected Ledgers (Double Entry)</th>
-                  <th className="px-6 py-4 text-right font-bold text-slate-500 uppercase text-[10px] tracking-wider">Total Impact</th>
-                  <th className="px-6 py-4 text-center font-bold text-slate-500 uppercase text-[10px] tracking-wider">Verification</th>
+                  <th className="px-4 py-4 text-left font-bold text-slate-500 uppercase text-[10px] tracking-wider">Date</th>
+                  <th className="px-4 py-4 text-left font-bold text-slate-500 uppercase text-[10px] tracking-wider">Narrative</th>
+                  <th className="px-4 py-4 text-left font-bold text-slate-500 uppercase text-[10px] tracking-wider">Affected Ledgers (Double Entry)</th>
+                  <th className="px-4 py-4 text-right font-bold text-slate-500 uppercase text-[10px] tracking-wider">Total Impact</th>
+                  <th className="px-4 py-4 text-center font-bold text-slate-500 uppercase text-[10px] tracking-wider">Verification</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-20 text-center text-slate-400 italic">
+                    <td colSpan={5} className="px-4 py-20 text-center text-slate-400 italic">
                       <RefreshCw className="w-10 h-10 animate-spin mx-auto mb-4 opacity-10" />
                       Auditing general ledger...
                     </td>
                   </tr>
                 ) : entries.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-20 text-center text-slate-400 italic">
+                    <td colSpan={5} className="px-4 py-20 text-center text-slate-400 italic">
                       No journal entries recorded yet.
                     </td>
                   </tr>
                 ) : (
                   entries.map((entry) => (
                     <tr key={entry._id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-6 py-4 whitespace-nowrap font-medium text-slate-500">
+                      <td className="px-4 py-4 whitespace-nowrap font-medium text-slate-500">
                           {new Date(entry.date).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
                       </td>
-                      <td className="px-6 py-4 font-bold text-slate-900 group-hover:text-purple-600 transition-colors">{entry.description}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4 font-bold text-slate-900 group-hover:text-purple-600 transition-colors">{entry.description}</td>
+                      <td className="px-4 py-4">
                           <div className="flex flex-col gap-2 min-w-[200px]">
                               {entry.entries.map((line, idx) => (
                                   <div key={idx} className="flex items-center justify-between text-[11px] bg-slate-50/50 p-1.5 rounded border border-slate-100/50 group-hover:bg-white transition-colors">
@@ -313,10 +313,10 @@ export default function JournalEntryList() {
                               ))}
                           </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right font-black tracking-tighter text-base text-slate-900">
+                      <td className="px-4 py-4 whitespace-nowrap text-right font-black tracking-tighter text-base text-slate-900">
                           {formatCurrency(entry.totalAmount)}
                       </td>
-                       <td className="px-6 py-4 whitespace-nowrap text-center">
+                       <td className="px-4 py-4 whitespace-nowrap text-center">
                         <div className="flex items-center justify-center gap-1 text-emerald-600 font-black text-[10px] uppercase">
                           <CheckCircle2 className="w-3 h-3" />
                           {entry.status}

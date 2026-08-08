@@ -11,8 +11,8 @@ export function ModulePageFrame({
   contentClassName,
 }: ModulePageFrameProps) {
   return (
-    <div className="mx-auto flex max-w-[1520px] flex-col gap-4 sm:gap-6 px-0 animate-fade-in">
-      <section className="enterprise-panel overflow-hidden p-4 sm:p-6 lg:p-8">
+    <div className="mx-auto flex max-w-[1520px] flex-col gap-3 sm:gap-4 px-0 animate-fade-in">
+      <section className="enterprise-panel overflow-hidden p-3 sm:p-4 lg:p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl space-y-2 sm:space-y-3">
             <div className="enterprise-kicker">{kicker}</div>
@@ -30,7 +30,7 @@ export function ModulePageFrame({
         </div>
 
         {chips.length > 0 && (
-          <div className="mt-4 sm:mt-6 flex flex-wrap gap-2 sm:gap-3">
+          <div className="mt-4 sm:mt-3 flex flex-wrap gap-2 sm:gap-3">
             {chips.map((chip) => (
               <div
                 key={chip}
@@ -43,7 +43,7 @@ export function ModulePageFrame({
         )}
       </section>
 
-      <section className={contentClassName || "enterprise-panel p-4 sm:p-6 lg:p-8"}>
+      <section className={contentClassName || "enterprise-panel p-3 sm:p-4 lg:p-4"}>
         {children}
       </section>
     </div>

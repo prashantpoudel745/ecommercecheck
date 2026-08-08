@@ -3,6 +3,7 @@ import {
   CreditCard,
   Database,
   DollarSign,
+  Download,
   Upload,
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
@@ -32,6 +33,8 @@ const RecentActivity = lazy(
   () => import("@/components/dashboard/RecentActivity")
 );
 import QuickLinksGrid from "@/components/dashboard/QuickLinksGrid";
+import { Link } from "react-router-dom";
+import { Button } from "react-day-picker";
 
 
 export default function Dashboard() {
@@ -205,7 +208,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-[1520px] space-y-5 sm:space-y-6 lg:space-y-8 animate-fade-in px-0">
+    <div className="mx-auto max-w-[1520px] space-y-4 animate-fade-in px-0">
       {loading && showLoadingOverlay && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 backdrop-blur-sm">
           <ClipLoader color="#6366f1" size={40} />
@@ -217,13 +220,23 @@ export default function Dashboard() {
         </div>
       )}
       <div className="flex flex-col space-y-2 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+        <div className="flex flex-row items-center justify-between ">
         <h1 className="text-xl font-semibold tracking-tight text-slate-950 sm:text-2xl lg:text-3xl">
           Dashboard Overview
         </h1>
+        <Link to="/import">
+        <div className="p-2 border border-black rounded flex flex-row gap-2">
+          Import data
+          <Download/>
+        </div>
+         </Link>
+        </div>
+
         <p className="text-sm text-slate-600">
           Here's what's happening with your business today.
         </p>
       </div>
+      
                <QuickLinksGrid/>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 animate-fade-up" style={{ animationDelay: '0.2s' }}>
@@ -282,14 +295,14 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="space-y-4 sm:space-y-5 lg:space-y-6 pt-2 sm:pt-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
+      <div className="space-y-3 sm:space-y-4 pt-2 sm:pt-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
         <Suspense fallback={<FinancialOverviewSkeleton />}>
-          <div className="enterprise-panel p-3 sm:p-4 lg:p-6">
+          <div className="enterprise-panel p-3 sm:p-4 lg:p-4">
             <FinancialOverviewPage userId={userId} onViewChange={handleFinancialViewChange} />
           </div>
         </Suspense>
         <Suspense fallback={<InventoryStatusSkeleton />}>
-          <div className="enterprise-panel p-3 sm:p-4 lg:p-6">
+          <div className="enterprise-panel p-3 sm:p-4 lg:p-4">
             <InventoryStatusChart
               userId={userId}
               financialViewMode={financialViewMode}
@@ -299,7 +312,7 @@ export default function Dashboard() {
           </div>
         </Suspense>
         <Suspense fallback={<RecentActivitySkeleton />}>
-          <div className="enterprise-panel p-3 sm:p-4 lg:p-6">
+          <div className="enterprise-panel p-3 sm:p-4 lg:p-4">
             <RecentActivity userId={clientId} />
           </div>
         </Suspense>

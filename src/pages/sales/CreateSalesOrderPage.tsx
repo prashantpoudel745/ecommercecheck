@@ -199,8 +199,8 @@ export default function CreateSalesOrderPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-6xl mx-auto w-full">
-      <div className="mb-6 rounded-[32px] border border-slate-200 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-6 shadow-sm">
+    <div className="p-4 sm:p-4 max-w-6xl mx-auto w-full">
+      <div className="mb-3 rounded-[32px] border border-slate-200 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-4 shadow-sm">
         <div className="max-w-3xl">
           <span className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-600">Sales</span>
           <h1 className="mt-3 text-3xl font-semibold text-slate-900">Create Sales Order</h1>
@@ -208,10 +208,10 @@ export default function CreateSalesOrderPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <section className="grid gap-6">
-          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <section className="grid gap-3">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-4 shadow-sm">
+            <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-emerald-600">Customer details</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-900">Buyer information</h2>
@@ -219,7 +219,7 @@ export default function CreateSalesOrderPage() {
               <p className="text-sm text-slate-500">Optional sales order source quotation data is prefilled.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Customer Name *</label>
                 <input
@@ -262,8 +262,8 @@ export default function CreateSalesOrderPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-4 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Payment Status</label>
               <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100">
@@ -365,7 +365,7 @@ export default function CreateSalesOrderPage() {
         </div>
         </section>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex justify-end items-center gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex justify-end items-center gap-4">
           <Button type="button" variant="outline" onClick={() => navigate("/sales/orders")}>
             Cancel
           </Button>

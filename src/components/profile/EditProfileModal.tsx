@@ -89,13 +89,13 @@ export default function EditProfileModal({ open, onClose, defaultTab = "profile"
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-lg rounded-2xl border-slate-200 p-0 shadow-2xl">
-        <DialogHeader className="border-b border-slate-100 px-6 pt-6 pb-4">
+        <DialogHeader className="border-b border-slate-100 px-4 pt-4 pb-4">
           <DialogTitle className="text-lg font-semibold text-slate-900">Account Settings</DialogTitle>
           <p className="text-sm text-slate-500">Manage your profile and security settings</p>
         </DialogHeader>
 
-        <Tabs defaultValue={defaultTab} className="px-6 pb-6 pt-4">
-          <TabsList className="mb-5 grid w-full grid-cols-2 rounded-xl bg-slate-100 p-1">
+        <Tabs defaultValue={defaultTab} className="px-4 pb-4 pt-4">
+          <TabsList className="mb-3 grid w-full grid-cols-2 rounded-xl bg-slate-100 p-1">
             <TabsTrigger
               value="password"
               className="flex items-center gap-2 rounded-lg text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm"
@@ -112,7 +112,7 @@ export default function EditProfileModal({ open, onClose, defaultTab = "profile"
                 <Label className="text-xs font-medium text-slate-600">Current Password</Label>
                 <div className="relative">
                   <Input
-                    className={`${inputClass} pr-10`}
+                    className={`${inputClass} pr-4`}
                     type={showCurrent ? "text" : "password"}
                     placeholder="Enter current password"
                     value={passwordForm.currentPassword}
@@ -133,7 +133,7 @@ export default function EditProfileModal({ open, onClose, defaultTab = "profile"
                 <Label className="text-xs font-medium text-slate-600">New Password</Label>
                 <div className="relative">
                   <Input
-                    className={`${inputClass} pr-10`}
+                    className={`${inputClass} pr-4`}
                     type={showNew ? "text" : "password"}
                     placeholder="Min. 8 characters"
                     value={passwordForm.newPassword}
@@ -172,7 +172,7 @@ export default function EditProfileModal({ open, onClose, defaultTab = "profile"
                 <Label className="text-xs font-medium text-slate-600">Confirm New Password</Label>
                 <div className="relative">
                   <Input
-                    className={`${inputClass} pr-10 ${
+                    className={`${inputClass} pr-4 ${
                       passwordForm.confirmPassword && passwordForm.confirmPassword !== passwordForm.newPassword
                         ? "border-red-300 focus:border-red-400 focus:ring-red-100"
                         : ""

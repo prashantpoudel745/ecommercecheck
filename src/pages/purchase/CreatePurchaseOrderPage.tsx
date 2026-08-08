@@ -164,16 +164,16 @@ export default function CreatePurchaseOrderPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-6xl mx-auto w-full">
-      <div className="mb-6 rounded-[32px] border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-6 shadow-sm">
+    <div className="p-4 sm:p-4 max-w-6xl mx-auto w-full">
+      <div className="mb-3 rounded-[32px] border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-4 shadow-sm">
         <h1 className="text-3xl font-semibold text-slate-900">Create Purchase Order</h1>
         <p className="mt-2 text-slate-600">Issue a purchase order and track supplier payment details.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <section className="grid gap-6">
-          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <section className="grid gap-3">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-4 shadow-sm">
+            <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-emerald-600">Supplier details</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-900">Vendor information</h2>
@@ -181,7 +181,7 @@ export default function CreatePurchaseOrderPage() {
               <p className="text-sm text-slate-500">Enter supplier contact, delivery, and payment information.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Supplier Name *</label>
                 <input
@@ -259,8 +259,8 @@ export default function CreatePurchaseOrderPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-[28px] border border-slate-200 p-6 shadow-sm">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="bg-white rounded-[28px] border border-slate-200 p-4 shadow-sm">
+            <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Purchase items</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-900">Order line items</h2>
@@ -356,10 +356,10 @@ export default function CreatePurchaseOrderPage() {
           </div>
 
           <div className="flex justify-end gap-4">
-            <Button type="button" variant="outline" onClick={() => navigate("/purchase/orders")} className="px-6">
+            <Button type="button" variant="outline" onClick={() => navigate("/purchase/orders")} className="px-4">
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} className="bg-emerald-500 hover:bg-emerald-600 text-white px-6">
+            <Button type="submit" disabled={loading} className="bg-emerald-500 hover:bg-emerald-600 text-white px-4">
               {loading ? "Creating..." : "Create Purchase Order"}
             </Button>
           </div>

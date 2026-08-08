@@ -87,7 +87,7 @@ const EditEmployeeForm = ({ onSuccess }) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-8 p-6 border rounded-lg shadow-md bg-white">
+    <div className="max-w-lg mx-auto mt-4 p-4 border rounded-lg shadow-md bg-white">
       <h2 className="text-xl font-semibold mb-4">Edit Employee</h2>
 
       {message && (

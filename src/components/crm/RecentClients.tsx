@@ -32,16 +32,16 @@ export default function RecentClients({
           <Table className="min-w-full divide-y divide-gray-200">
             <TableHeader className="bg-gray-50 sticky top-0 z-10">
               <TableRow>
-                <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <TableHead className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Client
                 </TableHead>
-                <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <TableHead className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Company
                 </TableHead>
-                <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <TableHead className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </TableHead>
-                <TableHead className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <TableHead className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Value
                 </TableHead>
               </TableRow>
@@ -49,7 +49,7 @@ export default function RecentClients({
             <TableBody className="bg-white divide-y divide-gray-200">
               {clients.slice(0, 5).map((client) => (
                 <TableRow key={client._id}>
-                  <TableCell className="px-6 py-4 whitespace-nowrap">
+                  <TableCell className="px-4 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback className="text-sm">
@@ -66,10 +66,10 @@ export default function RecentClients({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <TableCell className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                     {client.companyName || "-"}
                   </TableCell>
-                  <TableCell className="px-6 py-4 whitespace-nowrap">
+                  <TableCell className="px-4 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
                         client.status
@@ -79,7 +79,7 @@ export default function RecentClients({
                         client.status.slice(1)}
                     </span>
                   </TableCell>
-                  <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                  <TableCell className="px-4 py-4 whitespace-nowrap text-right text-sm text-gray-500">
                     {formatCurrency(client.value || 0)}
                   </TableCell>
                 </TableRow>

@@ -65,7 +65,7 @@ export default function QuickCreatePage() {
       case "invoice":
         return (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Customer Name</label>
                 <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Enter customer name" />
@@ -88,7 +88,7 @@ export default function QuickCreatePage() {
       case "credit-notes":
         return (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Customer Name</label>
                 <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
@@ -107,7 +107,7 @@ export default function QuickCreatePage() {
       case "customer-payment":
         return (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Customer Name</label>
                 <input name="customerName" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
@@ -122,7 +122,7 @@ export default function QuickCreatePage() {
       case "customers":
         return (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Full Name</label>
                 <input name="name" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
@@ -144,14 +144,14 @@ export default function QuickCreatePage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
-      <div className="mb-8">
+    <div className="p-4 max-w-5xl mx-auto w-full">
+      <div className="mb-4">
         <h1 className="text-2xl font-bold text-white">Create New {config.title}</h1>
         <p className="text-slate-400 mt-1">Fill out the details below to create a new record.</p>
       </div>
 
-      <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {renderFormFields()}
           
           <div className="flex items-center gap-4 pt-4 border-t border-white/[0.04]">

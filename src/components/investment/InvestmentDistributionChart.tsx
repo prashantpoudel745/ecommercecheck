@@ -150,7 +150,7 @@ const InvestmentDistributionChart = ({ investments }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-6 drop-shadow-sm">Investment Distribution</h2>
+      <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3 drop-shadow-sm">Investment Distribution</h2>
       <div className="flex-1 w-full relative">
         {renderContent()}
       </div>

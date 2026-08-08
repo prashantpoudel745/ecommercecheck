@@ -181,7 +181,7 @@ const MonthlyGrowthChart: React.FC<MonthlyGrowthChartProps> = ({
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-6 drop-shadow-sm">Monthly Investment</h3>
+      <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3 drop-shadow-sm">Monthly Investment</h3>
       <div className="flex-1 w-full min-h-[250px] relative">
         <canvas ref={chartRef} />
       </div>

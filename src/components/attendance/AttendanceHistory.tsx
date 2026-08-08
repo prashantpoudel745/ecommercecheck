@@ -39,15 +39,15 @@ const AttendanceHistory: React.FC<AttendanceHistoryProps> = ({
     loadAttendance();
   }, [employeeId, page]);
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-semibold text-gray-900">
           Attendance History
         </h2>
         <Activity className="w-5 h-5 text-gray-400" />
       </div>
       {loading ? (
-        <div className="flex justify-center py-12">
+        <div className="flex justify-center py-4">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (

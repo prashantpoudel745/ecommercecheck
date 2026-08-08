@@ -34,7 +34,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Sidebar mobileOpen={mobileOpen} onMobileClose={handleMobileClose} />
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <Header onMenuClick={handleMenuClick} />
-        <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 pb-10">
+        <main className="flex-1 overflow-y-auto p-2 sm:p-4 pb-4">
           <div className="mx-auto max-w-7xl">
             {children}
           </div>

@@ -380,7 +380,7 @@ export default function UnifiedDashboard() {
   // === RENDER ===
   if (loading) {
     return (
-      <div className="p-1 sm:p-4 space-y-5">
+      <div className="p-1 sm:p-4 space-y-3">
         <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div className="space-y-2">
@@ -401,7 +401,7 @@ export default function UnifiedDashboard() {
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-center py-16">
+          <div className="flex items-center justify-center py-4">
             <ClipLoader color="#6366f1" size={32} />
           </div>
         </div>
@@ -410,7 +410,7 @@ export default function UnifiedDashboard() {
   }
 
   return (
-    <div className="p-1 sm:p-4 space-y-5">
+    <div className="p-1 sm:p-4 space-y-3">
       <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-sky-50 via-cyan-50 to-indigo-50 px-4 py-4 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>

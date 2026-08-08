@@ -228,7 +228,7 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center bg-white p-8 rounded-xl shadow-lg max-w-md mx-4">
+        <div className="text-center bg-white p-4 rounded-xl shadow-lg max-w-md mx-4">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <h2 className="text-xl font-semibold text-gray-800 mb-2">
             {verificationStatus === "verifying"
@@ -251,14 +251,14 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
   if (error || verificationStatus === "failed") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center mx-4">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-4 text-center mx-4">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             Payment Verification Failed
           </h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <p className="text-gray-600 mb-3">{error}</p>
           <div className="space-y-3">
             <button
               onClick={handleRetryVerification}
@@ -286,11 +286,11 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
 
   // Success state
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-4">
       <div className="max-w-4xl mx-auto px-4">
         {/* Success Header */}
-        <div className="text-center mb-12">
-          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+        <div className="text-center mb-4">
+          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 animate-bounce">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -309,8 +309,8 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
         </div>
 
         {/* Payment Details Card */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-white">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-4">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-4 text-white">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold mb-2">Payment Receipt</h2>
@@ -324,8 +324,8 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
             </div>
           </div>
 
-          <div className="p-8">
-            <div className="grid md:grid-cols-2 gap-8">
+          <div className="p-4">
+            <div className="grid md:grid-cols-2 gap-4">
               {/* Payment Information */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -413,16 +413,16 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
           <button
             onClick={handleContinue}
-              className="flex items-center justify-center px-8 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 hover:text-slate-200 transition duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              className="flex items-center justify-center px-4 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 hover:text-slate-200 transition duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
             <ArrowRight className="w-5 h-5 ml-2" />
           </button>
 
           <button
             onClick={downloadReceipt}
-            className="flex items-center justify-center px-8 py-3 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition duration-200 font-semibold"
+            className="flex items-center justify-center px-4 py-3 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition duration-200 font-semibold"
           >
             <Download className="w-5 h-5 mr-2" />
             Download Receipt
@@ -430,7 +430,7 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
 
           <button
             onClick={() => window.print()}
-            className="flex items-center justify-center px-8 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200 font-semibold"
+            className="flex items-center justify-center px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200 font-semibold"
           >
             <Receipt className="w-5 h-5 mr-2" />
             Print Receipt
@@ -438,7 +438,7 @@ export default function PaymentSuccessPage({ userData, onSuccess }) {
         </div>
 
         {/* Contact Support */}
-        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+        <div className="text-center p-4 bg-white rounded-lg shadow-md">
           <p className="text-gray-600 mb-2">
             Need help or have questions about your subscription?
           </p>

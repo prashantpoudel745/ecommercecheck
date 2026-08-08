@@ -147,7 +147,7 @@ export default function ClientSection() {
   if (selectedParty) {
     const party = parties.find(p => p.name === selectedParty);
     return (
-      <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
+      <div className="space-y-3 animate-in slide-in-from-right-4 duration-300">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={() => setSelectedParty(null)}>
             <ChevronRight className="w-4 h-4 rotate-180 mr-1" /> Back to List
@@ -168,7 +168,7 @@ export default function ClientSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Card className="border-none shadow-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white relative overflow-hidden">
             <div className="absolute -right-4 -bottom-4 opacity-10">
               <History size={120} />
@@ -245,42 +245,42 @@ export default function ClientSection() {
               <table className="w-full text-sm">
                 <thead className="bg-slate-50/80 border-b">
                   <tr>
-                    <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Date</th>
-                    <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Voucher #</th>
-                    <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Title</th>
-                    <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Description</th>
-                    <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Bill #</th>
-                    <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Updated By</th>
-                    <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Total</th>
-                    <th className="px-6 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Paid</th>
-                    <th className="px-6 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Balance</th>
+                    <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Date</th>
+                    <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Voucher #</th>
+                    <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Title</th>
+                    <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Description</th>
+                    <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Bill #</th>
+                    <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Updated By</th>
+                    <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Status</th>
+                    <th className="px-4 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Total</th>
+                    <th className="px-4 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Paid</th>
+                    <th className="px-4 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Balance</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {selectedPartyLedger.map((v) => (
                     <tr key={v._id} className="hover:bg-indigo-50/30 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-500 font-medium">
+                      <td className="px-4 py-4 whitespace-nowrap text-slate-500 font-medium">
                         {new Date(v.date).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded border border-indigo-100">{v.voucherNumber}</span>
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-[150px] truncate">
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900 max-w-[150px] truncate">
                         {v.title || <span className="text-gray-300 italic">—</span>}
                       </td>
-                      <td className="px-6 py-4 text-xs text-gray-500 max-w-[180px] truncate">
+                      <td className="px-4 py-4 text-xs text-gray-500 max-w-[180px] truncate">
                         {v.description || <span className="text-gray-300 italic">—</span>}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <span className="text-xs font-black text-slate-400 tracking-tighter uppercase">{v.referenceNumber || "-"}</span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-none font-bold text-[10px] uppercase">
                           {v.updatedBy || "Admin"}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <Badge variant={v.paymentStatus === "PAID" ? "default" : "outline"} className={
                           v.paymentStatus === "PAID" ? "bg-emerald-500" : 
                           v.paymentStatus === "PARTIAL" ? "border-amber-500 text-amber-600 shadow-sm" : 
@@ -289,7 +289,7 @@ export default function ClientSection() {
                           {v.paymentStatus}
                         </Badge>
                       </td>
-                      <td className={`px-6 py-4 text-right font-black ${
+                      <td className={`px-4 py-4 text-right font-black ${
                         v.type === 'SALES' ? "text-emerald-600" :
                         v.type === 'RECEIPT' ? "text-cyan-600" :
                         v.type === 'PURCHASE' ? "text-rose-600" :
@@ -298,8 +298,8 @@ export default function ClientSection() {
                       }`}>
                         {v.type === 'SALES' || v.type === 'RECEIPT' ? '+' : '-'} {formatCurrency(v.totalAmount)}
                       </td>
-                      <td className="px-6 py-4 text-right text-emerald-600 font-bold">{formatCurrency(v.amountPaid || 0)}</td>
-                      <td className="px-6 py-4 text-right text-rose-600 font-bold">{formatCurrency(v.amountDue || 0)}</td>
+                      <td className="px-4 py-4 text-right text-emerald-600 font-bold">{formatCurrency(v.amountPaid || 0)}</td>
+                      <td className="px-4 py-4 text-right text-rose-600 font-bold">{formatCurrency(v.amountDue || 0)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -312,8 +312,8 @@ export default function ClientSection() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="sticky top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-2 pb-4 mb-6 border-b border-gray-100">
+    <div className="space-y-3 animate-in fade-in duration-500">
+      <div className="sticky top-6 z-30 bg-gray-50/95 backdrop-blur-md pt-2 pb-4 mb-3 border-b border-gray-100">
         <div className="flex flex-col space-y-4 px-3">
           {/* Title and Button Row */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -334,7 +334,7 @@ export default function ClientSection() {
                 placeholder="Search clients or vendors..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white border-slate-200 focus-visible:ring-indigo-500 shadow-sm h-10"
+                className="pl-4 bg-white border-slate-200 focus-visible:ring-indigo-500 shadow-sm h-10"
               />
             </div>
             <div className="relative w-full sm:w-52">
@@ -342,7 +342,7 @@ export default function ClientSection() {
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value as "all" | "Customer" | "Vendor" | "Lead/Guest")}
-                className="h-10 w-full rounded-md border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="h-10 w-full rounded-md border border-slate-200 bg-white pl-4 pr-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="all">All Types</option>
                 <option value="Customer">Customer</option>
@@ -361,7 +361,7 @@ export default function ClientSection() {
             <CardDescription>Create a new ledger for your client or vendor.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               <div className="space-y-2">
                 <Label className="text-slate-600 font-semibold">Party Name</Label>
                 <Input 
@@ -419,7 +419,7 @@ export default function ClientSection() {
                 ) : <div />}
                 <div className="flex gap-2">
                   <Button type="button" variant="ghost" onClick={() => setShowForm(false)} disabled={isSubmitting}>Cancel</Button>
-                  <Button type="submit" className="px-8 shadow-lg" disabled={isSubmitting}>
+                  <Button type="submit" className="px-4 shadow-lg" disabled={isSubmitting}>
                     {isSubmitting ? "Generating Ledger..." : "Register Party"}
                   </Button>
                 </div>
@@ -436,24 +436,24 @@ export default function ClientSection() {
             <table className="w-full text-sm">
               <thead className="bg-slate-50/50 border-b">
                 <tr>
-                  <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Party / Ledger</th>
-                  <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Group</th>
-                  <th className="px-6 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Type</th>
-                  <th className="px-6 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Current Balance</th>
-                  <th className="px-6 py-4"></th>
+                  <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Party / Ledger</th>
+                  <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Group</th>
+                  <th className="px-4 py-4 text-left font-bold text-slate-600 uppercase text-[10px] tracking-wider">Type</th>
+                  <th className="px-4 py-4 text-right font-bold text-slate-600 uppercase text-[10px] tracking-wider">Current Balance</th>
+                  <th className="px-4 py-4"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-slate-400 italic">
+                    <td colSpan={5} className="px-4 py-4 text-center text-slate-400 italic">
                       <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 opacity-20" />
                       Decrypting ledger data...
                     </td>
                   </tr>
                 ) : filteredParties.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-slate-400 italic">
+                    <td colSpan={5} className="px-4 py-4 text-center text-slate-400 italic">
                       No parties found. Start by adding one!
                     </td>
                   </tr>
@@ -464,7 +464,7 @@ export default function ClientSection() {
                       className="hover:bg-indigo-50/40 transition-all cursor-pointer group"
                       onClick={() => setSelectedParty(party.name)}
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                             {party.name.charAt(0)}
@@ -475,17 +475,17 @@ export default function ClientSection() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                           {party.group}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                          <Badge variant="outline" className={`text-[10px] font-black uppercase ${party.type === 'Vendor' ? 'text-amber-600 border-amber-100 bg-amber-50' : 'text-blue-600 border-blue-100 bg-blue-50'}`}>
                           {party.type}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 py-4 text-right">
                         <div className="flex flex-col items-end">
                            <span className={`font-black text-base tracking-tighter ${CurrencyUtil.parse(party.balance).greaterThan(0) ? "text-rose-600" : "text-emerald-600"}`}>
                             {formatCurrency(CurrencyUtil.parse(party.balance).abs())}
@@ -495,7 +495,7 @@ export default function ClientSection() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 py-4 text-right">
                         <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all inline opacity-0 group-hover:opacity-100" />
                       </td>
                     </tr>

@@ -327,7 +327,7 @@ const CustomerOverview = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
+    <div className="space-y-4 sm:space-y-3 lg:space-y-3">
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <StatCard
@@ -388,7 +388,7 @@ const CustomerOverview = () => {
           </div>
         </CardHeader>
         {reconcileMsg && (
-          <div className="px-6 pb-2">
+          <div className="px-4 pb-2">
             <p className="text-sm font-medium">{reconcileMsg}</p>
           </div>
         )}
@@ -488,7 +488,7 @@ const CustomerOverview = () => {
                       {expandedClientId === client._id && (
                         <TableRow>
                           <TableCell colSpan={10} className="bg-slate-50/80 p-0">
-                            <div className="px-8 py-4">
+                            <div className="px-4 py-4">
                               <h4 className="text-sm font-bold text-indigo-700 mb-3 flex items-center gap-2">
                                 <Clock className="w-4 h-4" /> Transaction History
                               </h4>
@@ -583,7 +583,7 @@ const CustomerOverview = () => {
       {/* Edit Modal */}
       {editingClient && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-4">
             <h3 className="text-lg font-semibold mb-4">
               Edit {editingClient.name}
             </h3>
@@ -626,7 +626,7 @@ const CustomerOverview = () => {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6">
+            <div className="flex justify-end space-x-3 mt-3">
               <button
                 onClick={handleCloseEdit}
                 className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded dark:text-gray-300 dark:hover:bg-gray-700"

@@ -22,9 +22,9 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex overflow-hidden bg-white rounded-lg shadow-lg p-10">
+    <div className="flex overflow-hidden bg-white rounded-lg shadow-lg p-4">
       <Authsidebar />
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-xl">
+      <div className="max-w-md mx-auto mt-4 p-4 bg-white shadow-md rounded-xl">
         <h2 className="text-2xl font-semibold text-center mb-4">
           Forgot Password (admin)
         </h2>

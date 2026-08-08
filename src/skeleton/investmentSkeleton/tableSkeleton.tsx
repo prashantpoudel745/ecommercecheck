@@ -1,6 +1,6 @@
 export const TableSkeleton = () => (
   <div className="bg-white rounded-lg shadow animate-pulse">
-    <div className="p-6">
+    <div className="p-4">
       <div className="h-6 bg-gray-200 rounded w-48 mb-4"></div>
       <div className="space-y-3">
         {[...Array(5)].map((_, i) => (

@@ -49,7 +49,7 @@ export default function AccountingDashboard({ startDate, endDate, dateRangeLabel
 }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {error && (
         <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200">
           {error}

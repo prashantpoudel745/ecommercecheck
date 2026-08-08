@@ -201,7 +201,7 @@ const InvestmentPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-[1520px] space-y-8 animate-fade-in px-0">
+    <div className="mx-auto max-w-[1520px] space-y-4 animate-fade-in px-0">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -236,14 +236,14 @@ const InvestmentPage = () => {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-up" style={{ animationDelay: '0.3s' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 animate-fade-up" style={{ animationDelay: '0.3s' }}>
         <Suspense fallback={<ChartSkeleton />}>
-          <div className="enterprise-panel p-6 h-full">
+          <div className="enterprise-panel p-4 h-full">
             <InvestmentDistributionChart investments={investments} />
           </div>
         </Suspense>
         <Suspense fallback={<ChartSkeleton />}>
-           <div className="enterprise-panel p-6 h-full">
+           <div className="enterprise-panel p-4 h-full">
              <MonthlyGrowthChart investments={investments} />
            </div>
         </Suspense>
@@ -252,7 +252,7 @@ const InvestmentPage = () => {
       {/* Table */}
       <div className="w-full animate-fade-up" style={{ animationDelay: '0.4s' }}>
         <Suspense fallback={<TableSkeleton />}>
-           <div className="enterprise-panel p-6">
+           <div className="enterprise-panel p-4">
              <InvestmentsTable />
            </div>
         </Suspense>

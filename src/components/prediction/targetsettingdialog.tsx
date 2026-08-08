@@ -232,7 +232,7 @@ const TargetSettingsDialog: React.FC<TargetSettingsDialogProps> = ({
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-md">
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-4">
             <ClipLoader size={36} color="#3b82f6" />
           </div>
         </DialogContent>
@@ -244,7 +244,7 @@ const TargetSettingsDialog: React.FC<TargetSettingsDialogProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-5xl max-h-[88vh] overflow-y-auto p-0">
         <DialogHeader>
-          <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b px-6 py-4">
+          <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b px-4 py-4">
             <DialogTitle className="text-xl">Set Performance Targets</DialogTitle>
             <p className="text-sm text-slate-600 mt-1">
               Choose a single value for all periods or set custom values for each month and year.
@@ -252,7 +252,7 @@ const TargetSettingsDialog: React.FC<TargetSettingsDialogProps> = ({
           </div>
         </DialogHeader>
 
-        <div className="space-y-5 p-6">
+        <div className="space-y-3 p-4">
           {/* Monthly Section */}
           <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -546,7 +546,7 @@ const TargetSettingsDialog: React.FC<TargetSettingsDialogProps> = ({
           </div>
         </div>
 
-        <DialogFooter className="sticky bottom-0 bg-white/95 backdrop-blur border-t px-6 py-4">
+        <DialogFooter className="sticky bottom-0 bg-white/95 backdrop-blur border-t px-4 py-4">
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>

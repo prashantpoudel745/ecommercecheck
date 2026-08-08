@@ -138,11 +138,11 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
     <div className="min-h-screen bg-gray-50">
       <AdminHeader user={user} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-4 py-4">
         {/* Tab Navigation */}
-        <div className="mb-8">
+        <div className="mb-4">
           <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
+            <nav className="-mb-px flex space-x-4">
               <button
                 onClick={() => handleTabChange("dashboard")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
@@ -169,7 +169,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+          <div className="mb-3 p-4 bg-red-50 border border-red-200 rounded-md">
             <div className="flex justify-between items-center">
               <p className="text-red-600">{error}</p>
               <button
@@ -192,7 +192,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
         )}
 
         {activeTab === "attendance" && (
-          <div className="space-y-6">
+          <div className="space-y-3">
             <AttendanceFilter
               filters={filters}
               onFilterChange={handleFilterChange}

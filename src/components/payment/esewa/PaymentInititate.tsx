@@ -81,7 +81,7 @@ const PaymentInitiate = ({ userData, onSuccess, onFailure }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Processing Payment
         </h2>

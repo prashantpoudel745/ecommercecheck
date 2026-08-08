@@ -93,11 +93,11 @@ const App = () => {
       { id: "employees", paths: ["/employees"], render: () => <EmployeePage /> },
       
       // Accounting Routes
-      { id: "accounting-dashboard", paths: ["/accounting/dashboard"], render: () => <div className="p-6"><AccountingDashboard /></div> },
-      { id: "accounting-coa", paths: ["/accounting/chart-of-accounts"], render: () => <div className="p-6"><ChartOfAccounts /></div> },
-      { id: "accounting-vouchers", paths: ["/accounting/journal-vouchers"], render: () => <div className="p-6"><VoucherBook /></div> },
-      { id: "accounting-cash", paths: ["/accounting/cash-transfers"], render: () => <div className="p-6"><CashTransfers /></div> },
-      { id: "accounting-reports", paths: ["/accounting/financial-reports"], render: () => <div className="p-6"><FinancialReports /></div> },
+      { id: "accounting-dashboard", paths: ["/accounting/dashboard"], render: () => <div className="p-4"><AccountingDashboard /></div> },
+      { id: "accounting-coa", paths: ["/accounting/chart-of-accounts"], render: () => <div className="p-4"><ChartOfAccounts /></div> },
+      { id: "accounting-vouchers", paths: ["/accounting/journal-vouchers"], render: () => <div className="p-4"><VoucherBook /></div> },
+      { id: "accounting-cash", paths: ["/accounting/cash-transfers"], render: () => <div className="p-4"><CashTransfers /></div> },
+      { id: "accounting-reports", paths: ["/accounting/financial-reports"], render: () => <div className="p-4"><FinancialReports /></div> },
 
       // Sales View Routes
       { id: "sales-quotations", paths: ["/sales/quotations"], render: () => <QuotationsPage /> },

@@ -57,8 +57,8 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats, period }) => {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-semibold text-gray-900">Statistics</h2>
         <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full capitalize">
           {period}

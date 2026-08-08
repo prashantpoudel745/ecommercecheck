@@ -65,10 +65,10 @@ export default function AdminLoginPage() {
       <div className="max-w-6xl px-4 py-1 mx-auto">
         <div className="flex overflow-hidden bg-white rounded-lg shadow-lg">
           {/* Left Column - Image & Stats */}
-          <div className="flex-1  hidden lg:flex px-2 py-10 text-white bg-gradient-to-br from-indigo-600 to-blue-600">
+          <div className="flex-1  hidden lg:flex px-2 py-4 text-white bg-gradient-to-br from-indigo-600 to-blue-600">
             <div className="max-w-md mx-auto">
               <Authsidebar />
-              <div className="mt-10 p-4 bg-white/10 rounded-lg">
+              <div className="mt-4 p-4 bg-white/10 rounded-lg">
                 <h3 className="text-xl font-semibold mb-4">Premium Features</h3>
                 <ul className="space-y-2">
                   <li className="flex items-center">
@@ -118,9 +118,9 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          <div className="flex-1 px-8 py-12">
+          <div className="flex-1 px-4 py-4">
             <div className="max-w-md mx-auto">
-              <div className="mb-8">
+              <div className="mb-4">
                 <h2 className="text-2xl font-bold text-gray-800">
                   Log In to Your Admin Account
                 </h2>
@@ -135,7 +135,7 @@ export default function AdminLoginPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-3">
                 <div>
                   <label
                     htmlFor="email"
@@ -240,7 +240,7 @@ export default function AdminLoginPage() {
                 </button>
               </form>
 
-              <p className="mt-8 text-center text-gray-600">
+              <p className="mt-4 text-center text-gray-600">
                 Don't have an account?{" "}
                 <Link
                   to="/signup"

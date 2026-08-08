@@ -112,7 +112,7 @@ const AddInventoryButton = ({ onInventoryAdded }: AddInventoryButtonProps) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className=" flex items-center justify-center gap-2 py-6"
+          className=" flex items-center justify-center gap-2 py-3"
         >
           <PlusCircle size={20} />
           <CardTitle className="text-lg font-semibold">Add Inventory</CardTitle>

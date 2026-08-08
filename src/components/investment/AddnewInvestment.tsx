@@ -75,8 +75,8 @@ const AddInvestmentForm = ({ onAddInvestment, userId }) => {
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-sm">
-          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg max-h-[88vh] overflow-y-auto shadow-2xl border border-slate-200">
+          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-4">
+          <div className="bg-white rounded-xl p-4 w-full max-w-lg max-h-[88vh] overflow-y-auto shadow-2xl border border-slate-200">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Add New Investment</h3>
               <button
@@ -175,7 +175,7 @@ const AddInvestmentForm = ({ onAddInvestment, userId }) => {
                 />
               </div>
 
-              <div className="flex justify-end space-x-2 mt-6">
+              <div className="flex justify-end space-x-2 mt-3">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}

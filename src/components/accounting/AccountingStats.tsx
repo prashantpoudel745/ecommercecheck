@@ -27,7 +27,7 @@ export default function AccountingStats({ stats, startDate, endDate, dateRangeLa
   const performancePeriodText = formatDateLabel();
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-3">
       {/* Performance Section */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">

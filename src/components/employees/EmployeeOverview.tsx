@@ -164,7 +164,7 @@ const EmployeeOverview = () => {
       </div>
 
       {/* Card wrapper - no overflow-hidden, no max-height, natural page scroll */}
-      <div className="bg-white rounded-lg shadow mb-8 w-full">
+      <div className="bg-white rounded-lg shadow mb-4 w-full">
         {/* Sticky header block - sticks to top of nearest scrolling ancestor (usually the page) */}
         <div className="p-4 border-b sticky -top-8 z-10 bg-white rounded-t-lg">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -206,12 +206,12 @@ const EmployeeOverview = () => {
 
         {/* Content */}
         {loading ? (
-          <div className="p-8 text-center">
+          <div className="p-4 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-2 text-gray-600">Loading employees...</p>
           </div>
         ) : error ? (
-          <div className="p-8 text-center">
+          <div className="p-4 text-center">
             <div className="text-red-500 mb-2">⚠️ {error}</div>
             <button
               onClick={fetchEmployees}
@@ -221,7 +221,7 @@ const EmployeeOverview = () => {
             </button>
           </div>
         ) : employees.length === 0 ? (
-          <div className="p-8 text-center">
+          <div className="p-4 text-center">
             <p className="text-gray-600 mb-4">No employees found.</p>
             <p className="text-sm text-gray-500">
               Add your first employee to get started!
@@ -234,28 +234,28 @@ const EmployeeOverview = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Employee
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Department
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Position
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Salary
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -263,7 +263,7 @@ const EmployeeOverview = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredEmployees.map((employee) => (
                     <tr key={employee.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <div>
                           <div className="font-medium text-gray-900">
                             {employee.fullName}
@@ -273,7 +273,7 @@ const EmployeeOverview = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {employee.email}
                         </div>
@@ -281,13 +281,13 @@ const EmployeeOverview = () => {
                           {employee.phone}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                         {employee.department}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                         {employee.position}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleClass(
                             employee.role
@@ -296,10 +296,10 @@ const EmployeeOverview = () => {
                           {employee.role}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                         {employee.formattedSalary}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(
                             employee.status
@@ -308,7 +308,7 @@ const EmployeeOverview = () => {
                           {employee.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <button
                             className="text-indigo-600 hover:text-indigo-900"
@@ -337,7 +337,7 @@ const EmployeeOverview = () => {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-3 bg-gray-50 border-t flex flex-col sm:flex-row items-center justify-between">
+            <div className="px-4 py-3 bg-gray-50 border-t flex flex-col sm:flex-row items-center justify-between">
               <div className="text-sm text-gray-700 mb-2 sm:mb-0">
                 Showing{" "}
                 <span className="font-medium">

@@ -73,7 +73,7 @@ export default function FiscalPeriodManager() {
   const formatDate = (d: string) => d ? new Date(d).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }) : "—";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <div className="sticky lg:top-5 md:top-10 sm:top-10 z-30 bg-gray-50/95 backdrop-blur-md pt-1 pb-4 space-y-4 border-b border-gray-100">
         <div className="mx-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -111,25 +111,25 @@ export default function FiscalPeriodManager() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50/50 border-b">
                 <tr>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Period Name</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Start Date</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">End Date</th>
-                  <th className="px-6 py-4 text-center font-semibold text-gray-600">Status</th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-600">Locked On</th>
-                  <th className="px-6 py-4 text-center font-semibold text-gray-600">Action</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Period Name</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Start Date</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">End Date</th>
+                  <th className="px-4 py-4 text-center font-semibold text-gray-600">Status</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-600">Locked On</th>
+                  <th className="px-4 py-4 text-center font-semibold text-gray-600">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-16 text-center text-gray-400 italic">
+                    <td colSpan={6} className="px-4 py-4 text-center text-gray-400 italic">
                       <RefreshCw className="w-6 h-6 mx-auto mb-2 animate-spin opacity-30" />
                       Loading fiscal periods...
                     </td>
                   </tr>
                 ) : periods.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-16 text-center">
+                    <td colSpan={6} className="px-4 py-4 text-center">
                       <Calendar className="w-10 h-10 mx-auto mb-3 text-gray-200" />
                       <p className="text-gray-400 italic">No fiscal periods defined yet.</p>
                       <p className="text-gray-400 text-xs mt-1">Create your first fiscal year to get started.</p>
@@ -138,12 +138,12 @@ export default function FiscalPeriodManager() {
                 ) : (
                   periods.map((period) => (
                     <tr key={period._id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <span className="font-bold text-gray-900">{period.name}</span>
                       </td>
-                      <td className="px-6 py-4 text-gray-600">{formatDate(period.startDate)}</td>
-                      <td className="px-6 py-4 text-gray-600">{formatDate(period.endDate)}</td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-4 py-4 text-gray-600">{formatDate(period.startDate)}</td>
+                      <td className="px-4 py-4 text-gray-600">{formatDate(period.endDate)}</td>
+                      <td className="px-4 py-4 text-center">
                         {period.isLocked ? (
                           <Badge className="bg-red-500 hover:bg-red-600 border-none gap-1">
                             <Lock className="w-3 h-3" /> Locked
@@ -152,7 +152,7 @@ export default function FiscalPeriodManager() {
                           <Badge className="bg-emerald-500 hover:bg-emerald-600 border-none">Open</Badge>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-gray-500 text-xs">
+                      <td className="px-4 py-4 text-gray-500 text-xs">
                         {period.isLocked && period.lockedAt ? (
                           <div>
                             <div>{formatDate(period.lockedAt)}</div>
@@ -160,7 +160,7 @@ export default function FiscalPeriodManager() {
                           </div>
                         ) : "—"}
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-4 py-4 text-center">
                         {!period.isLocked && (
                           <Button
                             size="sm"
@@ -192,7 +192,7 @@ export default function FiscalPeriodManager() {
               </CardTitle>
               <CardDescription>Define the date range for an accounting period (e.g., Fiscal Year 2081/82).</CardDescription>
             </CardHeader>
-            <CardContent className="p-6 space-y-5">
+            <CardContent className="p-4 space-y-3">
               <div className="space-y-2">
                 <Label htmlFor="fp-name">Period Name <span className="text-rose-500">*</span></Label>
                 <Input
@@ -226,9 +226,9 @@ export default function FiscalPeriodManager() {
                 Once created, vouchers will be validated against open fiscal periods. Posting to a locked or undefined period will be rejected.
               </p>
             </CardContent>
-            <div className="flex justify-end gap-3 p-6 pt-0">
+            <div className="flex justify-end gap-3 p-4 pt-0">
               <Button variant="ghost" onClick={() => { setShowCreate(false); setForm({ name: "", startDate: "", endDate: "" }); }}>Cancel</Button>
-              <Button onClick={handleCreate} disabled={creating} className="px-6">
+              <Button onClick={handleCreate} disabled={creating} className="px-4">
                 {creating ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
                 {creating ? "Creating..." : "Create Period"}
               </Button>

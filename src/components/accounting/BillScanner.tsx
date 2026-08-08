@@ -179,7 +179,7 @@ export default function BillScanner({ open, onOpenChange, onDataExtracted }: Bil
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); else onOpenChange(v); }}>
       <DialogContent className="sm:max-w-[540px] p-0 overflow-hidden rounded-xl border-0 shadow-2xl">
         {/* ── Header ── */}
-        <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 px-6 py-4">
+        <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 px-4 py-4">
           <DialogHeader>
             <DialogTitle className="text-white text-xl font-bold flex items-center gap-2">
               <ScanLine className="w-5 h-5" />
@@ -193,7 +193,7 @@ export default function BillScanner({ open, onOpenChange, onDataExtracted }: Bil
           </DialogHeader>
         </div>
 
-        <div className="p-6">
+        <div className="p-4">
           {error && (
             <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm flex items-start gap-2">
               <X className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -210,7 +210,7 @@ export default function BillScanner({ open, onOpenChange, onDataExtracted }: Bil
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={startCamera}
-                  className="group flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-dashed border-gray-200 hover:border-purple-400 hover:bg-purple-50/50 transition-all duration-200"
+                  className="group flex flex-col items-center gap-3 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-purple-400 hover:bg-purple-50/50 transition-all duration-200"
                 >
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg group-hover:shadow-purple-200 group-hover:scale-110 transition-all">
                     <Camera className="w-6 h-6 text-white" />
@@ -223,7 +223,7 @@ export default function BillScanner({ open, onOpenChange, onDataExtracted }: Bil
 
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="group flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-dashed border-gray-200 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200"
+                  className="group flex flex-col items-center gap-3 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200"
                 >
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg group-hover:shadow-blue-200 group-hover:scale-110 transition-all">
                     <Upload className="w-6 h-6 text-white" />
@@ -329,7 +329,7 @@ export default function BillScanner({ open, onOpenChange, onDataExtracted }: Bil
 
           {/* ═══ Step: Processing ═══ */}
           {step === "processing" && (
-            <div className="py-12 flex flex-col items-center justify-center space-y-6">
+            <div className="py-4 flex flex-col items-center justify-center space-y-3">
               <div className="relative">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center">
                   <Loader2 className="w-10 h-10 text-purple-600 animate-spin" />
