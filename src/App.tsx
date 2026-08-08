@@ -54,7 +54,7 @@ const CreateSupplierPage = lazy(() => import("./pages/purchase/CreateSupplierPag
 const DebitNotesPage       = lazy(() => import("./pages/purchase/DebitNotesPage"));
 const CreateDebitNotePage  = lazy(() => import("./pages/purchase/CreateDebitNotePage"));
 const CompanySettingsPage  = lazy(() => import("./pages/CompanySettingsPage"));
-const BackupPage           = lazy(() => import("./pages/BackupPage"));
+// const BackupPage           = lazy(() => import("./pages/BackupPage"));
 
 const CRM = lazy(() => import("./pages/CRM"));
 
@@ -132,7 +132,7 @@ const App = () => {
       { id: "purchase-debit-notes",        paths: ["/purchase/debit-notes"],       render: () => <DebitNotesPage /> },
       { id: "create-debit-note",           paths: ["/purchase/debit-notes/new"],   render: () => <CreateDebitNotePage /> },
       { id: "settings-company",            paths: ["/settings/company"],           render: () => <CompanySettingsPage /> },
-      { id: "settings-backup",             paths: ["/settings/backup"],            render: () => <BackupPage /> },
+      // { id: "settings-backup",             paths: ["/settings/backup"],            render: () => <BackupPage /> },
 
       // Inventory Routes
       { id: "inventory", paths: ["/inventory", "/inventory/products"], render: () => <Inventory /> },

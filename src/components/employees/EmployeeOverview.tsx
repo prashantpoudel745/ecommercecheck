@@ -13,6 +13,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { StatCard } from "../dashboard/StatCard";
 import { Users } from "lucide-react"; // Assuming you're using lucide-react for icons
+import { UploadToDriveButton } from "./uploademployeetodrive";
+import SearchComponent from "../Search";
+import { EmployeeSkeleton } from "@/skeleton/employeeSkeleton/employeeSkeleton";
+
 const API_URL = import.meta.env.VITE_API_URL||"";
 
 const EmployeeOverview = () => {
@@ -206,10 +210,7 @@ const EmployeeOverview = () => {
 
         {/* Content */}
         {loading ? (
-          <div className="p-4 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600">Loading employees...</p>
-          </div>
+          <EmployeeSkeleton />
         ) : error ? (
           <div className="p-4 text-center">
             <div className="text-red-500 mb-2">⚠️ {error}</div>

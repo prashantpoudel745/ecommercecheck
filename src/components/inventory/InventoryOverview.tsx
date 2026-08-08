@@ -23,6 +23,7 @@ import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 import { useAuth } from "@/context/AuthContext";
 import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
 import { CurrencyUtil } from "@/utils/currency.util";
+import { InventorySkeleton } from "@/skeleton/inventorySkeleton/inventorySkeleton";
 
 const Api = import.meta.env.VITE_API_URL||"";
 
@@ -223,11 +224,7 @@ export function InventoryOverview() {
   }, [emailNotificationEnabled, products, checkAndSendStockNotifications]); // Added missing dependencies
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        Loading inventory data...
-      </div>
-    );
+    return <InventorySkeleton />;
   }
 
   if (error) {

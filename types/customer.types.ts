@@ -27,6 +27,7 @@ export interface Stats {
   totalClients: number;
   activeClients: number;
   totalValue: number;
+  totalDue: number;
 }
 export interface CustomerInteractionsProps {
   data: Array<{

@@ -9,7 +9,7 @@ import {
 import { StatCard } from "@/components/dashboard/StatCard";
 import { useEffect, useState, useCallback, lazy, Suspense } from "react";
 import { toast } from "@/utils/notify";
-import { ClipLoader } from "react-spinners";
+import { DashboardPageSkeleton } from "@/skeleton/dashboardSkeleton/DashboardPageSkeleton";
 import {
   FinancialOverviewSkeleton,
   InventoryStatusSkeleton,
@@ -207,18 +207,12 @@ export default function Dashboard() {
     };
   }, []);
 
+  if (loading && showLoadingOverlay) {
+    return <DashboardPageSkeleton />;
+  }
+
   return (
     <div className="mx-auto max-w-[1520px] space-y-4 animate-fade-in px-0">
-      {loading && showLoadingOverlay && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 backdrop-blur-sm">
-          <ClipLoader color="#6366f1" size={40} />
-        </div>
-      )}
-  {user && showLoadingOverlay && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 backdrop-blur-sm">
-          <ClipLoader color="#6366f1" size={40} />
-        </div>
-      )}
       <div className="flex flex-col space-y-2 animate-fade-up" style={{ animationDelay: '0.1s' }}>
         <div className="flex flex-row items-center justify-between ">
         <h1 className="text-xl font-semibold tracking-tight text-slate-950 sm:text-2xl lg:text-3xl">

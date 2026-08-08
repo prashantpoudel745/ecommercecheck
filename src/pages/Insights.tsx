@@ -27,6 +27,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { toast } from "@/utils/notify";
+import { InsightsSkeleton } from "@/skeleton/insightsSkeleton/insightsSkeleton";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
@@ -275,14 +276,7 @@ export default function Insights() {
   }, [snapshot]);
 
   if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-5 py-4 text-slate-600 shadow-sm">
-          <Loader2 className="h-5 w-5 animate-spin text-slate-900" />
-          Loading business insights...
-        </div>
-      </div>
-    );
+    return <InsightsSkeleton />;
   }
 
   if (!snapshot || !derived) {

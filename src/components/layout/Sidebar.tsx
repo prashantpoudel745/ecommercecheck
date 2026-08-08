@@ -138,7 +138,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       id: "settings",
       subItems: [
         { label: "Company Profile (IRD)", path: "/settings/company" },
-        { label: "Backup & Restore ",   path: "/settings/backup"  },
+        // { label: "Backup & Restore ",   path: "/settings/backup"  },
       ],
     },
   ];

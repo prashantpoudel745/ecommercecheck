@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Database, Globe, Users, Edit, ChevronDown, ChevronRight, Clock, RefreshCw } from "lucide-react";
+import { Database, Globe, Users, Edit, ChevronDown, ChevronRight, Clock, RefreshCw, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -100,6 +100,7 @@ const CustomerOverview = () => {
     totalClients: 0,
     activeClients: 0,
     totalValue: 0,
+    totalDue: 0,
   });
 
   // Edit state
@@ -175,7 +176,11 @@ const CustomerOverview = () => {
           (sum: number, client: Client) => sum + toNumber(client.value || 0),
           0
         );
-        setStats({ totalClients, activeClients, totalValue });
+        const totalDue = data.clients.reduce(
+          (sum: number, client: Client) => sum + toNumber(client.dueamount || 0),
+          0
+        );
+        setStats({ totalClients, activeClients, totalValue, totalDue });
       }
     } catch (error) {
       setError(
@@ -329,7 +334,7 @@ const CustomerOverview = () => {
   return (
     <div className="space-y-4 sm:space-y-3 lg:space-y-3">
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Total Client"
           value={memoizedStats.totalClients}
@@ -344,6 +349,11 @@ const CustomerOverview = () => {
           title="Total Value"
           value={formatCurrency(memoizedStats.totalValue)}
           icon={<Globe size={18} />}
+        />
+        <StatCard
+          title="Total Due"
+          value={formatCurrency(memoizedStats.totalDue)}
+          icon={<Wallet size={18} className="text-amber-500" />}
         />
       </div>
 
