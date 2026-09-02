@@ -148,7 +148,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden h-9 w-9 shrink-0 rounded-full border border-slate-200 bg-white/80 p-0 hover:bg-slate-50"
+            className="lg:hidden h-9 w-9 shrink-0 rounded-full border border-slate-200 bg-white/80 p-0 hover:bg-slate-50"
             onClick={onMenuClick}
             title="Toggle menu"
           >

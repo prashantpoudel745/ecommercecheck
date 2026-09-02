@@ -50,7 +50,7 @@ export default function CreateSupplierPaymentPage() {
   const resetForm = () => setFormData({ paymentMethod: "BANK_TRANSFER" });
 
   const createMutation = useMutation({
-    mutationFn: (payload: unknown) => createSupplierPayment(payload),
+    mutationFn: (payload: any) => createSupplierPayment(payload),
     onMutate: async (payload: any) => {
       await queryClient.cancelQueries({ queryKey: ["purchase", "payments"] });
       const previous = queryClient.getQueryData<{ data: SupplierPaymentRow[] }>(["purchase", "payments"]);

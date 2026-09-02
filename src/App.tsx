@@ -187,18 +187,6 @@ const App = () => {
                         </ProtectedRoute>
                       }
                     />
-                    <Route
-                      path="*"
-                      element={
-                        <ProtectedRoute>
-                          <ProtectedKeepAliveRouter
-                            pages={protectedKeepAlivePages}
-                            fallback={<NotFound />}
-                          />
-                        </ProtectedRoute>
-                      }
-                    />
-
                     {/* Public Routes */}
                     <Route
                       path="/home"
@@ -282,17 +270,6 @@ const App = () => {
                         </PublicRoute>
                       }
                     />
-                    {/* <Route
-                      path="/payment/success"
-                      element={
-                        <PublicRoute>
-                          <PaymentSuccess
-                            userData={userData}
-                            onSuccess={handlePaymentSuccess}
-                          />
-                        </PublicRoute>
-                      }
-                    /> */}
                     <Route
                       path="/payment-failure"
                       element={
@@ -309,12 +286,17 @@ const App = () => {
                         </PublicRoute>
                       }
                     />
+
+                    {/* Protected Routes */}
                     <Route
                       path="*"
                       element={
-                        <PublicRoute>
-                          <NotFound />
-                        </PublicRoute>
+                        <ProtectedRoute>
+                          <ProtectedKeepAliveRouter
+                            pages={protectedKeepAlivePages}
+                            fallback={<NotFound />}
+                          />
+                        </ProtectedRoute>
                       }
                     />
                   </Routes>

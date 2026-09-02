@@ -213,27 +213,37 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-[1520px] space-y-4 animate-fade-in px-0">
-      <div className="flex flex-col space-y-2 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-        <div className="flex flex-row items-center justify-between ">
-        <h1 className="text-xl font-semibold tracking-tight text-slate-950 sm:text-2xl lg:text-3xl">
-          Dashboard Overview
-        </h1>
-        <Link to="/import">
-        <div className="p-2 border border-black rounded flex flex-row gap-2">
-          Import data
-          <Download/>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+        <div className="flex flex-col">
+          <h1 className="text-xl font-semibold tracking-tight text-slate-950 sm:text-2xl lg:text-3xl">
+            Welcome, {user.fullName || user.name}
+          </h1>
+          <p className="text-sm text-slate-600 mt-1">
+            Here's what's happening with your business today.
+          </p>
         </div>
-         </Link>
+        
+        {/* Quick Links */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <Link to="/sales/invoice/new">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-md hover:bg-emerald-200 transition-colors">
+              + Add Sales
+            </button>
+          </Link>
+          <Link to="/purchase/bills/new">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-md hover:bg-blue-200 transition-colors">
+              + Add Purchase
+            </button>
+          </Link>
+          <Link to="/import">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 transition-colors shadow-sm">
+              <Upload size={14} /> Add More
+            </button>
+          </Link>
         </div>
-
-        <p className="text-sm text-slate-600">
-          Here's what's happening with your business today.
-        </p>
       </div>
-      
-               <QuickLinksGrid/>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 animate-fade-up" style={{ animationDelay: '0.2s' }}>
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 animate-fade-up" style={{ animationDelay: '0.2s' }}>
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
           title="Revenue (excl. VAT)"
@@ -242,7 +252,7 @@ export default function Dashboard() {
         />
         <StatCard
           className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
-          title="Expenses (excl. VAT)"
+          title="To Give"
           value={formatCurrency(stats.totalExpenses)}
           icon={<CreditCard className="text-rose-500" size={20} />}
         />

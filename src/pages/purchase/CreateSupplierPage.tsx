@@ -25,7 +25,7 @@ export default function CreateSupplierPage() {
   const resetForm = () => setFormData({});
 
   const createMutation = useMutation({
-    mutationFn: (payload: unknown) => createSupplier(payload),
+    mutationFn: (payload: any) => createSupplier(payload),
     onMutate: async (payload: any) => {
       await queryClient.cancelQueries({ queryKey: ["purchase", "suppliers"] });
       const previous = queryClient.getQueryData<{ data: SupplierRow[] }>(["purchase", "suppliers"]);

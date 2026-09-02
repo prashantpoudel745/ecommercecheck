@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const AUTH_TOKEN_KEY = "auth-token";
+const AUTH_TOKEN_KEY = "auth-token"; // Retained for interface compatibility, no longer used for storage
 
 type MutableRequestConfig = {
   headers?: Record<string, string> | Headers | any;
@@ -11,56 +11,20 @@ type WindowWithAuthFetch = Window & {
   __AUTH_FETCH_INSTALLED__?: boolean;
 };
 
-const getStorage = (): Storage | null => {
-  if (typeof window === "undefined") return null;
-  return window.sessionStorage;
-};
-
 export const getAuthToken = (): string | null => {
-  try {
-    return getStorage()?.getItem(AUTH_TOKEN_KEY) || null;
-  } catch {
-    return null;
-  }
+  return null; // HTTP-only cookies handle auth now
 };
 
 export const setAuthToken = (token?: string | null) => {
-  try {
-    const storage = getStorage();
-    if (!storage) return;
-
-    if (token) {
-      storage.setItem(AUTH_TOKEN_KEY, token);
-    } else {
-      storage.removeItem(AUTH_TOKEN_KEY);
-    }
-  } catch {
-    // Ignore storage errors; cookie auth can still carry the session.
-  }
+  // No-op: HTTP-only cookies handle auth now
 };
 
 export const clearAuthToken = () => {
-  setAuthToken(null);
+  // No-op: Logout handled by API which clears the cookie
 };
 
 export const attachAuthHeader = <T extends MutableRequestConfig>(config: T): T => {
-  const token = getAuthToken();
-  config.withCredentials = true;
-
-  if (!token) return config;
-
-  if (config.headers instanceof Headers) {
-    if (!config.headers.has("Authorization")) {
-      config.headers.set("Authorization", `Bearer ${token}`);
-    }
-    return config;
-  }
-
-  config.headers = config.headers || {};
-  if (!config.headers.Authorization && !config.headers.authorization) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
+  config.withCredentials = true; // Ensure cookies are sent
   return config;
 };
 
@@ -74,11 +38,6 @@ export const installAuthenticatedFetch = () => {
   authWindow.__AUTH_FETCH_INSTALLED__ = true;
 
   window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
-    const token = getAuthToken();
-    if (!token) {
-      return originalFetch(input, init);
-    }
-
     const target =
       typeof input === "string" || input instanceof URL
         ? input.toString()
@@ -94,16 +53,8 @@ export const installAuthenticatedFetch = () => {
       return originalFetch(input, init);
     }
 
-    const headers = new Headers(
-      init?.headers || (input instanceof Request ? input.headers : undefined)
-    );
-    if (!headers.has("Authorization")) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-
     return originalFetch(input, {
       ...init,
-      headers,
       credentials: init?.credentials || "include",
     });
   };

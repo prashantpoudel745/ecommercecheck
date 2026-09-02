@@ -14,7 +14,7 @@ export default function CreateCustomerPaymentPage() {
   useEffect(() => {
     getAccounts()
       .then((data) => {
-        const accountsList = Array.isArray(data) ? data : data?.accounts ?? [];
+        const accountsList = Array.isArray(data) ? data : (data as any)?.accounts ?? [];
         setAccounts(accountsList);
       })
       .catch(() => setAccounts([]));

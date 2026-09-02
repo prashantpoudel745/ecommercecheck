@@ -35,7 +35,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <Header onMenuClick={handleMenuClick} />
         <main className="flex-1 overflow-y-auto p-2 sm:p-4 pb-4">
-          <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-[1520px] w-full">
             {children}
           </div>
         </main>

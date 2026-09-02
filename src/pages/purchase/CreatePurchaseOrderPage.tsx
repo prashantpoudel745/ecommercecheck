@@ -77,7 +77,7 @@ export default function CreatePurchaseOrderPage() {
   };
 
   const createMutation = useMutation({
-    mutationFn: (payload: unknown) => createPurchaseOrder(payload),
+    mutationFn: (payload: any) => createPurchaseOrder(payload),
     onMutate: async (payload: any) => {
       await queryClient.cancelQueries({ queryKey: ["purchase", "orders"] });
       const previous = queryClient.getQueryData<{ data: PurchaseOrderRow[] }>(["purchase", "orders"]);

@@ -167,7 +167,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="hidden md:inline-flex shrink-0 text-slate-300 hover:bg-slate-800 hover:text-white mx-auto"
+          className="hidden lg:inline-flex shrink-0 text-slate-300 hover:bg-slate-800 hover:text-white mx-auto"
           onClick={() => setCollapsed(!collapsed)}
         >
           <svg
@@ -189,7 +189,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden shrink-0 text-slate-300 hover:bg-slate-800 hover:text-white"
+          className="lg:hidden shrink-0 text-slate-300 hover:bg-slate-800 hover:text-white"
           onClick={onMobileClose}
         >
           <X size={20} />
@@ -331,7 +331,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       {/* ── Desktop Sidebar ── */}
       <div
         className={cn(
-          "relative hidden md:flex h-screen flex-col border-r border-slate-800/80 bg-slate-950 text-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] transition-all duration-300",
+          "relative hidden lg:flex h-screen flex-col border-r border-slate-800/80 bg-slate-950 text-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] transition-all duration-300",
           collapsed ? "w-20" : "w-64"
         )}
       >
@@ -341,7 +341,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       {/* ── Mobile Backdrop ── */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={onMobileClose}
         />
       )}
@@ -349,7 +349,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       {/* ── Mobile Sidebar Drawer ── */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-950 text-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] transition-transform duration-300 ease-in-out md:hidden",
+          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-950 text-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] transition-transform duration-300 ease-in-out lg:hidden",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

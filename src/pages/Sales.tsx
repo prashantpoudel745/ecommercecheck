@@ -28,8 +28,8 @@ export default function Sales() {
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => navigate("/home")}
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-950 text-sm font-semibold text-white shadow-sm">
-              B
+            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
+              <img src="/images/logo.png" alt="Bebasthapan Logo" className="h-8 w-8 object-contain" />
             </div>
             <div>
               <p className="text-[15px] font-semibold tracking-tight text-slate-950">Bebasthapan ERP</p>

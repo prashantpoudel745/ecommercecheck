@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
   Eye,
@@ -75,6 +75,12 @@ export default function LoginPage() {
 
           <div className="flex items-center justify-center px-4 py-4 sm:px-4 lg:px-4">
             <div className="w-full max-w-md">
+              <div className="mb-4 flex items-center gap-3 lg:hidden">
+                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
+                  <img src="/images/logo.png" alt="Logo" className="h-8 w-8 object-contain" />
+                </div>
+                <span className="text-base font-semibold text-slate-950">Bebasthapan ERP</span>
+              </div>
               <div className="enterprise-kicker">
                 <LockKeyhole className="h-3.5 w-3.5" />
                 Secure access portal

@@ -111,7 +111,7 @@ export default function CreatePurchaseBillPage() {
   }, [formData.items, formData.taxRate, formData.taxIncluded]);
 
   const createMutation = useMutation({
-    mutationFn: (payload: unknown) => createPurchaseBill(payload),
+    mutationFn: (payload: any) => createPurchaseBill(payload),
     onMutate: async (payload: any) => {
       await queryClient.cancelQueries({ queryKey: ["purchase", "bills"] });
       const previous = queryClient.getQueryData<{ data: PurchaseBillRow[] }>(["purchase", "bills"]);

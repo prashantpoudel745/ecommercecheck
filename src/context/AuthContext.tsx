@@ -2,96 +2,45 @@ import { createContext, useContext, useState, useEffect, ReactNode, useCallback 
 import { clearAuthToken, setAuthToken } from "@/utils/authToken";
 import {User,AuthContextType} from "../../types/employee.types"
 
-const AUTH_STORAGE_KEY = "auth-user-cache";
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
-const readPersistedUser = (): User | null => {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const cached = window.sessionStorage.getItem(AUTH_STORAGE_KEY);
-    if (!cached) return null;
-
-    const parsed = JSON.parse(cached) as User | null;
-    return parsed && typeof parsed === "object" ? parsed : null;
-  } catch {
-    return null;
-  }
-};
-
-const writePersistedUser = (userData: User | null) => {
-  if (typeof window === "undefined") return;
-
-  try {
-    if (userData) {
-      window.sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData.currencySymbol));
-    } else {
-      window.sessionStorage.removeItem(AUTH_STORAGE_KEY);
-    }
-  } catch {
-    // Ignore storage errors and continue with in-memory auth state.
-  }
-};
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(() => readPersistedUser());
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const setAuthUser = useCallback((userData: User | null) => {
     setUser(userData);
-    writePersistedUser(userData);
   }, []);
 
   const refreshUser = useCallback(async () => {
-    const persistedUser = readPersistedUser();
-    if (persistedUser) {
-      setAuthUser(persistedUser);
-      setLoading(false);
-    }
-
     try {
       const response = await fetch(`${API_BASE}/api/getme`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        credentials: "include", // Uses HTTP-only cookie
       });
 
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.user) {
-          const mergedUser = {
-            ...(persistedUser ?? {}),
+          const fetchedUser = {
             ...data.user,
-            _id: data.user._id ?? data.user.id ?? persistedUser?._id ?? persistedUser?.id,
-            id: data.user.id ?? data.user._id ?? persistedUser?.id ?? persistedUser?._id,
+            _id: data.user._id ?? data.user.id,
+            id: data.user.id ?? data.user._id,
           } as User;
-          setAuthUser(mergedUser);
-        } else if (persistedUser) {
-          setAuthUser(persistedUser);
+          setAuthUser(fetchedUser);
         } else {
           setAuthUser(null);
         }
-      } else if (response.status === 401 || response.status === 403) {
-        if (persistedUser) {
-          setAuthUser(persistedUser);
-        } else {
-          setAuthUser(null);
-        }
-      } else if (persistedUser) {
-        setAuthUser(persistedUser);
       } else {
         setAuthUser(null);
       }
     } catch {
-      if (persistedUser) {
-        setAuthUser(persistedUser);
-      } else {
-        setAuthUser(null);
-      }
+      setAuthUser(null);
     } finally {
       setLoading(false);
     }
@@ -109,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (userData: User, token?: string) => {
     if (token) {
-      setAuthToken(token);
+      setAuthToken(token); // No-op now, retains interface signature
     }
     setAuthUser(userData);
   };
@@ -126,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch {
       // Ignore network errors and clear the UI session locally.
     } finally {
-      clearAuthToken();
+      clearAuthToken(); // No-op now
       setAuthUser(null);
     }
   };

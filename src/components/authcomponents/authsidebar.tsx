@@ -5,6 +5,14 @@ const Authsidebar = () => {
     <div className="relative hidden flex-1 overflow-hidden bg-[linear-gradient(160deg,_#0f172a_0%,_#111827_48%,_#1e293b_100%)] px-4 py-4 text-slate-100 lg:flex lg:items-center lg:justify-center">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(37,99,235,0.18),_transparent_30%)]" />
       <div className="relative max-w-xl">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-sm">
+            <img src="/images/logo.png" alt="Bebasthapan Logo" className="h-9 w-9 object-contain" />
+          </div>
+          <div>
+            <span className="text-base font-semibold tracking-tight text-white">Bebasthapan ERP</span>
+          </div>
+        </div>
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-200 backdrop-blur-sm">
           <LockKeyhole className="h-3.5 w-3.5" />
           Secure operations access
