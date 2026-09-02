@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
   if (isLoading) return <div>Loading...</div>;
 
   if (error || !data?.success || !data?.user) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

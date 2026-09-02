@@ -35,7 +35,7 @@ export default defineConfig(({ mode }): UserConfig => {
           name: 'Bebasthapan ERP - Business Management Platform',
           short_name: 'Bebasthapan',
           description: 'Business ERP system for accounting, inventory, sales, purchase, CRM, HR, attendance, and business insights.',
-          start_url: '/home',
+          start_url: '/',
           scope: '/',
           display: 'standalone',
           orientation: 'portrait',

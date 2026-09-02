@@ -88,7 +88,7 @@ const App = () => {
 
   const protectedKeepAlivePages = useMemo(
     () => [
-      { id: "dashboard", paths: ["/"], render: () => <Dashboard /> },
+      { id: "dashboard", paths: ["/dashboard"], render: () => <Dashboard /> },
       { id: "insights", paths: ["/insights"], render: () => <Insights /> },
       { id: "employees", paths: ["/employees"], render: () => <EmployeePage /> },
       
@@ -189,7 +189,7 @@ const App = () => {
                     />
                     {/* Public Routes */}
                     <Route
-                      path="/home"
+                      path="/"
                       element={
                         <PublicRoute>
                           <Home />

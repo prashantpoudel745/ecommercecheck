@@ -1,4 +1,4 @@
-﻿import { toast } from "@/utils/notify";
+import { toast } from "@/utils/notify";
 import { useNavigate } from "react-router-dom";
 import { clearAuthToken } from "@/utils/authToken";
 const API_URL = import.meta.env.VITE_API_URL||"";
@@ -24,7 +24,7 @@ const LogoutButton = () => {
       await response.json();
       clearAuthToken();
 
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       toast.error(`Network error during logout: ${error}`);
     }

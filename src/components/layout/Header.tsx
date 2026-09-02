@@ -32,6 +32,7 @@ const API_URL = import.meta.env.VITE_API_URL||"";
 
 const sectionLabels: Record<string, string> = {
   "/": "Executive dashboard",
+  "/dashboard": "Executive dashboard",
   "/accounting": "Financial control",
   "/inventory": "Inventory management",
   "/crm": "Customer operations",
@@ -67,7 +68,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const logout = async () => {
     try {
       await contextLogout();
-      navigate("/home");
+      navigate("/");
       toast.success("Logged out successfully");
     } catch {
       toast.error("Error during logout");

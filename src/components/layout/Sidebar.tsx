@@ -63,7 +63,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   };
 
   const menuItems = [
-    { label: t("navigation.dashboard", "Dashboard"), icon: <LayoutDashboard size={20} />, path: "/" },
+    { label: t("navigation.dashboard", "Dashboard"), icon: <LayoutDashboard size={20} />, path: "/dashboard" },
     { label: t("navigation.insights", "Insights"), icon: <BrainCircuit size={20} />, path: "/insights" },
     { label: t("navigation.crm", "CRM"), icon: <Database size={20} />, path: "/crm" },
     {

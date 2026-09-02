@@ -26,7 +26,7 @@ export default function Sales() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-4 lg:px-4">
           <div
             className="flex items-center gap-3 cursor-pointer"
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/")}
           >
             <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
               <img src="/images/logo.png" alt="Bebasthapan Logo" className="h-8 w-8 object-contain" />
@@ -38,7 +38,7 @@ export default function Sales() {
           </div>
 
           <button
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/")}
             className="group inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />

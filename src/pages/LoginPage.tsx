@@ -64,7 +64,7 @@ export default function LoginPage() {
         login(data.user, data.token);
       }
       // Redirect to dashboard
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       // Handle errors
       setError(error.message);

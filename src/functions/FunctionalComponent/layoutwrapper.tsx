@@ -15,7 +15,7 @@ export const LayoutWrapper = ({ children }) => {
     location.pathname.startsWith("/employeereset");
   const isPaymentSuccessPage = location.pathname === "/payment/success";
   const isPaymentFailurePage = location.pathname === "/payment/failure";
-  const isHomePage = location.pathname === "/home";
+  const isHomePage = location.pathname === "/" || location.pathname === "/home";
   const isContactSalesPage = location.pathname === "/contact-sales";
 
   // If on login page, render children directly without MainLayout

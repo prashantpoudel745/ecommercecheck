@@ -35,7 +35,7 @@ export default function Home() {
       title: "Bebasthapan ERP System for Nepal Businesses | Accounting, Inventory, Sales & CRM",
       description:
         "Bebasthapan ERP is a business management platform for Nepal businesses covering accounting, inventory, sales, purchase, CRM, invoices, HR, attendance, reports, and AI insights.",
-      canonicalPath: "/home",
+      canonicalPath: "/",
     });
     document.body.style.backgroundColor = '#f7f9fc';
     return () => {
