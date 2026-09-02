@@ -272,15 +272,22 @@ export default function FinancialOverviewPage({
       if (!Array.isArray(data)) {
         throw new Error("Expected array response but got: " + typeof data);
       }
-      const formattedData = data.map((item: any) => ({
-        name: item.date,
-        income: Math.abs(item.sales),
-        expenses: Math.abs(item.expenses),
-        incomeWithTax: Math.abs(item.salesWithTax || item.sales),
-        expensesWithTax: Math.abs(item.expensesWithTax || item.expenses),
-        fullName: item.date,
-        originalDate: new Date(item.date),
-      }));
+      const formattedData = data.map((item: any) => {
+        const dateStr = String(item.date || "");
+        const parts = dateStr.split("-");
+        const dateObj = parts.length === 3
+          ? new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10))
+          : new Date(item.date);
+        return {
+          name: item.date,
+          income: Math.abs(item.sales || 0),
+          expenses: Math.abs(item.expenses || 0),
+          incomeWithTax: Math.abs(item.salesWithTax ?? item.sales ?? 0),
+          expensesWithTax: Math.abs(item.expensesWithTax ?? item.expenses ?? 0),
+          fullName: item.date,
+          originalDate: dateObj,
+        };
+      });
       setRawData(formattedData);
       processDataByYear(formattedData);
     } catch (err) {
