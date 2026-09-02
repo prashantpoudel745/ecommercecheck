@@ -7,7 +7,7 @@ import AttendanceActions from "./AttendanceActions";
 import AttendanceHistory from "./AttendanceHistory";
 import StatsCards from "./StatsCard";
 import api, { getCurrentStatus, getStats } from "@/utils/api";
-
+import { getApiErrorMessage } from "@/utils/errorHandler";
 
 interface EmployeeAttendanceViewProps {
   user: AttendUser;
@@ -48,7 +48,7 @@ const EmployeeAttendanceView: React.FC<EmployeeAttendanceViewProps> = ({
       setCurrentStatus(statusResponse);
       setStats(statsResponse);
     } catch (err) {
-      setError(err.message || "Failed to load attendance data");
+      setError(getApiErrorMessage(err, "Failed to load attendance data"));
     } finally {
       setLoading(false);
     }

@@ -22,7 +22,7 @@ export default function CreateCreditNotePage() {
       toast.success("Credit Note created successfully!");
       navigate("/sales/credit-notes");
     } catch (error: any) {
-      toast.error(`Failed to create Credit Note: ${error.message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

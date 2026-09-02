@@ -71,13 +71,13 @@ export default function EditProfileModal({ open, onClose, defaultTab = "profile"
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Password change failed");
+      if (!res.ok) throw new Error(data.message || data.error || "Password change failed");
       toast.success("Password changed successfully!");
       setPasswordSuccess(true);
       setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setTimeout(() => setPasswordSuccess(false), 3000);
     } catch (err) {
-      toast.error(err.message || "Failed to change password");
+      toast.error(err);
     } finally {
       setPasswordLoading(false);
     }

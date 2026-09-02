@@ -1,10 +1,27 @@
 /**
- * Frontend Error Handler for Web/Next.js
- * Converts technical error messages to user-friendly messages
+ * Frontend Error Handler
+ * Converts technical error messages to user-friendly messages while preserving backend server validation & business messages.
  */
+import { extractErrorMessage } from './notify';
+
+export const getApiErrorMessage = (error: any, fallback = 'Something went wrong. Please try again.'): string => {
+  return extractErrorMessage(error, fallback);
+};
 
 export const getUserFriendlyErrorMessage = (error: any): string => {
   if (!error) return 'Something went wrong. Please try again.';
+
+  // If backend provided a specific business error message, prioritize it
+  const extracted = extractErrorMessage(error, '');
+  if (
+    extracted &&
+    !extracted.toLowerCase().includes('request failed with status code') &&
+    !extracted.toLowerCase().includes('internal server error') &&
+    extracted !== 'Something went wrong. Please try again.' &&
+    extracted !== 'An error occurred'
+  ) {
+    return extracted;
+  }
 
   const errorMessage = error?.message || error?.toString() || '';
   const lowerMessage = errorMessage.toLowerCase();
@@ -99,15 +116,5 @@ export const getUserFriendlyErrorMessage = (error: any): string => {
 };
 
 export const handleFetchError = (error: any): string => {
-  // If it's a JSON error response with message field
-  if (error?.message) {
-    // If it's already user-friendly, return it
-    if (typeof error.message === 'string' && 
-        !error.message.includes('Error') && 
-        !error.message.includes('TypeError')) {
-      return error.message;
-    }
-  }
-
   return getUserFriendlyErrorMessage(error);
 };

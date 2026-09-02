@@ -76,14 +76,14 @@ const InvestmentsTable = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to delete investment");
+          throw new Error(errorData.message || errorData.error || "Failed to delete investment");
         }
 
         toast.success("Investment deleted successfully");
         // Refresh the investments list
         fetchInvestments();
       } catch (error) {
-        toast.error(error.message || "Failed to delete investment");
+        toast.error(error);
       }
     }
   };

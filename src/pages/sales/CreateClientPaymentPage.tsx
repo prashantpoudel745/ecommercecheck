@@ -118,7 +118,7 @@ export default function CreateClientPaymentPage() {
       toast.success("Invoice payment recorded successfully!");
       navigate("/sales/invoice");
     } catch (error: any) {
-      toast.error(`Failed to record payment: ${error.message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

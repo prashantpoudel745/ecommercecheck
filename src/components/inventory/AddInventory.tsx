@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { PlusCircle, ScanLine } from "lucide-react";
 import {
   Dialog,
@@ -101,7 +101,7 @@ const AddInventoryButton = ({ onInventoryAdded }: AddInventoryButtonProps) => {
       setOpen(false);
     } catch (error) {
       console.error("Error:", error);
-      toast.error(error.message || "Failed to add inventory item");
+      toast.error(error);
     } finally {
       setIsSubmitting(false);
     }

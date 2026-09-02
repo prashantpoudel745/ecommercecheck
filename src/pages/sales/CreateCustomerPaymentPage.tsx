@@ -49,7 +49,7 @@ export default function CreateCustomerPaymentPage() {
       toast.success("Customer Payment recorded successfully!");
       navigate("/sales/customer-payment");
     } catch (error: any) {
-      toast.error(`Failed to record Payment: ${error.message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

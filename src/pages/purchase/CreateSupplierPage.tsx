@@ -76,7 +76,7 @@ export default function CreateSupplierPage() {
       resetForm();
       navigate("/purchase/suppliers");
     } catch (error: any) {
-      toast.error(`Failed to register Supplier: ${error.message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

@@ -156,8 +156,7 @@ export default function CreatePurchaseOrderPage() {
       resetForm();
       navigate("/purchase/orders");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to create purchase order";
-      toast.error(`Error: ${message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

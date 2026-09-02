@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
   Eye,
@@ -46,7 +46,7 @@ export default function EmployeeLoginPage() {
 
       // Handle response based on status
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.message || data.error || "Login failed");
       }
 
       if (data.employee && data.employee.id) {
@@ -56,10 +56,10 @@ export default function EmployeeLoginPage() {
       }
       navigate("/");
       toast.success("Login successful!");
-    } catch (error) {
+    } catch (error: any) {
       // Handle errors
       setError(error.message);
-      toast.error(error.message);
+      toast.error(error);
     } finally {
       setIsLoading(false);
     }

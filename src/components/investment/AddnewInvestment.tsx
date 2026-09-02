@@ -1,4 +1,4 @@
-﻿// src/components/Dashboard/AddnewInvestment.jsx
+// src/components/Dashboard/AddnewInvestment.jsx
 import { useState } from "react";
 import { toast } from "@/utils/notify";
 import { createInvestment } from "@/services/investmentService";
@@ -57,7 +57,7 @@ const AddInvestmentForm = ({ onAddInvestment, userId }) => {
         onAddInvestment(data);
       }
     } catch (error) {
-      toast.error(error.message || "Failed to add investment");
+      toast.error(error);
     } finally {
       setIsSubmitting(false);
     }

@@ -151,7 +151,7 @@ export default function CreatePurchaseBillPage() {
       toast.success("Purchase bill saved!");
       navigate("/purchase/bills");
     } catch (err: any) {
-      toast.error(`Error: ${err?.message || 'Unable to save bill'}`);
+      toast.error(err);
     } finally {
       setLoading(false);
     }

@@ -10,8 +10,9 @@ import {
   AttendanceData,
   AttendUser,
 } from "../../../types/attendance.types";
-import { AttendanceSkeleton } from "@/skeleton/attendanceSkeleton/attendanceSkeleton";
+import { getApiErrorMessage } from "@/utils/errorHandler";
 import { DashboardData } from "../../../types";
+import { AttendanceSkeleton } from "@/skeleton/attendanceSkeleton/attendanceSkeleton";
 interface AdminAttendanceViewProps {
   user: AttendUser;
 }
@@ -67,7 +68,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
       const response = await api.get(`/attendance`);
       setAttendanceData(response.data.data);
     } catch (err) {
-      setError(err.message || "Failed to load attendance data");
+      setError(getApiErrorMessage(err, "Failed to load attendance data"));
     }
   }, [filters, page, limit]);
 
@@ -84,7 +85,7 @@ const AdminAttendanceView: React.FC<AdminAttendanceViewProps> = ({ user }) => {
           await fetchAttendanceData();
         }
       } catch (err) {
-        setError(err.message || "Failed to load data");
+        setError(getApiErrorMessage(err, "Failed to load data"));
       } finally {
         setLoading(false);
       }

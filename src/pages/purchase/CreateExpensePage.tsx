@@ -82,9 +82,8 @@ export default function CreateExpensePage() {
       return { previous };
     },
     onError: (error: unknown, _payload, context) => {
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
       queryClient.setQueryData<{ data: ExpenseRow[] }>(["purchase", "expenses"], context?.previous);
-      toast.error(`Failed to log Expense: ${apiError?.response?.data?.message || apiError.message || "Unknown error"}`);
+      toast.error(error);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["purchase", "expenses"] });

@@ -64,7 +64,7 @@ export default function CreateCustomerPage() {
       resetForm();
       navigate("/sales/customers");
     } catch (error: any) {
-      toast.error(`Failed to add Customer: ${error?.response?.data?.message || error.message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

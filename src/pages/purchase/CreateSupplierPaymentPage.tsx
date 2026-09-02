@@ -89,7 +89,7 @@ export default function CreateSupplierPaymentPage() {
       resetForm();
       navigate("/purchase/supplier-payment");
     } catch (error: any) {
-      toast.error(`Failed to record Payment: ${error.message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

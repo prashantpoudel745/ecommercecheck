@@ -62,7 +62,7 @@ export default function QuickCreatePage() {
       toast.success(`${config.title} created successfully!`);
       navigate(`/${module}/${entityType}`); // Navigate back to list view
     } catch (error: any) {
-      toast.error(`Failed to create ${config.title}: ${error.message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

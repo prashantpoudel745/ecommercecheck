@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
+import { getApiErrorMessage } from "@/utils/errorHandler";
 import * as accountingService from "../services/accounting.service";
-import { AccountingStats,Voucher,Account } from "../../types/accounting.types";
+import { AccountingStats, Voucher, Account } from "../../types/accounting.types";
+
 export function useAccounting(params?: { startDate?: string; endDate?: string }) {
   const [stats, setStats] = useState<AccountingStats | null>(null);
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
@@ -21,8 +23,7 @@ export function useAccounting(params?: { startDate?: string; endDate?: string })
       setVouchers(vouchersData);
       setAccounts(accountsData);
     } catch (err: any) {
-      // console.error("Error fetching accounting data:", err);
-      setError(err.message || "Failed to fetch accounting data");
+      setError(getApiErrorMessage(err, "Failed to fetch accounting data"));
     } finally {
       setLoading(false);
     }

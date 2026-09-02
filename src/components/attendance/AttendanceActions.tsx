@@ -1,6 +1,8 @@
 import api, { checkIn, checkOut } from "@/utils/api";
 import React, { useState } from "react";
 import { CurrentStatus } from "../../../types/attendance.types";
+import { getApiErrorMessage } from "@/utils/errorHandler";
+
 interface AttendanceActionsProps {
   employeeId: string;
   status: CurrentStatus;
@@ -22,7 +24,7 @@ const AttendanceActions: React.FC<AttendanceActionsProps> = ({
       await checkIn(employeeId, { location: "office" });
       onStatusChange();
     } catch (err) {
-      setError(err.message || "Failed to check in");
+      setError(getApiErrorMessage(err, "Failed to check in"));
     } finally {
       setLoading(false);
     }
@@ -35,7 +37,7 @@ const AttendanceActions: React.FC<AttendanceActionsProps> = ({
       await checkOut(employeeId, {});
       onStatusChange();
     } catch (err) {
-      setError(err.message || "Failed to check out");
+      setError(getApiErrorMessage(err, "Failed to check out"));
     } finally {
       setLoading(false);
     }

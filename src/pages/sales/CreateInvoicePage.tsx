@@ -248,13 +248,7 @@ export default function CreateInvoicePage() {
       resetForm();
       navigate("/sales/invoice");
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : typeof error === "object" && error !== null && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "An unknown error occurred."
-          : "An unknown error occurred.";
-      toast.error(`Error: ${message}`);
+      toast.error(error);
     } finally {
       setLoading(false);
     }
