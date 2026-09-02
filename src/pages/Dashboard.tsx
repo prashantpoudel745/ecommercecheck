@@ -237,7 +237,7 @@ export default function Dashboard() {
           </Link>
           <Link to="/import">
             <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 transition-colors shadow-sm">
-              <Upload size={14} /> Add More
+              <Upload size={14} /> Import Data
             </button>
           </Link>
         </div>
