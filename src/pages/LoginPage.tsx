@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { setPageSeo } from "@/utils/seo";
 import {
   ArrowRight,
   Eye,
@@ -20,6 +21,14 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Login | Bebasthapan ERP System Nepal",
+      description: "Sign in to your Bebasthapan ERP account to access accounting, inventory, sales, CRM, and business intelligence dashboards.",
+      canonicalPath: "/login",
+    });
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

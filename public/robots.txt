@@ -1,17 +1,62 @@
+# Search Engines
 User-agent: Googlebot
 Allow: /
+Disallow: /dashboard
+Disallow: /insights
+Disallow: /accounting/
+Disallow: /sales/
+Disallow: /purchase/
+Disallow: /crm
+Disallow: /inventory
+Disallow: /employees
+Disallow: /settings
 
 User-agent: Bingbot
 Allow: /
+Disallow: /dashboard
+Disallow: /insights
+Disallow: /accounting/
+Disallow: /sales/
+Disallow: /purchase/
+Disallow: /crm
+Disallow: /inventory
 
-User-agent: Twitterbot
+# AI Search & LLM Crawlers
+User-agent: GPTBot
 Allow: /
 
-User-agent: facebookexternalhit
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /insights
+Disallow: /accounting/
+Disallow: /sales/
+Disallow: /purchase/
+Disallow: /crm
+Disallow: /inventory
+Disallow: /employees
+Disallow: /settings
 
 Sitemap: https://bebasthapan.com/sitemap.xml
 Host: https://bebasthapan.com

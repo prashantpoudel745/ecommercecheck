@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { setPageSeo } from "@/utils/seo";
 import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Authsidebar from "@/components/authcomponents/authsidebar";
@@ -21,6 +22,14 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Start 10-Day Free Trial | Bebasthapan ERP Nepal",
+      description: "Create your free Bebasthapan ERP account. Get access to accounting, inventory, sales, CRM, and attendance tools with a 10-day trial.",
+      canonicalPath: "/signup",
+    });
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

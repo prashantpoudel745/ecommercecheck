@@ -27,7 +27,6 @@ export default defineConfig(({ mode }): UserConfig => {
       VitePWA({
         registerType: 'autoUpdate', // Auto update service worker
         includeAssets: [
-          'favicon.ico',
           'icon.png',
           'robots.txt',
           'apple-touch-icon.png'
