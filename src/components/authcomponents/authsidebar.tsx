@@ -15,7 +15,7 @@ const Authsidebar = () => {
         </div>
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-200 backdrop-blur-sm">
           <LockKeyhole className="h-3.5 w-3.5" />
-          Secure operations access
+          Secure operations access 
         </div>
         <h2 className="mt-3 text-4xl font-semibold tracking-tight text-white xl:text-5xl">
           One platform for finance, inventory, CRM, and team control.
