@@ -1,88 +1,92 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+.font-serif {
+  font-family: 'Newsreader', Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 224 24% 12%;
+    --background: 0 0% 100%;
+    --foreground: 220 14% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 224 24% 12%;
+    --card-foreground: 220 14% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 24% 12%;
+    --popover-foreground: 220 14% 10%;
 
-    --primary: 221 83% 37%;
+    --primary: 234 89% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 94%;
-    --secondary-foreground: 224 24% 12%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 14% 10%;
 
-    --muted: 220 14% 94%;
-    --muted-foreground: 220 8% 46%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 219 46% 93%;
-    --accent-foreground: 224 24% 12%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 14% 10%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 14% 89%;
-    --input: 240 5.9% 90%;
-    --ring: 221 83% 37%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 234 89% 56%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
-    --sidebar-background: 223 34% 10%;
+    --sidebar-background: 220 16% 8%;
     --sidebar-foreground: 220 14% 94%;
-    --sidebar-primary: 221 83% 55%;
+    --sidebar-primary: 234 89% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 223 26% 17%;
+    --sidebar-accent: 220 14% 14%;
     --sidebar-accent-foreground: 220 14% 94%;
-    --sidebar-border: 223 26% 18%;
-    --sidebar-ring: 221 83% 55%;
+    --sidebar-border: 220 14% 15%;
+    --sidebar-ring: 234 89% 60%;
   }
 
   .dark {
-    --background: 224 28% 7%;
+    --background: 220 16% 6%;
     --foreground: 220 16% 96%;
 
-    --card: 224 28% 9%;
+    --card: 220 16% 8%;
     --card-foreground: 220 16% 96%;
 
-    --popover: 224 28% 9%;
+    --popover: 220 16% 8%;
     --popover-foreground: 220 16% 96%;
 
-    --primary: 221 83% 55%;
+    --primary: 234 89% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 223 26% 16%;
+    --secondary: 220 14% 14%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 223 26% 16%;
+    --muted: 220 14% 14%;
     --muted-foreground: 220 10% 64%;
 
-    --accent: 223 26% 16%;
+    --accent: 220 14% 14%;
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 223 26% 16%;
-    --input: 223 26% 16%;
-    --ring: 221 83% 55%;
-    
-    --sidebar-background: 223 34% 10%;
+    --border: 220 14% 15%;
+    --input: 220 14% 15%;
+    --ring: 234 89% 60%;
+
+    --sidebar-background: 220 16% 6%;
     --sidebar-foreground: 220 16% 96%;
-    --sidebar-primary: 221 83% 55%;
+    --sidebar-primary: 234 89% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 223 26% 16%;
+    --sidebar-accent: 220 14% 14%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 223 26% 16%;
-    --sidebar-ring: 221 83% 55%;
+    --sidebar-border: 220 14% 15%;
+    --sidebar-ring: 234 89% 60%;
   }
 }
 
@@ -96,71 +100,103 @@
   }
 }
 
-/* Base resets & typography */
+/* ─── Base Resets & Typography ─── */
 body {
   margin: 0;
-  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
-    radial-gradient(circle at top right, rgba(15, 118, 110, 0.06), transparent 24%),
-    linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%);
-  color: hsl(var(--foreground));
+  color: #111827;
   min-height: 100vh;
+  letter-spacing: -0.011em;
 }
 
-code {
-  font-family: 'IBM Plex Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-/* Custom Premium Utilities */
+/* ─── Premium Utility Classes ─── */
 @layer utilities {
-  .glass {
-    @apply bg-white/80 dark:bg-slate-950/60 backdrop-blur-lg border border-slate-200/70 dark:border-white/10;
-  }
-  
-  .glass-card {
-    @apply bg-white/92 dark:bg-slate-950/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-soft;
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-sky-700 via-blue-700 to-slate-900;
-  }
-  
-  .bg-gradient-premium {
-    @apply bg-gradient-to-br from-sky-700 via-blue-700 to-slate-900;
+  /* Card system — elevation-based, not border-heavy */
+  .card-elevated {
+    @apply rounded-xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)];
   }
 
+  .card-elevated-lg {
+    @apply rounded-2xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)];
+  }
+
+  .card-subtle {
+    @apply rounded-xl bg-gray-50 border border-gray-100;
+  }
+
+  /* Enterprise panel — kept for backwards compat */
   .enterprise-panel {
-    @apply rounded-2xl sm:rounded-[1.5rem] border border-slate-200/80 bg-white/90 shadow-soft backdrop-blur-xl;
+    @apply rounded-xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)];
   }
 
+  .enterprise-card {
+    @apply rounded-xl bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)];
+  }
+
+  /* Status badges — simplified */
+  .badge-synced {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700;
+  }
+
+  .badge-pending {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700;
+  }
+
+  .badge-void {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700;
+  }
+
+  .badge-fiscal {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700;
+  }
+
+  .badge-cbms {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700;
+  }
+
+  /* Kicker — small section labels */
   .enterprise-kicker {
-    @apply inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-slate-200 bg-white px-2.5 py-1 sm:px-3 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600;
+    @apply inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600;
   }
 
+  /* Title hierarchy */
   .enterprise-title {
-    @apply text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl lg:text-4xl;
+    @apply text-2xl font-semibold tracking-tight text-gray-900;
   }
 
   .enterprise-subtitle {
-    @apply text-xs leading-5 text-slate-600 sm:text-sm sm:leading-6;
+    @apply text-sm leading-relaxed text-gray-500;
   }
 
+  /* Metric card */
   .metric-card {
-    @apply rounded-xl sm:rounded-2xl border border-slate-200 bg-white px-3 py-3 sm:px-4 sm:py-4 shadow-sm;
+    @apply rounded-xl bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)];
   }
 
   .responsive-panel {
-    @apply p-3 sm:p-4 lg:p-6;
+    @apply p-5 sm:p-6 lg:p-8;
+  }
+
+  /* Glass effects — simplified */
+  .glass {
+    @apply bg-white/90 dark:bg-gray-950/60 backdrop-blur-lg;
+  }
+
+  .glass-card {
+    @apply bg-white/95 dark:bg-gray-950/80 backdrop-blur-xl shadow-sm;
   }
 }
 
-/* Custom Webkit Scrollbar */
+/* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -168,9 +204,19 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+  @apply bg-gray-200 dark:bg-gray-700 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-400 dark:bg-slate-600;
+  @apply bg-gray-300 dark:bg-gray-600;
+}
+
+/* ─── Focus ring ─── */
+*:focus-visible {
+  @apply outline-none ring-2 ring-indigo-500/40 ring-offset-2;
+}
+
+/* ─── Smooth transitions globally ─── */
+a, button {
+  transition: color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
