@@ -519,7 +519,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm font-medium text-stone-800">
                   <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Automated IRD compliant reporting formats</span>
+                  {/* <span>Automated IRD compliant reporting formats</span> */}
                 </div>
               </div>
             </div>
@@ -724,10 +724,10 @@ export default function Home() {
               </p>
 
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                <span className="inline-flex items-center gap-1 rounded-md border border-stone-200 bg-stone-50 px-2 py-1 text-[10px] font-semibold text-stone-600">
+                {/* <span className="inline-flex items-center gap-1 rounded-md border border-stone-200 bg-stone-50 px-2 py-1 text-[10px] font-semibold text-stone-600">
                   <ShieldCheck size={11} className="text-stone-700" />
                   IRD & VAT Compliant
-                </span>
+                </span> */}
                 <span className="inline-flex items-center gap-1 rounded-md border border-stone-200 bg-stone-50 px-2 py-1 text-[10px] font-semibold text-stone-600">
                   <Lock size={11} className="text-stone-700" />
                   ISO 27001 Security
@@ -747,7 +747,7 @@ export default function Home() {
                 <li><a href="#modules" className="hover:text-stone-900 transition-colors">Treasury & Ledger</a></li>
                 <li><a href="#modules" className="hover:text-stone-900 transition-colors">Supply Chain & WMS</a></li>
                 <li><a href="#modules" className="hover:text-stone-900 transition-colors">Manufacturing & BOM</a></li>
-                <li><a href="#modules" className="hover:text-stone-900 transition-colors">IRD Real-Time Sync</a></li>
+                {/* <li><a href="#modules" className="hover:text-stone-900 transition-colors">IRD Real-Time Sync</a></li> */}
               </ul>
             </div>
 
