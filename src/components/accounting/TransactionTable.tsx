@@ -194,7 +194,7 @@ export default function TransactionTable({
 </Badge>
                 </TableCell>
                 <TableCell
-                  className={`text-right font-black tracking-tighter text-base py-4 ${
+                  className={`text-right font-black tracking-tighter text-xs py-4 ${
                     (transaction.type === "SALES" || transaction.category?.toLowerCase() === "sales")
                       ? "text-emerald-600" :
                     (transaction.type === "RECEIPT")

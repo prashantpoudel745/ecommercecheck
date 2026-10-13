@@ -131,19 +131,19 @@ const KpiCard = ({
   accent: string;
   emphasis?: boolean;
 }) => (
-  <div className="flex-1 min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 sm:px-4 sm:py-3 dark:border-slate-800 dark:bg-slate-900">
-    <div className="flex items-center gap-1.5">
+  <div className="flex-1 min-w-0 rounded-lg border border-slate-200 bg-white p-2.5 sm:p-3.5 dark:border-slate-800 dark:bg-slate-900">
+    <div className="flex items-center gap-1.5 min-w-0">
       <span
-        className="h-1.5 w-1.5 rounded-[2px]"
+        className="h-1.5 w-1.5 shrink-0 rounded-[2px]"
         style={{ backgroundColor: accent }}
       />
-      <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+      <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400 truncate">
         {label}
       </span>
     </div>
     <p
-      className="mt-1 sm:mt-1.5 text-sm sm:text-base lg:text-xl font-semibold tabular-nums tracking-tight truncate"
-      style={{ color: emphasis ? accent : COLOR.textPrimary }}
+      className="mt-1 text-xs sm:text-sm lg:text-base font-bold tabular-nums tracking-tight text-slate-900"
+      style={{ color: emphasis ? accent : undefined }}
     >
       {emphasis && value >= 0 ? "+" : emphasis && value < 0 ? "\u2212" : ""}
       {formatCurrency(Math.abs(value))}

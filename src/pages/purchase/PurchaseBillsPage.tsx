@@ -201,9 +201,11 @@ export default function PurchaseBillsPage() {
                       <td className="px-3 py-3 sm:px-4 sm:py-4 text-red-500 font-medium">{formatCurrency(amountDue)}</td>
                       <td className="px-3 py-3 sm:px-4 sm:py-4">
                         {isPaid ? (
-                          <span className="text-xs font-medium px-2 py-1 rounded bg-green-100 text-green-700">Paid</span>
+                          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">Paid</span>
+                        ) : amountPaid > 0 ? (
+                          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">Partial</span>
                         ) : (
-                          <span className="text-xs font-medium px-2 py-1 rounded bg-amber-100 text-amber-700">Purchase Bill</span>
+                          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">Unpaid</span>
                         )}
                       </td>
                       <td className="px-3 py-3 sm:px-4 sm:py-4 flex gap-2 justify-center items-center">

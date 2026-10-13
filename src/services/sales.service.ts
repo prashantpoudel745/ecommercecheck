@@ -111,3 +111,19 @@ export const incrementPrintCount = async (id: string) => {
   const response = await api.patch(`/sales/invoices/${id}/print`, {});
   return response.data;
 };
+
+// --- Contact Sales Inquiry ---
+export const submitContactSales = async (data: {
+  firstName?: string;
+  lastName?: string;
+  name?: string;
+  email: string;
+  phone?: string;
+  companyName?: string;
+  companySize?: string;
+  moduleInterest?: string;
+  message?: string;
+}) => {
+  const response = await api.post("/sales/contact-sales", data);
+  return response.data;
+};

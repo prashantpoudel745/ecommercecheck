@@ -62,26 +62,21 @@ export default function CombinedAddDialog({
   // Fetch inventory and accounts
   useEffect(() => {
     if (open) {
-      const normalizedCategory = formData.category?.toLowerCase();
-      if (normalizedCategory === "sales") {
-        fetchInventoryItems();
-      }
+      fetchInventoryItems();
       fetchAccounts();
       fetchAccountGroups();
       fetchCustomers();
     }
-  }, [open, formData.category]);
+  }, [open]);
 
   const fetchInventoryItems = async () => {
     setIsLoadingInventory(true);
     try {
-      const response = await fetchInventoryItem();
-      if (response.ok) {
-        const data = await response.json();
-        setInventoryItems(data.inventory || []);
-      }
+      const data = await fetchInventoryItem();
+      const itemsList = Array.isArray(data) ? data : (data as any)?.inventory || [];
+      setInventoryItems(itemsList);
     } catch (err) {
-  // Intentionally ignore errors.
+      setInventoryItems([]);
     } finally {
       setIsLoadingInventory(false);
     }
@@ -166,7 +161,7 @@ export default function CombinedAddDialog({
     setItemSearchTerms(newSearchTerms);
 
     const newShowDropdowns = [...showDropdowns];
-    newShowDropdowns[index] = value.trim().length > 0 && formData.category?.toLowerCase() === "sales";
+    newShowDropdowns[index] = true;
     setShowDropdowns(newShowDropdowns);
 
     const newItems = [...formData.items];
@@ -174,15 +169,17 @@ export default function CombinedAddDialog({
     setFormData({...formData, items: newItems});
   };
 
-  const handleSelectItem = (inventoryItem: InventoryItem, index: number) => {
+  const handleSelectItem = (inventoryItem: any, index: number) => {
+    const rawPrice = inventoryItem.price?.$numberDecimal ?? inventoryItem.price ?? inventoryItem.sellingPrice ?? 0;
+    const priceNum = Number(rawPrice) || 0;
+    const qtyNum = Number(formData.items[index]?.quantity) || 1;
     const newItems = [...formData.items];
-    const price = CurrencyUtil.format(inventoryItem.price);
     newItems[index] = {
       ...newItems[index],
       itemName: inventoryItem.name,
       productCategory: inventoryItem.category || "",
-      price : Number(inventoryItem.price),
-      amount: CurrencyUtil.mul(price, (newItems[index].quantity || 1)).toNumber()
+      price: priceNum,
+      amount: priceNum * qtyNum
     };
     setFormData({...formData, items: newItems});
 
@@ -250,8 +247,11 @@ export default function CombinedAddDialog({
     .toNumber();
 
   const getFilteredItems = (searchTerm: string) => {
-    if (!searchTerm.trim() || !inventoryItems.length) return [];
-    return inventoryItems.filter((invItem) => invItem.name.toLowerCase().includes(searchTerm.toLowerCase().trim())).slice(0, 10);
+    if (!inventoryItems || !inventoryItems.length) return [];
+    if (!searchTerm || !searchTerm.trim()) return inventoryItems.slice(0, 10);
+    return inventoryItems
+      .filter((invItem) => (invItem.name || "").toLowerCase().includes(searchTerm.toLowerCase().trim()))
+      .slice(0, 10);
   };
 
   const handleInputBlur = (index: number) => {
@@ -562,6 +562,11 @@ export default function CombinedAddDialog({
                         <Input 
                           value={itemSearchTerms[index] || ""} 
                           onChange={(e) => handleItemSearchChange(e, index)}
+                          onFocus={() => {
+                            const newShowDropdowns = [...showDropdowns];
+                            newShowDropdowns[index] = true;
+                            setShowDropdowns(newShowDropdowns);
+                          }}
                           onBlur={() => handleInputBlur(index)}
                           placeholder="Search or enter item name"
                           disabled={isSubmitting}

@@ -11,101 +11,119 @@ import {
 } from "@/components/ui/dialog";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { StatCard } from "../dashboard/StatCard";
-import { Users } from "lucide-react"; // Assuming you're using lucide-react for icons
-import { UploadToDriveButton } from "./uploademployeetodrive";
-import SearchComponent from "../Search";
+import {
+  Users,
+  Wallet,
+  Building2,
+  ShieldCheck,
+  Search,
+  UserPlus,
+  Mail,
+  Phone,
+  Briefcase,
+  Edit3,
+  Trash2,
+  RotateCcw,
+  UserX,
+  CheckCircle2,
+  XCircle,
+  Filter,
+} from "lucide-react";
 import { EmployeeSkeleton } from "@/skeleton/employeeSkeleton/employeeSkeleton";
 
-const API_URL = import.meta.env.VITE_API_URL||"";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 const EmployeeOverview = () => {
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("");
+  const [filterDepartment, setFilterDepartment] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   const roles = ["admin", "manager", "team-lead", "employee"];
   const navigate = useNavigate();
 
-  // Function to format salary
-  const formatSalary = (amount) => {
-    if (!amount) return "Not specified";
+  const formatSalary = (amount: number | null | undefined) => {
+    if (!amount) return "NPR 0";
     return formatCurrency(amount);
   };
 
-  // Function to fetch employees
   const fetchEmployees = async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await axios.get(`${API_URL}/api/employee`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       if (response.data.employees) {
-        const formattedEmployees = response.data.employees.map((emp) => ({
+        const formattedEmployees = response.data.employees.map((emp: any) => ({
           id: emp._id,
           fullName: emp.fullName,
           email: emp.email,
           phone: emp.phone || "Not provided",
-          department: emp.department,
-          position: emp.position,
-          role: emp.role,
-          salary: emp.salary,
+          department: emp.department || "General",
+          position: emp.position || "Staff",
+          role: emp.role || "employee",
+          salary: emp.salary || 0,
           formattedSalary: formatSalary(emp.salary),
           joinDate: emp.createdAt
-            ? new Date(emp.createdAt).toLocaleDateString()
-            : new Date().toLocaleDateString(),
+            ? new Date(emp.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "N/A",
           status: emp.isActive !== false ? "Active" : "Inactive",
         }));
         setEmployees(formattedEmployees);
       } else {
         setEmployees([]);
       }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Failed to load employees";
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to load employees";
       setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // Initial fetch
   useEffect(() => {
     fetchEmployees();
   }, []);
 
-  // Calculate stats for StatCards
+  // Calculate metrics
   const totalEmployees = employees.length;
-  const totalSalaries = employees.reduce(
-    (sum, emp) => sum + (emp.salary || 0),
-    0
+  const totalSalaries = employees.reduce((sum, emp) => sum + (emp.salary || 0), 0);
+  const activeCount = employees.filter((e) => e.status === "Active").length;
+  const departmentsCount = new Set(employees.map((e) => e.department).filter(Boolean)).size;
+
+  // Extract unique departments for filter dropdown
+  const uniqueDepartments = Array.from(
+    new Set(employees.map((e) => e.department).filter(Boolean))
   );
 
-  // Handle employee deletion
-  const handleEdit = async (id) => {
+  const handleEdit = (id: string) => {
     navigate(`/employee/edit/${id}`);
   };
 
-  const handleDelete = async (id, employeeName) => {
-    if (window.confirm(`Are you sure you want to delete ${employeeName}?`)) {
+  const handleDelete = async (id: string, employeeName: string) => {
+    if (window.confirm(`Are you sure you want to remove ${employeeName} from employees?`)) {
+      setDeletingId(id);
       try {
         await fetch(`${API_URL}/api/employee/delete/${id}`, {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
         });
-        alert("Employee deleted successfully");
         fetchEmployees();
-      } catch (error) {
-        alert(error.response?.data?.message || "Failed to delete employee");
+      } catch (err: any) {
+        alert(err?.message || "Failed to delete employee");
+      } finally {
+        setDeletingId(null);
       }
     }
   };
@@ -115,7 +133,7 @@ const EmployeeOverview = () => {
     setDialogOpen(false);
   };
 
-  // Filter employees based on search and filters
+  // Filter employees
   const filteredEmployees = employees.filter((employee) => {
     const matchesSearch =
       employee.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -123,238 +141,365 @@ const EmployeeOverview = () => {
       employee.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.position?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = filterRole === "" || employee.role === filterRole;
-    return matchesSearch && matchesRole;
+    const matchesDept = filterDepartment === "" || employee.department === filterDepartment;
+    return matchesSearch && matchesRole && matchesDept;
   });
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "Active":
-        return "bg-green-100 text-green-800";
-      case "Inactive":
-        return "bg-red-100 text-red-800";
+  const getRoleBadge = (role: string) => {
+    switch (role?.toLowerCase()) {
+      case "admin":
+        return "bg-purple-50 text-purple-700 border-purple-200/80";
+      case "manager":
+        return "bg-indigo-50 text-indigo-700 border-indigo-200/80";
+      case "team-lead":
+        return "bg-amber-50 text-amber-800 border-amber-200/80";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-slate-100 text-slate-700 border-slate-200";
     }
   };
 
-  const getRoleClass = (role) => {
-    switch (role) {
-      case "admin":
-        return "bg-purple-100 text-purple-800";
-      case "manager":
-        return "bg-blue-100 text-blue-800";
-      case "team-lead":
-        return "bg-orange-100 text-orange-800";
-      case "employee":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const getInitials = (name: string) => {
+    if (!name) return "EMP";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  };
+
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      "bg-slate-900 text-white",
+      "bg-indigo-600 text-white",
+      "bg-emerald-700 text-white",
+      "bg-amber-700 text-white",
+      "bg-purple-700 text-white",
+      "bg-cyan-700 text-white",
+    ];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash += name.charCodeAt(i);
+    return colors[hash % colors.length];
   };
 
   return (
-    <div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-3">
-        <StatCard
-          title="Total Employees"
-          value={totalEmployees.toString()}
-          icon={<Users size={18} />}
-        />
-        <StatCard
-          title="Total Salaries"
-          value={formatSalary(totalSalaries)}
-          icon={<Users size={18} />}
-        />
+    <div className="space-y-6">
+      {/* Executive Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Stat 1 */}
+        <div className="bg-white p-2 sm:px-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Staff</p>
+            <h3 className="text-xl font-bold text-slate-900 mt-1">{totalEmployees}</h3>
+            <div className="flex items-center gap-1.5 mt-1 text-[11px] text-emerald-600 font-medium">
+              <CheckCircle2 size={12} />
+              <span>{activeCount} Active Members</span>
+            </div>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
+            <Users size={22} />
+          </div>
+        </div>
+
+        {/* Stat 2 */}
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Monthly Payroll</p>
+            <h3 className="text-xl sm:text-xl font-bold text-slate-900 mt-1">{formatSalary(totalSalaries)}</h3>
+            <p className="text-[11px] text-slate-400 mt-1">Total combined salaries</p>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+            <Wallet size={22} />
+          </div>
+        </div>
+
+        {/* Stat 3 */}
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Departments</p>
+            <h3 className="text-xl font-bold text-slate-900 mt-1">{departmentsCount}</h3>
+            <p className="text-[11px] text-slate-400 mt-1">Active business units</p>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0">
+            <Building2 size={22} />
+          </div>
+        </div>
+
+        {/* Stat 4 */}
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Leadership</p>
+            <h3 className="text-xl font-bold text-slate-900 mt-1">
+              {employees.filter((e) => e.role !== "employee").length}
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-1">Admins, Managers & Leads</p>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+            <ShieldCheck size={22} />
+          </div>
+        </div>
       </div>
 
-      {/* Card wrapper - no overflow-hidden, no max-height, natural page scroll */}
-      <div className="bg-white rounded-lg shadow mb-4 w-full">
-        {/* Sticky header block - sticks to top of nearest scrolling ancestor (usually the page) */}
-        <div className="p-4 border-b sticky -top-8 z-10 bg-white rounded-t-lg">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h3 className="text-lg font-semibold">Employee Overview</h3>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              <select
-                value={filterRole}
-                onChange={(e) => setFilterRole(e.target.value)}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Roles</option>
-                {roles.map((role) => (
-                  <option key={role} value={role}>
-                    {role.charAt(0).toUpperCase() + role.slice(1)}
-                  </option>
-                ))}
-              </select>
+      {/* Main Table Card */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+        {/* Controls Toolbar */}
+        <div className="p-4 sm:p-5 border-b border-slate-100 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-base font-bold text-slate-900">Staff Members Directory</h3>
+              <p className="text-xs text-slate-500">
+                Showing {filteredEmployees.length} of {employees.length} total employees
+              </p>
             </div>
+
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => setDialogOpen(true)}>
-                  Add Employee
-                </Button>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 transition-all shadow-xs shrink-0"
+                >
+                  <UserPlus size={15} />
+                  <span>Add New Employee</span>
+                </button>
               </DialogTrigger>
-              <DialogContent className="max-w-lg">
-                <DialogHeader></DialogHeader>
+              <DialogContent className="max-w-xl p-6 rounded-2xl">
+                <DialogHeader className="sr-only">
+                  <DialogTitle>Add Employee</DialogTitle>
+                </DialogHeader>
                 <AddEmployeeForm onSuccess={handleAddSuccess} />
               </DialogContent>
             </Dialog>
           </div>
-          <input
-            type="text"
-            placeholder="Search employees..."
-            className="px-3 py-2 w-full mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
 
-        {/* Content */}
-        {loading ? (
-          <EmployeeSkeleton />
-        ) : error ? (
-          <div className="p-4 text-center">
-            <div className="text-red-500 mb-2">⚠️ {error}</div>
-            <button
-              onClick={fetchEmployees}
-              className="px-4 py-2 bg-slate-900 text-white rounded hover:bg-slate-800 hover:text-slate-200"
-            >
-              Retry
-            </button>
-          </div>
-        ) : employees.length === 0 ? (
-          <div className="p-4 text-center">
-            <p className="text-gray-600 mb-4">No employees found.</p>
-            <p className="text-sm text-gray-500">
-              Add your first employee to get started!
-            </p>
-          </div>
-        ) : (
-          <>
-            {/* Table - horizontal scroll only, no vertical clipping */}
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Employee
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Contact
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Department
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Position
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Salary
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredEmployees.map((employee) => (
-                    <tr key={employee.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="font-medium text-gray-900">
-                            {employee.fullName}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            Joined: {employee.joinDate}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {employee.email}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {employee.phone}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {employee.department}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {employee.position}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleClass(
-                            employee.role
-                          )}`}
-                        >
-                          {employee.role}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {employee.formattedSalary}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(
-                            employee.status
-                          )}`}
-                        >
-                          {employee.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <button
-                            className="text-indigo-600 hover:text-indigo-900"
-                            onClick={() => handleEdit(employee.id)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className={`${
-                              employee.status === "Active"
-                                ? "text-orange-600 hover:text-orange-900"
-                                : "text-green-600 hover:text-green-900"
-                            }`}
-                            onClick={() =>
-                              handleDelete(employee.id, employee.fullName)
-                            }
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Footer */}
-            <div className="px-4 py-3 bg-gray-50 border-t flex flex-col sm:flex-row items-center justify-between">
-              <div className="text-sm text-gray-700 mb-2 sm:mb-0">
-                Showing{" "}
-                <span className="font-medium">
-                  {filteredEmployees.length}
-                </span>{" "}
-                of <span className="font-medium">{employees.length}</span>{" "}
-                employees
-              </div>
-              {filteredEmployees.length !== employees.length && (
-                <div className="text-sm text-blue-600">
-                  {employees.length - filteredEmployees.length} employees
-                  filtered out
-                </div>
+          {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            {/* Search Input */}
+            <div className="relative flex-1 w-full">
+              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search by name, email, department, or title..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-slate-50/50"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+                >
+                  Clear
+                </button>
               )}
             </div>
-          </>
+
+            {/* Role Filter */}
+            <div className="relative w-full sm:w-44">
+              <select
+                value={filterRole}
+                onChange={(e) => setFilterRole(e.target.value)}
+                className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-slate-50/50 font-medium text-slate-700"
+              >
+                <option value="">All Roles</option>
+                {roles.map((r) => (
+                  <option key={r} value={r}>
+                    {r.charAt(0).toUpperCase() + r.slice(1).replace("-", " ")}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Department Filter */}
+            {uniqueDepartments.length > 0 && (
+              <div className="relative w-full sm:w-48">
+                <select
+                  value={filterDepartment}
+                  onChange={(e) => setFilterDepartment(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-slate-50/50 font-medium text-slate-700"
+                >
+                  <option value="">All Departments</option>
+                  {uniqueDepartments.map((dept: any) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Content Table / Loading / Errors */}
+        {loading ? (
+          <div className="p-6">
+            <EmployeeSkeleton />
+          </div>
+        ) : error ? (
+          <div className="p-8 text-center">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
+              <XCircle size={24} />
+            </div>
+            <p className="text-sm font-semibold text-slate-800 mb-1">{error}</p>
+            <p className="text-xs text-slate-500 mb-4">Check server connectivity or login status.</p>
+            <button
+              onClick={fetchEmployees}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-colors"
+            >
+              <RotateCcw size={14} />
+              <span>Retry Loading</span>
+            </button>
+          </div>
+        ) : filteredEmployees.length === 0 ? (
+          <div className="p-12 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+              <UserX size={28} />
+            </div>
+            <h4 className="text-sm font-bold text-slate-800">No employees found</h4>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
+              {searchTerm || filterRole || filterDepartment
+                ? "No employees match your current search and filter criteria."
+                : "Your employee directory is empty. Add your first employee to get started!"}
+            </p>
+            {(searchTerm || filterRole || filterDepartment) && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setFilterRole("");
+                  setFilterDepartment("");
+                }}
+                className="text-xs font-semibold text-slate-900 hover:underline"
+              >
+                Reset Filters
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <th className="py-3 px-4">Employee</th>
+                  <th className="py-3 px-4">Contact Info</th>
+                  <th className="py-3 px-4">Department & Position</th>
+                  <th className="py-3 px-4">System Role</th>
+                  <th className="py-3 px-4">Monthly Salary</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-xs">
+                {filteredEmployees.map((emp) => (
+                  <tr key={emp.id} className="hover:bg-slate-50/60 transition-colors group">
+                    {/* Employee Profile */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 shadow-xs ${getAvatarColor(
+                            emp.fullName
+                          )}`}
+                        >
+                          {getInitials(emp.fullName)}
+                        </div>
+                        <div>
+                          <p className="font-bold text-slate-900 group-hover:text-slate-950">
+                            {emp.fullName}
+                          </p>
+                          <p className="text-[11px] text-slate-400 mt-0.5">
+                            Joined {emp.joinDate}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Contact */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 text-slate-700 font-medium">
+                          <Mail size={13} className="text-slate-400 shrink-0" />
+                          <a href={`mailto:${emp.email}`} className="hover:underline hover:text-slate-950">
+                            {emp.email}
+                          </a>
+                        </div>
+                        {emp.phone && emp.phone !== "Not provided" && (
+                          <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
+                            <Phone size={12} className="text-slate-400 shrink-0" />
+                            <span>{emp.phone}</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Department & Position */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                          <Briefcase size={13} className="text-slate-400 shrink-0" />
+                          <span>{emp.position}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-[11px] text-slate-500">
+                          <Building2 size={12} className="text-slate-400 shrink-0" />
+                          <span>{emp.department}</span>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Role */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${getRoleBadge(
+                          emp.role
+                        )}`}
+                      >
+                        {emp.role.charAt(0).toUpperCase() + emp.role.slice(1).replace("-", " ")}
+                      </span>
+                    </td>
+
+                    {/* Salary */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span className="font-mono font-bold text-slate-900">
+                        {emp.formattedSalary}
+                      </span>
+                    </td>
+
+                    {/* Status */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      {emp.status === "Active" ? (
+                        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/80">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                          Inactive
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="py-3.5 px-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(emp.id)}
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                          title="Edit Employee"
+                        >
+                          <Edit3 size={15} />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={deletingId === emp.id}
+                          onClick={() => handleDelete(emp.id, emp.fullName)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50"
+                          title="Delete Employee"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

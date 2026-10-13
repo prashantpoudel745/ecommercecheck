@@ -1,44 +1,117 @@
-import { BadgeCheck, Building2, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  ShieldCheck,
+  TrendingUp,
+  Box,
+  Building2,
+  CheckCircle2,
+  Lock,
+} from "lucide-react";
 
 const Authsidebar = () => {
   return (
-    <div className="relative hidden flex-1 overflow-hidden bg-[linear-gradient(160deg,_#0f172a_0%,_#111827_48%,_#1e293b_100%)] px-4 py-4 text-slate-100 lg:flex lg:items-center lg:justify-center">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(37,99,235,0.18),_transparent_30%)]" />
-      <div className="relative max-w-xl">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-sm">
-            <img src="/images/logo.png" alt="Bebasthapan Logo" className="h-9 w-9 object-contain" />
-          </div>
-          <div>
-            <span className="text-base font-semibold tracking-tight text-white">Bebasthapan ERP</span>
-          </div>
-        </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-200 backdrop-blur-sm">
-          <LockKeyhole className="h-3.5 w-3.5" />
-          Secure operations access 
-        </div>
-        <h2 className="mt-3 text-4xl font-semibold tracking-tight text-white xl:text-5xl">
-          One platform for finance, inventory, CRM, and team control.
-        </h2>
-        <p className="mt-4 max-w-lg text-sm leading-7 text-slate-300 sm:text-base">
-          Built for owners and operators who need clarity, accountability, and fast decisions across every business workflow.
-        </p>
+    <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-between bg-stone-950 p-8 xl:p-12 text-white relative overflow-hidden">
+      {/* Subtle Ambient Glow Effect */}
+      <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          {[
-            { icon: ShieldCheck, title: "Role-based control", text: "Separate access paths for admin, employee, and operations teams." },
-            { icon: Building2, title: "Centralized workspace", text: "Everything important sits in one command center with shared visibility." },
-            { icon: Sparkles, title: "Fast workflow", text: "Less navigation friction, clearer hierarchy, and stronger focus." },
-            { icon: BadgeCheck, title: "Production-ready", text: "Designed to look credible in front of customers and internal teams." },
-          ].map((item) => (
-            <div key={item.title} className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.18)] backdrop-blur-sm">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/15 text-sky-200">
-                <item.icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 text-sm font-semibold text-white">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-300">{item.text}</p>
+      {/* Top Header */}
+      <div className="relative z-10">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-amber-400/40 bg-amber-500/10 shadow-xs">
+              <img
+                src="/images/logo.png"
+                alt="Bebasthapan Logo"
+                className="h-6 w-6 object-contain"
+              />
             </div>
-          ))}
+            <span className="text-lg font-bold tracking-tight text-white">
+              Bebasthapan <span className="font-normal text-stone-400">ERP</span>
+            </span>
+          </Link>
+
+          <span className="inline-flex items-center gap-1 rounded-md border border-amber-400/30 bg-amber-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+            <ShieldCheck size={12} className="text-amber-400" />
+            Nepal Business Suite
+          </span>
+        </div>
+
+        {/* Headline Messaging */}
+        <div className="mt-10 max-w-lg">
+          <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-3">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-400 inline-block" />
+            OPERATIONAL CLARITY FOR TEAMS
+          </div>
+
+          <h2 className="font-serif text-3xl xl:text-4xl font-normal leading-tight text-stone-100">
+            Complete business management for Nepal enterprises.
+          </h2>
+
+          <p className="mt-3 text-xs xl:text-sm leading-relaxed text-stone-400">
+            Unifying accounting, IRD tax ledgers, multi-branch inventory control, customer dues, and employee attendance in one secure platform.
+          </p>
+        </div>
+
+        {/* Business Modules Breakdown */}
+        <div className="mt-8 space-y-3.5">
+          <div className="flex items-start gap-3 text-xs text-stone-300">
+            <div className="h-6 w-6 rounded-md bg-stone-900 border border-stone-800 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+              <ShieldCheck size={14} />
+            </div>
+            <div>
+              <p className="font-semibold text-stone-200">IRD-Verified Tax & Billing</p>
+              <p className="text-stone-400 text-[11px] mt-0.5">
+                Real-time 13% VAT, TDS calculation, and statutory report formatting.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 text-xs text-stone-300">
+            <div className="h-6 w-6 rounded-md bg-stone-900 border border-stone-800 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+              <TrendingUp size={14} />
+            </div>
+            <div>
+              <p className="font-semibold text-stone-200">Financial & Dues Control</p>
+              <p className="text-stone-400 text-[11px] mt-0.5">
+                Live customer receivable ledgers, vendor payables & cashflow metrics.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 text-xs text-stone-300">
+            <div className="h-6 w-6 rounded-md bg-stone-900 border border-stone-800 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+              <Box size={14} />
+            </div>
+            <div>
+              <p className="font-semibold text-stone-200">Multi-Branch Inventory</p>
+              <p className="text-stone-400 text-[11px] mt-0.5">
+                Automated low-stock thresholds, warehouse movements & reorders.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quote Testimonial & Footer */}
+      <div className="relative z-10 mt-8 space-y-6 pt-6 border-t border-stone-800/80">
+        <div className="rounded-xl bg-stone-900/90 border border-stone-800 p-4 shadow-2xs">
+          <p className="font-serif text-xs xl:text-sm leading-relaxed text-stone-200 italic">
+            &ldquo;Bebasthapan brings financial clarity and operational discipline to our multi-branch network across Nepal.&rdquo;
+          </p>
+          <div className="mt-2.5 flex items-center justify-between text-[11px] text-stone-400">
+            <span className="font-medium text-stone-300">Operations Director, TradeField</span>
+            <span className="flex items-center gap-1 text-emerald-400 text-[10px] uppercase font-bold tracking-wider">
+              <CheckCircle2 size={12} /> Verified Enterprise
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between text-[11px] text-stone-500">
+          <p>© {new Date().getFullYear()} Bebasthapan ERP Pvt. Ltd.</p>
+          <p className="flex items-center gap-1 text-stone-400">
+            <Lock size={12} className="text-amber-400" /> ISO 27001 Security
+          </p>
         </div>
       </div>
     </div>

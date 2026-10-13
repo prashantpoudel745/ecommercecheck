@@ -20,11 +20,17 @@ import {
 } from "recharts";
 import {
   Boxes,
-  Loader2,
   TrendingDown,
   TrendingUp,
   Users,
   Wallet,
+  Sparkles,
+  ShieldCheck,
+  Activity,
+  BarChart3,
+  CheckCircle2,
+  AlertTriangle,
+  RefreshCcw,
 } from "lucide-react";
 import { toast } from "@/utils/notify";
 import { InsightsSkeleton } from "@/skeleton/insightsSkeleton/insightsSkeleton";
@@ -33,20 +39,20 @@ import { cn } from "@/lib/utils";
 import { formatCurrency, formatCurrencyShort } from "@/utils/formatCurrency";
 import { Customer } from "../../types/customer.types";
 import { Snapshot } from "../../types";
-const API_BASE = import.meta.env.VITE_API_URL||"";
+
+const API_BASE = import.meta.env.VITE_API_URL || "";
 
 const COLORS = {
-  teal: "#0F766E",
-  amber: "#B45309",
-  rose: "#BE123C",
-  indigo: "#4F46E5",
-  sky: "#0369A1",
-  violet: "#7C3AED",
-  slate: "#334155",
-  emerald: "#047857",
+  emerald: "#10b981",
+  amber: "#f59e0b",
+  rose: "#f43f5e",
+  indigo: "#6366f1",
+  sky: "#0284c7",
+  violet: "#8b5cf6",
+  slate: "#475569",
 };
 
-const chartPalette = [COLORS.teal, COLORS.amber, COLORS.rose, COLORS.indigo, COLORS.sky, COLORS.violet];
+const chartPalette = [COLORS.emerald, COLORS.amber, COLORS.rose, COLORS.indigo, COLORS.sky, COLORS.violet];
 
 const compactNumber = (value = 0) =>
   new Intl.NumberFormat("en-US", {
@@ -57,12 +63,6 @@ const compactNumber = (value = 0) =>
 const clampPercent = (value: number) => Math.max(0, Math.min(100, value));
 
 const getDueAmount = (customer: Customer) => Number(customer.dueamount ?? customer.value ?? 0);
-
-const riskLabel = (score: number) => {
-  if (score >= 70) return "High focus";
-  if (score >= 35) return "Watch";
-  return "Stable";
-};
 
 function MetricTile({
   label,
@@ -78,15 +78,17 @@ function MetricTile({
   tone: string;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-          <p className="mt-2 text-xl sm:text-2xl font-semibold tracking-tight text-slate-950">{value}</p>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{label}</p>
+          <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 tabular-nums">{value}</p>
         </div>
-        <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", tone)}>{icon}</div>
+        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-2xs", tone)}>
+          {icon}
+        </div>
       </div>
-      <p className="mt-3 text-sm text-slate-500">{helper}</p>
+      <p className="mt-3 text-xs text-slate-500 font-medium border-t border-slate-100 pt-2.5">{helper}</p>
     </div>
   );
 }
@@ -95,16 +97,21 @@ function InsightPanel({
   title,
   subtitle,
   children,
+  action,
 }: {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
+  action?: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-4">
-        <h2 className="text-base font-semibold tracking-tight text-slate-950">{title}</h2>
-        {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
+    <section className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col justify-between">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 className="text-sm font-bold text-slate-900">{title}</h2>
+          {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+        </div>
+        {action}
       </div>
       {children}
     </section>
@@ -114,62 +121,31 @@ function InsightPanel({
 export default function Insights() {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [loading, setLoading] = useState(true);
-  const [advisorPrompt, setAdvisorPrompt] = useState("What products should I reorder?");
-  const [advisorReply, setAdvisorReply] = useState("");
-  const [advisorIntent, setAdvisorIntent] = useState("");
-  const [askingAdvisor, setAskingAdvisor] = useState(false);
 
-  useEffect(() => {
-    const loadSnapshot = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${API_BASE}/api/insights/summary`, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load insights");
-        }
-
-        const data = await response.json();
-        setSnapshot(data.snapshot || null);
-      } catch (error) {
-        toast.error("Unable to load business insights");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void loadSnapshot();
-  }, []);
-
-  const askAdvisor = async () => {
-    const message = advisorPrompt.trim();
-    if (!message) return;
-
-    setAskingAdvisor(true);
+  const loadSnapshot = async () => {
+    setLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/api/insights/evaluate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch(`${API_BASE}/api/insights/summary`, {
+        method: "GET",
         credentials: "include",
-        body: JSON.stringify({ message }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to evaluate prompt");
+        throw new Error("Failed to load insights");
       }
 
       const data = await response.json();
-      setAdvisorReply(data.reply || "No recommendation available.");
-      setAdvisorIntent(data.intent || "");
+      setSnapshot(data.snapshot || null);
     } catch (error) {
-      toast.error("Advisor could not evaluate this question");
+      toast.error("Unable to load business insights");
     } finally {
-      setAskingAdvisor(false);
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    void loadSnapshot();
+  }, []);
 
   const derived = useMemo(() => {
     if (!snapshot) return null;
@@ -188,7 +164,7 @@ export default function Insights() {
         net: snapshot.finance.todayNet,
       },
       {
-        name: "Month",
+        name: "This Month",
         revenue: snapshot.finance.monthRevenue,
         expenses: snapshot.finance.monthExpenses,
         net: snapshot.finance.monthNet,
@@ -197,7 +173,7 @@ export default function Insights() {
 
     const inventoryRisk = [
       {
-        name: "Healthy",
+        name: "Healthy Stock",
         value: Math.max(
           snapshot.inventory.totalProducts -
             snapshot.inventory.lowStockItems.length -
@@ -205,8 +181,8 @@ export default function Insights() {
           0
         ),
       },
-      { name: "Low", value: snapshot.inventory.lowStockItems.length },
-      { name: "Out", value: snapshot.inventory.outOfStockItems.length },
+      { name: "Low Stock (<30)", value: snapshot.inventory.lowStockItems.length },
+      { name: "Out of Stock (0)", value: snapshot.inventory.outOfStockItems.length },
     ].filter((item) => item.value > 0);
 
     const topInventory = [...(snapshot.inventory.highestValueItems || [])]
@@ -257,9 +233,9 @@ export default function Insights() {
     const healthRadar = [
       { metric: "Margin", score: marginScore },
       { metric: "Cashflow", score: 100 - receivableRiskScore },
-      { metric: "Stock", score: 100 - stockRiskScore },
-      { metric: "Team", score: teamScore },
-      { metric: "Growth", score: clampPercent(50 + snapshot.finance.revenueMonthDeltaPercent) },
+      { metric: "Stock Health", score: 100 - stockRiskScore },
+      { metric: "Team Coverage", score: teamScore },
+      { metric: "Growth Rate", score: clampPercent(50 + snapshot.finance.revenueMonthDeltaPercent) },
     ];
 
     return {
@@ -281,155 +257,248 @@ export default function Insights() {
 
   if (!snapshot || !derived) {
     return (
-      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-4 text-center">
-        <p className="font-medium text-slate-900">No insight data available yet.</p>
-        <p className="mt-1 text-sm text-slate-500">Add accounting, inventory, and CRM data to unlock analytics.</p>
+      <div className="min-h-[400px] flex flex-col items-center justify-center p-6 text-center bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
+        <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+          <Activity size={24} />
+        </div>
+        <h3 className="text-base font-bold text-slate-900">No Insight Data Available</h3>
+        <p className="text-xs text-slate-500 max-w-sm">
+          Add accounting transactions, inventory products, and client accounts to generate live intelligence.
+        </p>
+        <button
+          onClick={loadSnapshot}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 transition-colors"
+        >
+          <RefreshCcw size={14} />
+          <span>Refresh Snapshot</span>
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-[1520px] space-y-4 sm:space-y-3 lg:space-y-3">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+    <div className="min-h-screen bg-slate-50/50 p-4 sm:p-6 lg:p-8 space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
         <div>
-          {/* <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
-            <BrainCircuit className="h-4 w-4 text-indigo-600" />
-            Business intelligence
-          </div> */}
-          <h1 className="mt-3 text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-950 ">Dashboards and Insights</h1>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              Business Intelligence & Insights
+            </h1>
+            <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-indigo-200">
+              <Sparkles size={13} className="text-indigo-600" />
+              Live ERP Analytics
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Real-time financial performance, inventory liquidity, party receivables, and operational health signals.
+          </p>
         </div>
-        <p className="text-xs text-slate-500">
-          Updated{" "}
-          {snapshot.generatedAt
-            ? new Date(snapshot.generatedAt).toLocaleString([], {
-                month: "short",
-                day: "numeric",
-                hour: "numeric",
-                minute: "2-digit",
-              })
-            : "just now"}
-        </p>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-xs text-slate-500 font-medium">
+            Updated{" "}
+            {snapshot.generatedAt
+              ? new Date(snapshot.generatedAt).toLocaleString([], {
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                })
+              : "just now"}
+          </span>
+          <button
+            onClick={loadSnapshot}
+            className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors text-slate-600"
+            title="Refresh analytics data"
+          >
+            <RefreshCcw size={15} />
+          </button>
+        </div>
       </div>
 
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 xl:grid-cols-4">
+      {/* Top Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricTile
-          label="Today net"
+          label="Today Net Position"
           value={formatCurrency(snapshot.finance.todayNet)}
-          helper={`${formatCurrency(snapshot.finance.todayRevenue)} revenue today`}
-          icon={snapshot.finance.todayNet >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-          tone={snapshot.finance.todayNet >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"}
+          helper={`${formatCurrency(snapshot.finance.todayRevenue)} revenue recorded today`}
+          icon={snapshot.finance.todayNet >= 0 ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
+          tone={snapshot.finance.todayNet >= 0 ? "bg-emerald-50 text-emerald-700 border-emerald-200/80" : "bg-rose-50 text-rose-700 border-rose-200/80"}
         />
         <MetricTile
-          label="Receivables"
+          label="Outstanding Receivables"
           value={formatCurrency(snapshot.customers.totalDueAmount)}
-          helper={`${snapshot.customers.dueCustomers.length} clients need follow-up`}
-          icon={<Wallet className="h-5 w-5" />}
-          tone="bg-sky-50 text-sky-700"
+          helper={`${snapshot.customers.dueCustomers.length} client accounts require follow-up`}
+          icon={<Wallet size={20} />}
+          tone="bg-sky-50 text-sky-700 border-sky-200/80"
         />
         <MetricTile
-          label="Inventory value"
+          label="Total Inventory Value"
           value={formatCurrency(snapshot.inventory.inventoryValue)}
-          helper={`${snapshot.inventory.lowStockItems.length} low-stock products`}
-          icon={<Boxes className="h-5 w-5" />}
-          tone="bg-amber-50 text-amber-700"
+          helper={`${snapshot.inventory.lowStockItems.length} products under minimum stock threshold`}
+          icon={<Boxes size={20} />}
+          tone="bg-amber-50 text-amber-800 border-amber-200/80"
         />
         <MetricTile
-          label="Team coverage"
+          label="Staff Attendance & Coverage"
           value={`${snapshot.employees.activeEmployees}/${snapshot.employees.totalEmployees}`}
-          helper={`${snapshot.attendance.averageHours || 0} average monthly hours`}
-          icon={<Users className="h-5 w-5" />}
-          tone="bg-violet-50 text-violet-700"
+          helper={`${snapshot.attendance.averageHours || 0} avg monthly hours per staff`}
+          icon={<Users size={20} />}
+          tone="bg-violet-50 text-violet-700 border-violet-200/80"
         />
       </div>
 
-      <div className="grid gap-4 sm:gap-3 lg:grid-cols-[1.45fr_0.9fr]">
-        <InsightPanel title="Revenue, expenses, and net position" subtitle="Compare yesterday, today, and current month performance.">
-          <div className="h-[240px] sm:h-[280px] lg:h-[330px]">
+      {/* Financial Performance vs Operating Health Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1.45fr_0.95fr] gap-6">
+        {/* Revenue & Expense Area Chart */}
+        <InsightPanel
+          title="Revenue, Expenses, & Net Financial Position"
+          subtitle="Comparison of yesterday, today, and cumulative monthly financial performance"
+        >
+          <div className="h-[280px] sm:h-[320px] w-full pt-4">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={derived.financeTrend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={COLORS.teal} stopOpacity={0.2} />
-                    <stop offset="100%" stopColor={COLORS.teal} stopOpacity={0} />
+                    <stop offset="0%" stopColor={COLORS.emerald} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={COLORS.emerald} stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="expenseFill" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={COLORS.rose} stopOpacity={0.16} />
                     <stop offset="100%" stopColor={COLORS.rose} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#E2E8F0" vertical={false} />
-                <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={12} />
-                <YAxis tickLine={false} axisLine={false} fontSize={12} tickFormatter={(value) => compactNumber(value)} />
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                <Area type="monotone" dataKey="revenue" stroke={COLORS.teal} fill="url(#revenueFill)" strokeWidth={2} />
-                <Area type="monotone" dataKey="expenses" stroke={COLORS.rose} fill="url(#expenseFill)" strokeWidth={2} />
-                <Area type="monotone" dataKey="net" stroke={COLORS.indigo} fill="transparent" strokeWidth={2} />
+                <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={12} stroke="#64748b" />
+                <YAxis tickLine={false} axisLine={false} fontSize={12} stroke="#64748b" tickFormatter={(value) => compactNumber(value)} />
+                <Tooltip
+                  formatter={(value: number) => [formatCurrency(value), ""]}
+                  contentStyle={{
+                    backgroundColor: "#0f172a",
+                    borderColor: "#1e293b",
+                    borderRadius: "0.75rem",
+                    color: "#fff",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                />
+                <Area type="monotone" name="Revenue" dataKey="revenue" stroke={COLORS.emerald} fill="url(#revenueFill)" strokeWidth={2.5} />
+                <Area type="monotone" name="Expenses" dataKey="expenses" stroke={COLORS.rose} fill="url(#expenseFill)" strokeWidth={2.5} />
+                <Area type="monotone" name="Net Position" dataKey="net" stroke={COLORS.indigo} fill="transparent" strokeWidth={2.5} strokeDasharray="4 4" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </InsightPanel>
 
-        <InsightPanel title="Business health" subtitle="A quick operating score from live company signals.">
-          <div className="h-[240px] sm:h-[280px] lg:h-[330px]">
+        {/* Operating Health Radar Chart */}
+        <InsightPanel
+          title="Company Operating Health Radar"
+          subtitle="Comprehensive score (0-100%) across margin, cashflow, stock, team, and growth"
+        >
+          <div className="h-[280px] sm:h-[320px] w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={derived.healthRadar}>
-                <PolarGrid stroke="#CBD5E1" />
-                <PolarAngleAxis dataKey="metric" fontSize={12} />
+                <PolarGrid stroke="#cbd5e1" />
+                <PolarAngleAxis dataKey="metric" fontSize={11} stroke="#334155" />
                 <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar dataKey="score" stroke={COLORS.indigo} fill={COLORS.indigo} fillOpacity={0.18} strokeWidth={2} />
-                <Tooltip formatter={(value: number) => `${Math.round(value)}%`} />
+                <Radar name="Health Index" dataKey="score" stroke={COLORS.indigo} fill={COLORS.indigo} fillOpacity={0.2} strokeWidth={2.5} />
+                <Tooltip
+                  formatter={(value: number) => [`${Math.round(value)}% Score`, "Metric"]}
+                  contentStyle={{
+                    backgroundColor: "#0f172a",
+                    borderColor: "#1e293b",
+                    borderRadius: "0.75rem",
+                    color: "#fff",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                />
               </RadarChart>
             </ResponsiveContainer>
           </div>
         </InsightPanel>
       </div>
 
-      <div className="grid gap-4 sm:gap-3 md:grid-cols-2 xl:grid-cols-3">
-        <InsightPanel title="Inventory risk" subtitle="Stock pressure by product status.">
+      {/* Breakdown Row: Stock Risk, High-Value Inventory, Due Receivables */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Inventory Risk Distribution */}
+        <InsightPanel title="Stock Risk Distribution" subtitle="Product count grouped by stock health level">
           {derived.inventoryRisk.length > 0 ? (
-            <div className="h-[220px] sm:h-[260px] lg:h-[280px]">
+            <div className="h-[240px] w-full relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={derived.inventoryRisk} dataKey="value" nameKey="name" innerRadius={62} outerRadius={96} paddingAngle={3}>
+                  <Pie data={derived.inventoryRisk} dataKey="value" nameKey="name" innerRadius={55} outerRadius={82} paddingAngle={4}>
                     {derived.inventoryRisk.map((entry, index) => (
                       <Cell key={entry.name} fill={chartPalette[index % chartPalette.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0f172a",
+                      borderColor: "#1e293b",
+                      borderRadius: "0.75rem",
+                      color: "#fff",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
+              <div className="flex flex-wrap items-center justify-center gap-4 mt-2">
+                {derived.inventoryRisk.map((item, idx) => (
+                  <div key={item.name} className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: chartPalette[idx % chartPalette.length] }} />
+                    <span>{item.name} ({item.value})</span>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
-            <p className="text-sm text-slate-500">No inventory risk detected.</p>
+            <p className="text-xs text-slate-500 italic py-12 text-center">No inventory risk detected.</p>
           )}
         </InsightPanel>
 
-        <InsightPanel title="Highest-value inventory" subtitle="Capital currently tied to stock.">
-          <div className="h-[220px] sm:h-[260px] lg:h-[280px]">
+        {/* Highest-Value Inventory */}
+        <InsightPanel title="Highest-Value Inventory" subtitle="Capital allocation across top stock items">
+          <div className="h-[250px] w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={derived.topInventory} layout="vertical" margin={{ top: 0, right: 14, left: 20, bottom: 0 }}>
-                <CartesianGrid stroke="#E2E8F0" horizontal={false} />
-                <XAxis type="number" tickFormatter={(value) => compactNumber(value)} fontSize={11} />
-                <YAxis type="category" dataKey="name" width={82} fontSize={11} />
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                <Bar dataKey="value" fill={COLORS.amber} radius={[0, 4, 4, 0]} />
+              <BarChart data={derived.topInventory} layout="vertical" margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
+                <CartesianGrid stroke="#e2e8f0" horizontal={false} />
+                <XAxis type="number" tickFormatter={(value) => compactNumber(value)} fontSize={11} stroke="#64748b" />
+                <YAxis type="category" dataKey="name" width={80} fontSize={11} stroke="#334155" />
+                <Tooltip
+                  formatter={(value: number) => [formatCurrency(value), "Valuation"]}
+                  contentStyle={{
+                    backgroundColor: "#0f172a",
+                    borderColor: "#1e293b",
+                    borderRadius: "0.75rem",
+                    color: "#fff",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                />
+                <Bar dataKey="value" fill={COLORS.amber} radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </InsightPanel>
 
-        <InsightPanel title="Top due clients" subtitle="Receivables that deserve attention first.">
-          <div className="space-y-3">
-            {derived.dueCustomers.length === 0 && <p className="text-sm text-slate-500">No customer dues recorded.</p>}
+        {/* Top Due Receivables */}
+        <InsightPanel title="Top Receivables Follow-Up" subtitle="Client accounts requiring immediate collection priority">
+          <div className="space-y-3 pt-1">
+            {derived.dueCustomers.length === 0 && (
+              <p className="text-xs text-slate-500 italic py-12 text-center">No customer dues recorded.</p>
+            )}
             {derived.dueCustomers.map((customer, index) => {
               const percent = clampPercent((customer.due / Math.max(snapshot.customers.totalDueAmount, 1)) * 100);
               return (
-                <div key={`${customer.name}-${index}`}>
-                  <div className="mb-1 flex items-center justify-between gap-3 text-sm">
-                    <span className="truncate font-medium text-slate-800">{customer.name}</span>
-                    <span className="text-slate-500">{formatCurrencyShort(customer.due)}</span>
+                <div key={`${customer.name}-${index}`} className="space-y-1">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span className="truncate text-slate-900">{customer.name}</span>
+                    <span className="font-mono text-amber-700">{formatCurrencyShort(customer.due)}</span>
                   </div>
-                  <Progress value={percent} className="h-2 bg-slate-100" indicatorClassName="bg-sky-600" />
+                  <Progress value={percent} className="h-2 bg-slate-100" indicatorClassName="bg-amber-600" />
                 </div>
               );
             })}
@@ -437,85 +506,15 @@ export default function Insights() {
         </InsightPanel>
       </div>
 
-      <div className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
-        {/* <InsightPanel title="Focus board" subtitle="The areas most likely to move business results.">
-          <div className="space-y-4">
-            {[
-              {
-                label: "Receivable pressure",
-                score: derived.receivableRiskScore,
-                icon: <Wallet className="h-4 w-4" />,
-                color: "bg-sky-600",
-              },
-              {
-                label: "Stock pressure",
-                score: derived.stockRiskScore,
-                icon: <AlertTriangle className="h-4 w-4" />,
-                color: "bg-amber-600",
-              },
-              {
-                label: "Margin strength",
-                score: derived.marginScore,
-                icon: <Target className="h-4 w-4" />,
-                color: "bg-emerald-600",
-              },
-              {
-                label: "Team health",
-                score: derived.teamScore,
-                icon: <Users className="h-4 w-4" />,
-                color: "bg-violet-600",
-              },
-            ].map((item) => (
-              <div key={item.label} className="rounded-lg border border-slate-200 p-4">
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 text-sm font-medium text-slate-800">
-                    {item.icon}
-                    {item.label}
-                  </div>
-                  <span className="text-xs font-semibold text-slate-500">{riskLabel(item.score)}</span>
-                </div>
-                <Progress value={item.score} className="h-2 bg-slate-100" indicatorClassName={item.color} />
-              </div>
-            ))}
-          </div>
-        </InsightPanel> */}
-
-        {/* <InsightPanel title="AI business advisor" subtitle="Ask a specific question and get a focused answer from your live data.">
-          <div className="space-y-3">
-            <Textarea
-              value={advisorPrompt}
-              onChange={(event) => setAdvisorPrompt(event.target.value)}
-              className="min-h-[96px] resize-none"
-              placeholder="Ask: what products should I reorder?"
-            />
-            <div className="flex items-center justify-between gap-3">
-              
-              <Button onClick={() => void askAdvisor()} disabled={askingAdvisor || !advisorPrompt.trim()}>
-                {askingAdvisor ? <Loader2 className="h-4 w-4 animate-spin" /> : <SendHorizontal className="h-4 w-4" />}
-                Ask
-              </Button>
-            </div>
-            {advisorReply && (
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  <ClipboardList className="h-4 w-4" />
-                  {advisorIntent || "advisor"} result
-                </div>
-                <p className="whitespace-pre-line text-sm leading-6 text-slate-700">{advisorReply}</p>
-              </div>
-            )}
-          </div>
-        </InsightPanel> */}
-      </div>
-
-      <InsightPanel title="Recommended actions" subtitle="Generated from current finance, inventory, CRM, team, and investment data.">
-        <div className="grid gap-3 md:grid-cols-2">
+      {/* Recommended Strategic Actions Panel */}
+      <InsightPanel title="Strategic Action Recommendations" subtitle="Automated ERP suggestions synthesized from live finance, stock, CRM, and team data">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 pt-2">
           {(snapshot.recommendations || []).map((recommendation, index) => (
-            <div key={recommendation} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-md bg-white text-sm font-semibold text-slate-800 shadow-sm">
+            <div key={recommendation} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex items-start gap-3">
+              <div className="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs">
                 {index + 1}
               </div>
-              <p className="text-sm leading-6 text-slate-700">{recommendation}</p>
+              <p className="text-xs font-medium text-slate-700 leading-relaxed">{recommendation}</p>
             </div>
           ))}
         </div>
@@ -523,4 +522,3 @@ export default function Insights() {
     </div>
   );
 }
-

@@ -86,7 +86,7 @@ export default function Home() {
             </Link>
 
             <Link
-              to="/dashboard"
+              to="/login"
               className="inline-flex items-center gap-1.5 rounded-lg bg-stone-900 px-3.5 py-2 text-[13px] font-semibold text-white hover:bg-stone-800 transition-all shadow-xs"
             >
               <span>Open Dashboard</span>
@@ -124,7 +124,7 @@ export default function Home() {
             </nav>
             <div className="pt-3 border-t border-stone-100 flex flex-col gap-2">
               <Link
-                to="/dashboard"
+                to="/login"
                 className="w-full text-center py-2.5 px-4 bg-stone-900 text-white rounded-lg text-sm font-semibold"
               >
                 Open Dashboard
@@ -168,7 +168,7 @@ export default function Home() {
               {/* Buttons and Trust Pill */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
-                  to="/dashboard"
+                  to="/login"
                   className="inline-flex items-center gap-2 rounded-lg bg-stone-950 px-5 py-2.5 text-sm font-semibold text-white hover:bg-stone-800 transition-all shadow-xs"
                 >
                   <span>Open Dashboard</span>

@@ -150,15 +150,15 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   // Shared nav content — rendered in both desktop and mobile containers
   const navContent = (
     <>
-      <div className="relative flex items-center justify-between border-b border-slate-800/80 px-3 py-4">
+      <div className="relative flex items-center justify-between border-b border-slate-800/60 px-4 py-4">
         <div className={cn("flex min-w-0 items-center gap-3", collapsed && "hidden")}>
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
-            <img src="/images/logo.png" alt="Logo" className="h-9 w-9 object-contain" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white/10 p-1">
+            <img src="/images/logo.png" alt="Logo" className="h-7 w-7 object-contain" />
           </div>
 
           <div className="min-w-0">
-            <h2 className="truncate text-[15px] font-semibold tracking-wide text-white">
-              Bebasthapan
+            <h2 className="truncate text-sm font-bold tracking-tight text-white">
+              Bebasthapan <span className="text-indigo-400">ERP</span>
             </h2>
           </div>
         </div>
@@ -167,13 +167,13 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="hidden lg:inline-flex shrink-0 text-slate-300 hover:bg-slate-800 hover:text-white mx-auto"
+          className="hidden lg:inline-flex shrink-0 text-slate-400 hover:bg-slate-800 hover:text-white mx-auto h-8 w-8"
           onClick={() => setCollapsed(!collapsed)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -189,50 +189,58 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden shrink-0 text-slate-300 hover:bg-slate-800 hover:text-white"
+          className="lg:hidden shrink-0 text-slate-400 hover:bg-slate-800 hover:text-white h-8 w-8"
           onClick={onMobileClose}
         >
-          <X size={20} />
+          <X size={18} />
         </Button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4 custom-scrollbar">
-        <ul className="space-y-1 px-2">
+      <nav className="flex-1 overflow-y-auto py-3 custom-scrollbar">
+        <ul className="space-y-0.5 px-3">
           {allowedMenuItems.map((item, index) => (
             <li key={item.id || item.path || index}>
               {item.subItems ? (
                 !collapsed ? (
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value={item.id || ""} className="border-none">
-                      <AccordionTrigger className="group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all duration-200 text-slate-300 hover:bg-white/5 hover:text-white hover:no-underline [&[data-state=open]]:bg-white/5 [&[data-state=open]]:text-white">
+                      <AccordionTrigger className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 hover:no-underline [&[data-state=open]]:text-white">
                         <div className="flex items-center gap-3">
-                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-slate-300 transition-colors group-hover:bg-white/10 group-hover:text-white">
+                          <span className="text-slate-400 group-hover:text-slate-200 transition-colors">
                             {item.icon}
                           </span>
                           <span>{item.label}</span>
                         </div>
                       </AccordionTrigger>
-                      <AccordionContent className="pt-1 pb-2">
-                        <ul className="space-y-1 pl-11 pr-2">
-                          {item.subItems.map((subItem, subIndex) => (
-                            <li key={subIndex} className="flex items-center justify-between group/sub">
-                              <Link
-                                to={subItem.path || "#"}
-                                className="block flex-1 rounded-md px-3 py-2 text-sm text-slate-400 transition-colors hover:text-white hover:bg-white/5"
-                              >
-                                {subItem.label}
-                              </Link>
-                              {subItem.canCreate && (
-                                <button 
-                                  onClick={(e) => handleQuickCreate(subItem.path || "", e)}
-                                  className="opacity-0 group-hover/sub:opacity-100 p-1 text-emerald-500 hover:text-emerald-400 transition-opacity"
-                                  title={`Create ${subItem.label}`}
+                      <AccordionContent className="pt-0.5 pb-1">
+                        <ul className="space-y-0.5 pl-9 pr-1">
+                          {item.subItems.map((subItem, subIndex) => {
+                            const isActive = location.pathname === subItem.path;
+                            return (
+                              <li key={subIndex} className="flex items-center justify-between group/sub">
+                                <Link
+                                  to={subItem.path || "#"}
+                                  className={cn(
+                                    "block flex-1 rounded-md px-3 py-1.5 text-xs transition-colors",
+                                    isActive
+                                      ? "bg-indigo-600/15 text-indigo-400 font-semibold"
+                                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                                  )}
                                 >
-                                  <Plus size={16} />
-                                </button>
-                              )}
-                            </li>
-                          ))}
+                                  {subItem.label}
+                                </Link>
+                                {subItem.canCreate && (
+                                  <button 
+                                    onClick={(e) => handleQuickCreate(subItem.path || "", e)}
+                                    className="opacity-0 group-hover/sub:opacity-100 p-1 text-slate-400 hover:text-indigo-400 transition-all"
+                                    title={`Create ${subItem.label}`}
+                                  >
+                                    <Plus size={14} />
+                                  </button>
+                                )}
+                              </li>
+                            );
+                          })}
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
@@ -243,28 +251,24 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
                       <TooltipTrigger asChild>
                         <button
                           className={cn(
-                            "group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                            "group flex items-center justify-center rounded-lg p-2 text-sm font-medium transition-colors w-full",
                             location.pathname === item.path
-                              ? "bg-white/10 text-white ring-1 ring-white/10"
-                              : "text-slate-300 hover:bg-white/5 hover:text-white",
-                            "justify-center px-2"
+                              ? "bg-indigo-600/20 text-indigo-400"
+                              : "text-slate-400 hover:bg-slate-800/60 hover:text-white"
                           )}
                         >
-                          <span className={cn(
-                            "flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-slate-300 transition-colors group-hover:bg-white/10 group-hover:text-white",
-                            location.pathname === item.path && "bg-sky-500/15 text-sky-300"
-                          )}>
+                          <span className="text-slate-400 group-hover:text-white">
                             {item.icon}
                           </span>
                         </button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="!p-0">
-                        <ul className="space-y-1 bg-slate-900 rounded-md p-2 shadow-lg">
+                        <ul className="space-y-0.5 bg-slate-900 border border-slate-800 rounded-md p-1.5 shadow-xl">
                           {item.subItems.map((subItem, subIndex) => (
                             <li key={subIndex}>
                               <Link
                                 to={subItem.path || "#"}
-                                className="block rounded-md px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5"
+                                className="block rounded-md px-3 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-slate-800"
                               >
                                 {subItem.label}
                               </Link>
@@ -282,16 +286,16 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
                       <Link
                         to={item.path || "#"}
                         className={cn(
-                          "group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                          "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                           location.pathname === item.path
-                            ? "bg-white/10 text-white ring-1 ring-white/10"
-                            : "text-slate-300 hover:bg-white/5 hover:text-white",
+                            ? "bg-indigo-600 text-white shadow-sm font-semibold"
+                            : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-200",
                           collapsed && "justify-center px-2"
                         )}
                       >
                         <span className={cn(
-                          "flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-slate-300 transition-colors group-hover:bg-white/10 group-hover:text-white",
-                          location.pathname === item.path && "bg-sky-500/15 text-sky-300"
+                          "transition-colors",
+                          location.pathname === item.path ? "text-white" : "text-slate-400 group-hover:text-slate-200"
                         )}>
                           {item.icon}
                         </span>

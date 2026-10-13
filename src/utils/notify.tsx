@@ -4,54 +4,63 @@ export type AnyError = unknown;
 
 export function extractErrorMessage(input: AnyError, fallback = "An error occurred"): string {
   if (!input) return fallback;
-  if (typeof input === "string") return input;
 
-  if (typeof input === "object" && input !== null) {
+  let raw = "";
+
+  if (typeof input === "string") {
+    raw = input;
+  } else if (typeof input === "object" && input !== null) {
     const anyInput = input as any;
-
-    // Check response from Axios / fetch
     const resp = anyInput.response;
     if (resp && resp.data) {
       const data = resp.data;
-      if (typeof data === "string" && data.trim()) return data.slice(0, 300);
-      if (typeof data === "object") {
+      if (typeof data === "string" && data.trim()) raw = data;
+      else if (typeof data === "object") {
         if (data.message && data.message !== "Internal server error" && data.message !== "Internal Server Error") {
-          return String(data.message);
-        }
-        if (data.error && typeof data.error === "string") {
-          return String(data.error);
-        }
-        if (data.message) {
-          return String(data.message);
-        }
-        if (data.errorMessage) {
-          return String(data.errorMessage);
+          raw = String(data.message);
+        } else if (data.error && typeof data.error === "string") {
+          raw = String(data.error);
+        } else if (data.errorMessage) {
+          raw = String(data.errorMessage);
         }
       }
     }
-
-    // Check error.data (some custom wrappers)
-    if (anyInput.data && typeof anyInput.data === "object") {
-      if (anyInput.data.message) return String(anyInput.data.message);
-      if (anyInput.data.error) return String(anyInput.data.error);
+    if (!raw && anyInput.data && typeof anyInput.data === "object") {
+      if (anyInput.data.message) raw = String(anyInput.data.message);
+      else if (anyInput.data.error) raw = String(anyInput.data.error);
     }
-
-    // If input is standard JS Error (or AxiosError without server response body message)
-    if (anyInput.message && typeof anyInput.message === "string") {
+    if (!raw && anyInput.message && typeof anyInput.message === "string") {
       const msg = anyInput.message;
       if (!msg.startsWith("Request failed with status code")) {
-        return msg;
+        raw = msg;
       }
     }
+  }
 
+  if (!raw) {
     try {
-      return JSON.stringify(input).slice(0, 300);
+      raw = String(input);
     } catch {
       return fallback;
     }
   }
 
-  return String(input);
+  // Clean up raw database/schema noise into user-friendly UI text
+  const clean = raw.trim();
+  if (/Cast to Number failed/i.test(clean) || /Cast to \w+ failed/i.test(clean)) {
+    return "One of the numbers or input fields is invalid or empty. Please check your entries.";
+  }
+  if (/validation failed/i.test(clean) && !/IRD/i.test(clean)) {
+    return clean.replace(/^.*validation failed:\s*/i, "").replace(/Cast to \w+ failed.*/i, "Invalid input format");
+  }
+  if (/E11000/i.test(clean) || /duplicate key/i.test(clean)) {
+    return "A record with this serial number or code already exists.";
+  }
+  if (/Internal server error/i.test(clean)) {
+    return "An internal system error occurred. Please try again or refresh.";
+  }
+
+  return clean.length > 250 ? clean.slice(0, 247) + "..." : clean;
 }
 
 const success = (msg: AnyError) => {

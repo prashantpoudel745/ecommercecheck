@@ -7,12 +7,7 @@ export default function Inventory() {
     <ModulePageFrame
       kicker="Stock operations"
       title="Inventory Management"
-      subtitle="Keep stock movement, restock signals, and item visibility organized in a cleaner command-center layout."
-      chips={[
-        "Stock health",
-        "Low inventory alerts",
-        "Category oversight",
-      ]}
+      subtitle=""
     >
       <InventoryOverview />
     </ModulePageFrame>

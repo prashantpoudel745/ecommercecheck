@@ -35,16 +35,18 @@ export default function CreateSalesOrderPage() {
   const [deliveryDate, setDeliveryDate] = useState("");
   const [inventoryItems, setInventoryItems] = useState<any[]>([]);
 
-  const fetchInventory =async ()=>{
-    const response = await fetchInventoryItem();
-    if(response.ok){
-      const data = await response.json();
-      setInventoryItems(data.inventory || [])
+  const fetchInventory = async () => {
+    try {
+      const data = await fetchInventoryItem();
+      const itemsList = Array.isArray(data) ? data : (data as any)?.inventory || [];
+      setInventoryItems(itemsList);
+    } catch {
+      setInventoryItems([]);
     }
-  }
-  useEffect(()=>{
+  };
+  useEffect(() => {
     fetchInventory();
-  },[])
+  }, []);
   const [items, setItems] = useState(
     sourceQuotation?.items?.map((item: any) => ({
       itemName: item.itemName || "",
@@ -152,10 +154,23 @@ export default function CreateSalesOrderPage() {
     const newItems = [...items];
     if (field === "itemName") {
       const selectedItem = inventoryItems.find((inv: any) => inv.name === value);
+      const rawPrice = selectedItem?.sellingPrice ?? selectedItem?.price?.$numberDecimal ?? selectedItem?.price ?? 0;
+      const priceVal = selectedItem ? Number(rawPrice) || 0 : Number(newItems[index].price || 0);
+      const qtyVal = Number(newItems[index].quantity) || 1;
       newItems[index] = { 
         ...newItems[index], 
         itemName: value as string,
-        price: selectedItem ? Number(selectedItem.sellingPrice || 0) : newItems[index].price
+        price: priceVal,
+        amount: qtyVal * priceVal,
+      };
+    } else if (field === "quantity" || field === "price") {
+      const updatedVal = value;
+      const qtyVal = Number(field === "quantity" ? updatedVal : newItems[index].quantity) || 0;
+      const priceVal = Number(field === "price" ? updatedVal : newItems[index].price) || 0;
+      newItems[index] = { 
+        ...newItems[index], 
+        [field]: updatedVal,
+        amount: qtyVal * priceVal,
       };
     } else {
       newItems[index] = { ...newItems[index], [field]: value };
