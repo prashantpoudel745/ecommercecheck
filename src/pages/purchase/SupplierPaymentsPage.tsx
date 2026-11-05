@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchSupplierPayments } from "@/services/purchase.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,15 +6,14 @@ import { Plus } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function SupplierPaymentsPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchSupplierPayments()
-      .then((res) => setData(res.data || []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["purchase", "payments"],
+    queryFn: fetchSupplierPayments,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: "always",
+  });
+  const data = response?.data || [];
 
   return (
     <div className="p-3 sm:p-4 lg:p-4">

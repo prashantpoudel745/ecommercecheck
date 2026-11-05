@@ -21,6 +21,7 @@ export default function PurchaseBillsPage() {
     queryFn: fetchPurchaseBills,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    refetchOnMount: "always",
   });
 
   const data = (response?.data || []) as any[];
@@ -136,13 +137,13 @@ export default function PurchaseBillsPage() {
     <div className="p-3 sm:p-4 lg:p-4">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-3">
         <div>
-          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Purchase Bills</h1>
-          <p className="text-xs sm:text-sm text-slate-500">Manage invoices and bills from your suppliers</p>
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Purchase Invoices</h1>
+          <p className="text-xs sm:text-sm text-slate-500">Manage invoices from your suppliers</p>
         </div>
         <Link to="/purchase/bills/new">
           <Button className="bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-2">
             <Plus size={16} />
-            Record Bill
+            Record Purchase Invoice
           </Button>
         </Link>
       </div>
@@ -152,7 +153,7 @@ export default function PurchaseBillsPage() {
           <table className="w-full text-xs sm:text-sm text-left">
             <thead className="bg-slate-50 text-slate-600 font-medium border-b border-slate-200">
               <tr>
-                <th className="px-3 py-3 sm:px-4 sm:py-4">Bill Number</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-4">Invoice Number</th>
                 <th className="px-3 py-3 sm:px-4 sm:py-4">Supplier Name</th>
                 <th className="px-3 py-3 sm:px-4 sm:py-4">Bill Date</th>
                 <th className="px-3 py-3 sm:px-4 sm:py-4">Due Date</th>
@@ -167,7 +168,7 @@ export default function PurchaseBillsPage() {
               {loading ? (
                 <tr><td colSpan={9} className="px-4 py-4 text-center text-slate-400">Loading...</td></tr>
               ) : data.length === 0 ? (
-                <tr><td colSpan={9} className="px-4 py-4 text-center text-slate-400">No purchase bills found.</td></tr>
+                <tr><td colSpan={9} className="px-4 py-4 text-center text-slate-400">No purchase invoices found.</td></tr>
               ) : (
                 data.map((item) => {
                   const it = item as Record<string, unknown>;

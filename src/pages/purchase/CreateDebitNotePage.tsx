@@ -121,13 +121,36 @@ export default function CreateDebitNotePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-slate-300 mb-1">Supplier Name <span className="text-red-400">*</span></label>
-                <input list="supplier-list" value={form.supplierName}
-                  onChange={(e) => setForm({ ...form, supplierName: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Supplier name" required />
-                <datalist id="supplier-list">
-                  {suppliers.map((s: any) => <option key={s._id} value={s.name || s.supplierName} />)}
-                </datalist>
+                <select
+                  required
+                  value={form.supplierName}
+                  onChange={(e) => {
+                    const name = e.target.value;
+                    const selected = suppliers.find((s: any) => (s.companyName || s.name || s.supplierName) === name);
+                    setForm({
+                      ...form,
+                      supplierName: name,
+                      supplierPAN: selected?.taxNumber || selected?.panNumber || form.supplierPAN || "",
+                    });
+                  }}
+                  className="w-full bg-slate-900 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Supplier / Ledger...</option>
+                  {suppliers.map((s: any) => {
+                    const name = s.companyName || s.name || s.supplierName;
+                    return (
+                      <option key={s._id} value={name}>
+                        {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  New suppliers must be created as a ledger in{" "}
+                  <a href="/accounting" target="_blank" rel="noreferrer" className="text-blue-400 underline font-medium">
+                    Chart of Accounts
+                  </a>.
+                </p>
               </div>
               <div>
                 <label className="block text-sm text-slate-300 mb-1">

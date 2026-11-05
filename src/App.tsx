@@ -12,7 +12,7 @@ import { ProtectedKeepAliveRouter } from "./components/layout/ProtectedKeepAlive
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Insights = lazy(() => import("./pages/Insights"));
-// Removed general Accounting import in favor of specific components
+const Accounting = lazy(() => import("./pages/Accounting"));
 const ChartOfAccounts = lazy(() => import("./components/accounting/ChartOfAccounts"));
 const VoucherBook = lazy(() => import("./components/accounting/VoucherBook"));
 const FinancialReports = lazy(() => import("./components/accounting/FinancialReports"));
@@ -38,6 +38,7 @@ const CreateCustomerPage = lazy(() => import("./pages/sales/CreateCustomerPage")
 // Purchase View Pages
 const PurchaseOrdersPage = lazy(() => import("./pages/purchase/PurchaseOrdersPage"));
 const PurchaseBillsPage = lazy(() => import("./pages/purchase/PurchaseBillsPage"));
+const PurchaseProformasPage = lazy(() => import("./pages/purchase/PurchaseProformasPage"));
 const ExpensesPage = lazy(() => import("./pages/purchase/ExpensesPage"));
 const SupplierPaymentsPage = lazy(() => import("./pages/purchase/SupplierPaymentsPage"));
 const SuppliersPage = lazy(() => import("./pages/purchase/SuppliersPage"));
@@ -93,6 +94,7 @@ const App = () => {
       { id: "employees", paths: ["/employees"], render: () => <EmployeePage /> },
       
       // Accounting Routes
+      { id: "accounting", paths: ["/accounting"], render: () => <Accounting /> },
       { id: "accounting-dashboard", paths: ["/accounting/dashboard"], render: () => <div className="p-4"><AccountingDashboard /></div> },
       { id: "accounting-coa", paths: ["/accounting/chart-of-accounts"], render: () => <div className="p-4"><ChartOfAccounts /></div> },
       { id: "accounting-vouchers", paths: ["/accounting/journal-vouchers"], render: () => <div className="p-4"><VoucherBook /></div> },
@@ -117,6 +119,7 @@ const App = () => {
       // Purchase View Routes
       { id: "purchase-orders", paths: ["/purchase/orders"], render: () => <PurchaseOrdersPage /> },
       { id: "purchase-bills", paths: ["/purchase/bills"], render: () => <PurchaseBillsPage /> },
+      { id: "purchase-proformas", paths: ["/purchase/proformas"], render: () => <PurchaseProformasPage /> },
       { id: "purchase-expenses", paths: ["/purchase/expenses"], render: () => <ExpensesPage /> },
       { id: "purchase-payment", paths: ["/purchase/supplier-payment"], render: () => <SupplierPaymentsPage /> },
       { id: "purchase-suppliers", paths: ["/purchase/suppliers"], render: () => <SuppliersPage /> },

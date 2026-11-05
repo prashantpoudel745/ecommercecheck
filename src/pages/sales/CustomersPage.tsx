@@ -90,6 +90,7 @@ export default function CustomersPage() {
     queryFn: fetchCustomers,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    refetchOnMount: "always",
   });
 
   const rawCustomers: CustomerRecord[] = useMemo(() => {

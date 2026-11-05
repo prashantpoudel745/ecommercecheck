@@ -134,17 +134,17 @@ export default function QuickCreatePage() {
                 <input name="name" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Email</label>
-                <input name="email" type="email" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
+                <label className="text-sm font-medium text-slate-700">Email (Optional)</label>
+                <input name="email" type="email" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Phone</label>
+                <label className="text-sm font-medium text-slate-700">Phone (Optional)</label>
                 <input name="phone" type="tel" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
                   PAN / VAT Number
-                  <span className="ml-1 text-xs text-amber-600 font-normal">(9 digits — IRD Required)</span>
+                  <span className="ml-1 text-xs text-slate-500 font-normal">(optional; 9 digits if entered)</span>
                 </label>
                 <input
                   name="vatNo"

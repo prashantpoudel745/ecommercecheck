@@ -18,6 +18,7 @@ export default function SalesOrdersPage() {
     queryFn: fetchSalesOrders,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    refetchOnMount: "always",
   });
 
   const data = (response?.data || []) as any[];

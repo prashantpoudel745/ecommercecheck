@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPurchaseOrders, convertPurchaseOrderToBill } from "@/services/purchase.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,30 +8,25 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import { toast } from "@/utils/notify";
 
 export default function PurchaseOrdersPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [processingId, setProcessingId] = useState<string | null>(null);
-
-  const loadData = () => {
-    setLoading(true);
-    fetchPurchaseOrders()
-      .then((res) => setData(res.data || []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
+  const { data: response, isLoading: loading } = useQuery({
+    queryKey: ["purchase", "orders"],
+    queryFn: fetchPurchaseOrders,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: "always",
+  });
+  const data = response?.data || [];
 
   const handleConvertToBill = async (id: string) => {
     setProcessingId(id);
     try {
       await convertPurchaseOrderToBill(id);
-      toast.success("Successfully converted to Purchase Bill!");
-      loadData();
+      toast.success("Purchase Proforma Invoice created.");
+      await queryClient.refetchQueries({ queryKey: ["purchase", "orders"], type: "all" });
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to convert to Purchase Bill");
+      toast.error(err.response?.data?.message || "Failed to create Purchase Proforma Invoice");
     } finally {
       setProcessingId(null);
     }
@@ -82,23 +78,23 @@ export default function PurchaseOrdersPage() {
                     <td className="px-3 py-3 sm:px-4 sm:py-4">{item.expectedDeliveryDate ? new Date(item.expectedDeliveryDate).toLocaleDateString() : "-"}</td>
                     <td className="px-4 py-4 font-medium">{formatCurrency(item.totalAmount)}</td>
                     <td className="px-3 py-3 sm:px-4 sm:py-4">
-                      {item.linkedPurchaseBillId ? (
-                        <span className="text-xs font-medium px-2 py-1 rounded bg-green-100 text-green-700">Billed</span>
+                      {item.linkedPurchaseProformaId ? (
+                        <span className="text-xs font-medium px-2 py-1 rounded bg-green-100 text-green-700">Proforma created</span>
                       ) : (
                         <span className="text-xs font-medium px-2 py-1 rounded bg-amber-100 text-amber-700">Purchase Order</span>
                       )}
                     </td>
                     <td className="px-3 py-3 sm:px-4 sm:py-4 flex gap-2 justify-center items-center">
-                      {!item.linkedPurchaseBillId && (
+                      {!item.linkedPurchaseProformaId && (
                         <Button
                           variant="outline"
                           size="sm"
                           className="text-amber-600 border-amber-200 hover:bg-amber-50 h-8 px-2"
                           onClick={() => handleConvertToBill(item._id)}
                           disabled={processingId === item._id}
-                          title="Convert to Bill"
+                          title="Create Purchase Proforma Invoice"
                         >
-                          {processingId === item._id ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowRight className="w-3 h-3 mr-1" />} To Bill
+                          {processingId === item._id ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowRight className="w-3 h-3 mr-1" />} To Proforma
                         </Button>
                       )}
                     </td>

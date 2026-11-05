@@ -5,7 +5,7 @@ import { getAccounts } from "@/services/accounting.service";
 import { Account } from "../../../types/accounting.types";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
-import { createPurchaseOrder } from "@/services/purchase.service";
+import { createPurchaseOrder, fetchSuppliers } from "@/services/purchase.service";
 import { Plus, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 
@@ -26,13 +26,24 @@ export default function CreatePurchaseOrderPage() {
   const [supplierName, setSupplierName] = useState("");
   const [supplierEmail, setSupplierEmail] = useState("");
   const [supplierPhone, setSupplierPhone] = useState("");
+  const [supplierPAN, setSupplierPAN] = useState("");
   const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
 
   const [paymentMethod, setPaymentMethod] = useState("CASH");
   const [paymentAccountId, setPaymentAccountId] = useState("");
   const [transactionId, setTransactionId] = useState("");
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [suppliers, setSuppliers] = useState<any[]>([]);
 
+  useEffect(() => {
+    fetchSuppliers()
+      .then((res) => {
+        const list = res?.data || res || [];
+        setSuppliers(Array.isArray(list) ? list : []);
+      })
+      .catch(() => setSuppliers([]));
+  }, []);
+console.log(supplierName);
   useEffect(() => {
     getAccounts()
       .then((accountsList) => {
@@ -54,7 +65,7 @@ export default function CreatePurchaseOrderPage() {
       .catch(console.error);
   }, [paymentAccountId]);
 
-  const [items, setItems] = useState([{ itemName: "", quantity: 1, price: 0, amount: 0 }]);
+  const [items, setItems] = useState([{ itemName: "", unit: "pcs", quantity: 0, price: 0, amount: 0 }]);
   const [taxRate, setTaxRate] = useState(15);
 
   const [subtotal, setSubtotal] = useState(0);
@@ -65,11 +76,12 @@ export default function CreatePurchaseOrderPage() {
     setSupplierName("");
     setSupplierEmail("");
     setSupplierPhone("");
+    setSupplierPAN("");
     setExpectedDeliveryDate("");
     setPaymentMethod("CASH");
     setPaymentAccountId("");
     setTransactionId("");
-    setItems([{ itemName: "", quantity: 1, price: 0, amount: 0 }]);
+    setItems([{ itemName: "", unit: "pcs", quantity: 0, price: 0, amount: 0 }]);
     setTaxRate(15);
     setSubtotal(0);
     setTax(0);
@@ -120,7 +132,7 @@ export default function CreatePurchaseOrderPage() {
     setTotalAmount(newSubtotal + newTax);
   }, [items, taxRate]);
 
-  const handleAddItem = () => setItems([...items, { itemName: "", quantity: 1, price: 0, amount: 0 }]);
+  const handleAddItem = () => setItems([...items, { itemName: "", unit: "pcs", quantity: 0, price: 0, amount: 0 }]);
   const handleRemoveItem = (index: number) => { if (items.length > 1) setItems(items.filter((_, i) => i !== index)); };
   const handleItemChange = (index: number, field: string, value: string | number) => {
     const newItems = [...items];
@@ -141,6 +153,7 @@ export default function CreatePurchaseOrderPage() {
         supplierName, 
         supplierEmail, 
         supplierPhone,
+        supplierPAN,
         expectedDeliveryDate: expectedDeliveryDate ? new Date(expectedDeliveryDate) : undefined,
         items, 
         taxRate,
@@ -183,16 +196,40 @@ export default function CreatePurchaseOrderPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Supplier Name *</label>
-                <input
-                  value={supplierName}
-                  onChange={e => setSupplierName(e.target.value)}
+                <select
                   required
+                  value={supplierName}
+                  onChange={(e) => {
+                    const name = e.target.value;
+                    setSupplierName(name);
+                    const selected = suppliers.find((s) => (s.companyName || s.name || s.supplierName) === name);
+                    if (selected) {
+                      if (selected.email) setSupplierEmail(selected.email);
+                      if (selected.phone) setSupplierPhone(selected.phone);
+                      if (selected.taxNumber || selected.panNumber) setSupplierPAN(selected.taxNumber || selected.panNumber);
+                    }
+                  }}
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
-                  placeholder="Enter supplier name"
-                />
+                >
+                  <option value="">Select Supplier / Ledger...</option>
+                  {suppliers.map((s: any) => {
+                    const name = s.companyName || s.name || s.supplierName;
+                    return (
+                      <option key={s._id} value={name}>
+                        {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+                <p className="text-[11px] text-slate-500">
+                  New suppliers must be created as a ledger in{" "}
+                  <a href="/accounting" target="_blank" rel="noreferrer" className="text-emerald-600 underline font-medium">
+                    Chart of Accounts
+                  </a>.
+                </p>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Supplier Email</label>
+                <label className="text-sm font-medium text-slate-700">Supplier Email <span className="text-slate-400 font-normal">(optional)</span></label>
                 <input
                   value={supplierEmail}
                   onChange={e => setSupplierEmail(e.target.value)}
@@ -202,7 +239,7 @@ export default function CreatePurchaseOrderPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Supplier Phone</label>
+                <label className="text-sm font-medium text-slate-700">Supplier Phone <span className="text-slate-400 font-normal">(optional)</span></label>
                 <input
                   value={supplierPhone}
                   onChange={e => setSupplierPhone(e.target.value)}
@@ -210,6 +247,10 @@ export default function CreatePurchaseOrderPage() {
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
                   placeholder="e.g. 977-01-1234567"
                 />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Supplier PAN / VAT Number <span className="text-slate-400">(optional)</span></label>
+                <input value={supplierPAN} onChange={e => setSupplierPAN(e.target.value)} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="9-digit PAN/VAT, if available" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Expected Delivery Date</label>
@@ -275,6 +316,7 @@ export default function CreatePurchaseOrderPage() {
                   <tr>
                     <th className="p-3 w-1/2">Item Name</th>
                     <th className="p-3 w-24">Qty</th>
+                    <th className="p-3 w-24">Unit</th>
                     <th className="p-3 w-32">Price</th>
                     <th className="p-3 w-32">Amount</th>
                     <th className="p-3 w-12"></th>
@@ -296,11 +338,14 @@ export default function CreatePurchaseOrderPage() {
                         <input
                           required
                           type="number"
-                          min="1"
+                          min="0"
                           value={item.quantity}
                           onChange={e => handleItemChange(index, "quantity", e.target.value)}
                           className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                         />
+                      </td>
+                      <td className="p-2">
+                        <input value={item.unit || ""} onChange={e => handleItemChange(index, "unit", e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="pcs" />
                       </td>
                       <td className="p-2">
                         <input

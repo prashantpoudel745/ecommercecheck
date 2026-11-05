@@ -18,12 +18,22 @@ export const convertPurchaseOrderToBill = async (id: string) => {
   return response.data;
 };
 
+export const fetchPurchaseProformas = async () => {
+  const response = await api.get("/purchase/proformas");
+  return response.data;
+};
+
+export const fetchPurchaseProforma = async (id: string) => {
+  const response = await api.get(`/purchase/proformas/${id}`);
+  return response.data;
+};
+
 export const convertPurchaseBillToPayment = async (id: string, data: ApiPayload) => {
   const response = await api.post(`/purchase/bills/${id}/convert-to-payment`, data);
   return response.data;
 };
 
-// --- Purchase Bills ---
+// --- Purchase Invoices (legacy /bills API retained for existing data) ---
 export const fetchPurchaseBills = async () => {
   const response = await api.get("/purchase/bills");
   return response.data;

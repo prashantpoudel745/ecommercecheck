@@ -16,7 +16,8 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState("Beginners");
+  const [selectedPlan, setSelectedPlan] = useState("basic");
+  const [billingCycle, setBillingCycle] = useState("monthly");
   const [isLoading, setIsLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [error, setError] = useState("");
@@ -38,6 +39,18 @@ export default function SignupPage() {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+
+  // Kept as defaults for compatibility with older signup clients. The control
+  // is hidden: new accounts receive the trial and pick a paid AI plan later.
+  const plans = [
+    { id: "basic", name: "Basic", price: "2000" },
+    { id: "pro", name: "Pro", price: "5000" },
+    { id: "premium", name: "Premium", price: "10000" },
+  ];
+  const selectedPlanDetails = plans.find((plan) => plan.id === selectedPlan) || plans[0];
+  const displayedPlanPrice = billingCycle === "yearly"
+    ? Number(selectedPlanDetails.price) * 12 * 0.85
+    : Number(selectedPlanDetails.price);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -106,7 +119,6 @@ export default function SignupPage() {
           phone,
           companyName,
           password,
-          selectedPlan,
           signature: await convertFileToBase64(signatureFile),
         }),
         credentials: "include",
@@ -129,41 +141,6 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
-
-  const plans = [
-    {
-      id: "Beginners",
-      name: "Beginners",
-      price: "2500",
-      features: ["Basic Analytics", "3 Employees", "Email Support"],
-    },
-    {
-      id: "Standard",
-      name: "Standard",
-      price: "5000",
-      features: [
-        "All from Beginners",
-        "Advanced Analytics",
-        "5 Employees",
-        "Auto invoice generation for each transaction",
-        "Priority Support",
-        "Investment and client management",
-      ],
-    },
-    {
-      id: "Premium",
-      name: "Premium",
-      price: "10000",
-      features: [
-        "All from Beginners",
-        "Advanced Analytics",
-        "5 Employees",
-        "Auto invoice generation for each transaction",
-        "Priority Support",
-        "Investment and client management",
-      ],
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-[#fcfbf9] text-stone-900 selection:bg-amber-100 selection:text-amber-900 font-sans flex items-center justify-center p-4 sm:p-6 lg:p-8 antialiased">
@@ -342,7 +319,7 @@ export default function SignupPage() {
                 )}
               </div>
 
-              <div>
+              {/*
                 <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">
                   Select Subscription Plan
                 </label>
@@ -357,6 +334,23 @@ export default function SignupPage() {
                     </option>
                   ))}
                 </select>
+                <div className="mt-2 flex items-center gap-3 text-xs text-stone-700">
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input type="radio" name="billingCycle" value="monthly" checked={billingCycle === "monthly"} onChange={(e) => setBillingCycle(e.target.value)} />
+                    Monthly
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-emerald-700">
+                    <input type="radio" name="billingCycle" value="yearly" checked={billingCycle === "yearly"} onChange={(e) => setBillingCycle(e.target.value)} />
+                    Yearly (save 15%)
+                  </label>
+                </div>
+                <p className="mt-2 text-sm font-semibold text-stone-800">
+                  {CURRENCY_SYMBOL} {displayedPlanPrice.toLocaleString()} {billingCycle === "yearly" ? "for 12 months (15% off)" : "per month"}
+                </p>
+              */}
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-sm text-emerald-900">
+                <p className="font-semibold">10-day AI assistant trial included</p>
+                <p className="mt-1 text-xs text-emerald-800">No plan or payment is required during signup. Choose an AI module after your trial ends.</p>
               </div>
 
               <div className="flex items-start pt-1">

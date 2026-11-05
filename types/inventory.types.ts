@@ -15,7 +15,10 @@ export interface InventoryItem {
   price: DecimalValue;
   clientname: string;
   status: "inStock" | "mediumStock" | "lowStock";
-  category: string;
+  category?: string; // Legacy category retained for older records.
+  tags?: string[];
+  baseUnit?: string;
+  alternateUnits?: Array<{ unit: string; conversionFactor: number }>;
   updatedAt: string;
 value?: number;
 }
@@ -73,7 +76,10 @@ export interface DeleteInventoryProps {
 export interface Product {
   _id: string;
   name: string;
-  category: string;
+  category?: string;
+  tags: string[];
+  baseUnit?: string;
+  alternateUnits?: Array<{ unit: string; conversionFactor: number }>;
   quantity: number;
   price: DecimalValue;
   status: "in-stock" | "low-stock" | "out-of-stock";
@@ -91,13 +97,15 @@ export interface InventoryStats {
 export interface UpdateInventoryProps {
   productId: string;
   productName: string;
-  productCategory: string;
+  productCategory?: string;
+  productTags: string[];
   productPrice: DecimalValue;
   productQuantity: number;
   onUpdate: (updatedProduct: {
     _id: string;
     name: string;
-    category: string;
+    category?: string;
+    tags: string[];
     price: DecimalValue;
     quantity: number;
     status: "in-stock" | "low-stock" | "out-of-stock";

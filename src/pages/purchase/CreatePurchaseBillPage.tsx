@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
-import { createPurchaseBill } from "@/services/purchase.service";
+import { createPurchaseBill, fetchPurchaseProforma, fetchSuppliers } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
 import { Plus, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -19,6 +19,8 @@ type PurchaseBillRow = {
 
 export default function CreatePurchaseBillPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const proformaId = searchParams.get("proforma");
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
 
@@ -35,10 +37,20 @@ export default function CreatePurchaseBillPage() {
     transactionId: "",
     taxRate: 13,
     taxIncluded: false,
-    items: [{ itemName: "", quantity: 1, price: 0, amount: 0, vatExempt: false }],
+    items: [{ itemName: "", unit: "pcs", quantity: 1, price: 0, amount: 0, vatExempt: false }],
   });
 
   const [accounts, setAccounts] = useState<any[]>([]);
+  const [suppliers, setSuppliers] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchSuppliers()
+      .then((res) => {
+        const list = res?.data || res || [];
+        setSuppliers(Array.isArray(list) ? list : []);
+      })
+      .catch(() => setSuppliers([]));
+  }, []);
 
   useEffect(() => {
     getAccounts()
@@ -48,6 +60,25 @@ export default function CreatePurchaseBillPage() {
       })
       .catch(() => setAccounts([]));
   }, []);
+
+  useEffect(() => {
+    if (!proformaId) return;
+    fetchPurchaseProforma(proformaId)
+      .then((response) => {
+        const proforma = response.data;
+        setFormData((current: any) => ({
+          ...current,
+          supplierName: proforma.supplierName || "",
+          supplierPAN: proforma.supplierPAN || "",
+          supplierPhone: proforma.supplierPhone || "",
+          taxRate: Number(proforma.taxRate || 0) * (Number(proforma.taxRate || 0) <= 1 ? 100 : 1),
+          taxIncluded: Boolean(proforma.taxIncluded),
+          items: (proforma.items || []).map((item: any) => ({ ...item, unit: item.unit || "pcs" })),
+          sourcePurchaseProformaId: proforma._id,
+        }));
+      })
+      .catch(() => toast.error("Could not load the Purchase Proforma Invoice."));
+  }, [proformaId]);
 
   const cashBankAccounts = useMemo(
     () =>
@@ -67,7 +98,7 @@ export default function CreatePurchaseBillPage() {
     setFormData({ ...formData, [e.target.name]: value });
   };
 
-  const addItem = () => setFormData({ ...formData, items: [...formData.items, { itemName: "", quantity: 1, price: 0, amount: 0, vatExempt: false }] });
+  const addItem = () => setFormData({ ...formData, items: [...formData.items, { itemName: "", unit: "pcs", quantity: 1, price: 0, amount: 0, vatExempt: false }] });
   const removeItem = (index: number) => setFormData({ ...formData, items: formData.items.filter((_: any, i: number) => i !== index) });
   const handleItemChange = (index: number, field: string, value: any) => {
     const newItems = [...formData.items];
@@ -137,6 +168,7 @@ export default function CreatePurchaseBillPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.supplierName) { toast.error("Supplier name required"); return; }
+    if (computed.total <= 0) { toast.error("Purchase Invoice total must be greater than zero."); return; }
     setLoading(true);
     try {
       const payload = {
@@ -148,7 +180,7 @@ export default function CreatePurchaseBillPage() {
         totalAmount: computed.total,
       };
       await createMutation.mutateAsync(payload);
-      toast.success("Purchase bill saved!");
+      toast.success("Purchase Invoice saved!");
       navigate("/purchase/bills");
     } catch (err: any) {
       toast.error(err);
@@ -160,7 +192,7 @@ export default function CreatePurchaseBillPage() {
   return (
     <div className="p-4 sm:p-4 max-w-6xl mx-auto w-full">
       <div className="mb-3 rounded-[32px] border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-4 shadow-sm">
-        <h1 className="text-3xl font-semibold text-slate-900">Record Purchase Bill</h1>
+        <h1 className="text-3xl font-semibold text-slate-900">Record Purchase Invoice</h1>
         <p className="mt-2 text-slate-600">Capture supplier billing details with tax, payment, and line item tracking.</p>
       </div>
 
@@ -169,7 +201,7 @@ export default function CreatePurchaseBillPage() {
           <div className="bg-white rounded-[28px] border border-slate-200 p-4 shadow-sm">
             <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-emerald-600">Bill details</p>
+                <p className="text-xs uppercase tracking-[0.3em] text-emerald-600">Purchase invoice details</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-900">Supplier billing info</h2>
               </div>
               <p className="text-sm text-slate-500">Record the supplier bill number, due date, and payment details.</p>
@@ -177,24 +209,55 @@ export default function CreatePurchaseBillPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Supplier Name</label>
-                <input name="supplierName" required onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="Enter supplier name" />
+                <label className="text-sm font-medium text-slate-700">Supplier Name *</label>
+                <select
+                  name="supplierName"
+                  required
+                  value={formData.supplierName}
+                  onChange={(e) => {
+                    const name = e.target.value;
+                    const selected = suppliers.find((s) => (s.companyName || s.name || s.supplierName) === name);
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      supplierName: name,
+                      supplierPAN: selected?.taxNumber || selected?.panNumber || prev.supplierPAN || "",
+                      supplierPhone: selected?.phone || prev.supplierPhone || "",
+                    }));
+                  }}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                >
+                  <option value="">Select Supplier / Ledger...</option>
+                  {suppliers.map((s: any) => {
+                    const name = s.companyName || s.name || s.supplierName;
+                    return (
+                      <option key={s._id} value={name}>
+                        {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+                <p className="text-[11px] text-slate-500">
+                  New suppliers must be created as a ledger in{" "}
+                  <a href="/accounting" target="_blank" rel="noreferrer" className="text-emerald-600 underline font-medium">
+                    Chart of Accounts
+                  </a>.
+                </p>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Supplier VAT Bill Number</label>
-                <input name="supplierBillNumber" required onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="e.g. INV-2023-01" />
+                <input name="supplierBillNumber" required value={formData.supplierBillNumber} onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="e.g. INV-2023-01" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Supplier PAN / VAT Number</label>
-                <input name="supplierPAN" onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="Enter supplier PAN or VAT" />
+                <label className="text-sm font-medium text-slate-700">Supplier PAN / VAT Number <span className="text-slate-400">(optional)</span></label>
+                <input name="supplierPAN" value={formData.supplierPAN} onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="Enter supplier PAN or VAT" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Supplier Phone</label>
-                <input name="supplierPhone" onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="e.g. 977-01-1234567" />
+                <label className="text-sm font-medium text-slate-700">Supplier Phone <span className="text-slate-400 font-normal">(optional)</span></label>
+                <input name="supplierPhone" value={formData.supplierPhone} onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" placeholder="e.g. 977-01-1234567" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Due Date</label>
-                <input name="dueDate" type="date" required onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" />
+                <input name="dueDate" type="date" required value={formData.dueDate} onChange={handleInputChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Status</label>
@@ -253,6 +316,7 @@ export default function CreatePurchaseBillPage() {
                   <tr>
                     <th className="p-3">Item Name</th>
                     <th className="w-24 p-3">Qty</th>
+                    <th className="w-24 p-3">Unit</th>
                     <th className="w-32 p-3">Cost</th>
                     <th className="w-32 p-3">Amount</th>
                     <th className="w-24 p-3 text-center">VAT</th>
@@ -264,6 +328,9 @@ export default function CreatePurchaseBillPage() {
                     <tr key={index}>
                       <td className="p-2">
                         <input required value={item.itemName} onChange={(e) => handleItemChange(index, "itemName", e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="Item name" />
+                      </td>
+                      <td className="p-2">
+                        <input value={item.unit || ""} onChange={(e) => handleItemChange(index, "unit", e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="pcs" />
                       </td>
                       <td className="p-2">
                         <input required type="number" min="1" value={item.quantity} onChange={(e) => handleItemChange(index, "quantity", e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" />

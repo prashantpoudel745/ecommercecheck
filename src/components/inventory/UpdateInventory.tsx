@@ -18,7 +18,7 @@ const Api = import.meta.env.VITE_API_URL||"";
 export function UpdateInventory({
   productId,
   productName,
-  productCategory,
+  productTags,
   productPrice,
   productQuantity,
   onUpdate,
@@ -27,7 +27,7 @@ export function UpdateInventory({
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: productName,
-    category: productCategory,
+    tags: productTags.join(", "),
     price: CurrencyUtil.format(productPrice),
     quantity: productQuantity,
   });
@@ -70,7 +70,7 @@ export function UpdateInventory({
       onUpdate({
         _id: productId,
         name: formData.name,
-        category: formData.category,
+        tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
         price: CurrencyUtil.format(formData.price),
         quantity: formData.quantity,
         status: getStockStatus(formData.quantity),
@@ -107,13 +107,13 @@ export function UpdateInventory({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="tags">Tags</Label>
             <Input
-              id="category"
-              name="category"
-              value={formData.category}
+              id="tags"
+              name="tags"
+              value={formData.tags}
               onChange={handleChange}
-              required
+              placeholder="e.g. dairy, cold, supplier-a"
             />
           </div>
           <div className="space-y-2">

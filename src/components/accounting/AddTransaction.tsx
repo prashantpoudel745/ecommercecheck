@@ -177,7 +177,8 @@ export default function CombinedAddDialog({
     newItems[index] = {
       ...newItems[index],
       itemName: inventoryItem.name,
-      productCategory: inventoryItem.category || "",
+      productCategory: inventoryItem.tags?.[0] || inventoryItem.category || "",
+      unit: inventoryItem.baseUnit || "PCS",
       price: priceNum,
       amount: priceNum * qtyNum
     };
@@ -195,7 +196,7 @@ export default function CombinedAddDialog({
   const addItem = () => {
     setFormData({
       ...formData,
-      items: [{ itemName: "", quantity: 1, price: 0, amount: 0, productCategory: "" }, ...formData.items]
+      items: [{ itemName: "", quantity: 1, price: 0, amount: 0, productCategory: "", unit: "PCS" }, ...formData.items]
     });
     setItemSearchTerms((prev) => ["", ...prev]);
     setShowDropdowns((prev) => [false, ...prev]);
@@ -272,6 +273,7 @@ export default function CombinedAddDialog({
           price: item.price || 0,
           amount: item.amount || (item.quantity * item.price) || 0,
           productCategory: item.productCategory || "",
+          unit: item.unit || "PCS",
         }))
       : [];
 
@@ -285,7 +287,7 @@ export default function CombinedAddDialog({
       
       // If we still have no items, ensure at least one blank row exists
       if (newItems.length === 0) {
-        newItems.push({ itemName: "", quantity: 1, price: 0, amount: 0, productCategory: "" });
+        newItems.push({ itemName: "", quantity: 1, price: 0, amount: 0, productCategory: "", unit: "PCS" });
       }
 
       // Sync the search dropdown states to match the new items array length
@@ -453,16 +455,16 @@ export default function CombinedAddDialog({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="vatNo">VAT No (Party)*</Label>
-                  <Input id="vatNo" name="vatNo" value={formData.vatNo} onChange={handleChange} placeholder="Party VAT Registration" disabled={isSubmitting} />
+                  <Label htmlFor="vatNo">VAT / PAN No. (Party)</Label>
+                  <Input id="vatNo" name="vatNo" value={formData.vatNo} onChange={handleChange} placeholder="Optional party VAT/PAN" disabled={isSubmitting} />
                 </div>
                 <div className="space-y-2 col-span-2 sm:col-span-1">
                   <Label htmlFor="email">Email Address (For Invoice)</Label>
                   <Input id="email" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="client@example.com" disabled={isSubmitting} />
                 </div>
                 <div className="space-y-2 col-span-2 sm:col-span-1">
-                  <Label htmlFor="vatBillNo">VAT Bill #*</Label>
-                  <Input id="vatBillNo" name="vatBillNo" value={formData.vatBillNo} onChange={handleChange} placeholder="Invoice/Bill Number" disabled={isSubmitting} required />
+                  <Label htmlFor="vatBillNo">Bill / Reference #</Label>
+                  <Input id="vatBillNo" name="vatBillNo" value={formData.vatBillNo} onChange={handleChange} placeholder="Optional invoice or bill number" disabled={isSubmitting} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="taxRate">VAT Rate (%)</Label>
@@ -556,8 +558,8 @@ export default function CombinedAddDialog({
                         <Trash2 size={16} />
                       </button>
                     )}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="col-span-2 relative">
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="col-span-3 relative">
                         <Label className="text-xs mb-1 block">Item Name</Label>
                         <Input 
                           value={itemSearchTerms[index] || ""} 
@@ -584,6 +586,16 @@ export default function CombinedAddDialog({
                       <div>
                         <Label className="text-xs mb-1 block">Quantity</Label>
                         <Input name="quantity" type="number" value={item.quantity} onChange={(e) => handleItemFieldChange(e, index)} disabled={isSubmitting} />
+                      </div>
+                      <div>
+                        <Label className="text-xs mb-1 block">Unit</Label>
+                        {(() => {
+                          const inventoryItem = inventoryItems.find((candidate) => candidate.name === item.itemName);
+                          const units = inventoryItem ? [inventoryItem.baseUnit || "PCS", ...(inventoryItem.alternateUnits || []).map((unit) => unit.unit)] : [item.unit || "PCS"];
+                          return <select name="unit" value={item.unit || units[0]} onChange={(e) => handleItemFieldChange(e, index)} className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm" disabled={isSubmitting}>
+                            {Array.from(new Set(units)).map((unit) => <option key={unit} value={unit}>{unit}</option>)}
+                          </select>;
+                        })()}
                       </div>
                       <div>
                         <Label className="text-xs mb-1 block">Rate</Label>

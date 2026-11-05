@@ -4,14 +4,22 @@ import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
 
 const plans = [
   {
-    title: "Beginners",
+    title: "Basic",
     price: "2000",
-    buttonText: "Get Started",
+    requests: "50 AI requests/month",
+    buttonText: "Choose Basic",
   },
   {
     title: "Pro",
     price: "5000",
+    requests: "200 AI requests/month",
     buttonText: "Upgrade to Pro",
+  },
+  {
+    title: "Premium",
+    price: "10000",
+    requests: "500 AI requests/month",
+    buttonText: "Choose Premium",
   },
 ];
 
@@ -29,12 +37,14 @@ export default function SubscriptionPlans({
       <h1 className="text-3xl font-bold text-center mb-4">
         Subscription Plans
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 max-w-6xl mx-auto">
+      <p className="mb-4 text-center text-sm text-emerald-700">Pay yearly and save 15%.</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-6xl mx-auto">
         {plans.map((plan, idx) => (
           <Card key={idx} className="rounded-2xl shadow-lg bg-white">
             <CardContent className="p-4 flex flex-col items-center">
               <h2 className="text-xl font-semibold mb-2">{plan.title}</h2>
               <p className="text-xl font-bold mb-4">{CURRENCY_SYMBOL}{plan.price}</p>
+              <p className="mb-4 text-sm text-muted-foreground">{plan.requests}</p>
               <Button className="w-full text-xs">{plan.buttonText}</Button>
             </CardContent>
           </Card>

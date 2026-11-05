@@ -30,6 +30,7 @@ export default function ExpensesPage() {
     queryFn: fetchExpenses,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    refetchOnMount: "always",
   });
 
   const data = (response?.data || []) as ExpenseRow[];

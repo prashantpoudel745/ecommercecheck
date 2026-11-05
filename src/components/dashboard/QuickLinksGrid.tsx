@@ -20,7 +20,7 @@ const quickLinks: QuickLink[] = [
   { label: "Invoices", url: "sales/invoice/new"},
   { label: "Customers", url: "sales/customers/new" },
   { label: "Purchase Order", url: "purchase/orders/new"},
-  { label: "Purchase Bills", url: "purchase/bills/new" },
+  { label: "Purchase Invoice", url: "purchase/bills/new" },
   { label: "Expenses", url: "purchase/expenses/new"},
   { label: "Supplier Payment", url: "purchase/supplier-payment/new"},
   { label: "Supplier", url: "purchase/suppliers/new"},
@@ -69,12 +69,17 @@ function QuickLinksGrid() {
 
   return (
     <section aria-labelledby="quick-actions-heading" className="space-y-3">
-      <h2
+      <div className="flex flex-col">
+        <h2
         id="quick-actions-heading"
         className="text-[15px] font-semibold tracking-tight text-slate-900"
       >
         Quick actions
       </h2>
+      <h2 className="p-2 bg-black text-black">
+        import Data
+      </h2>
+      </div>
 
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
         {groups.map((group) => (

@@ -12,7 +12,8 @@ import {
   ExternalLink,
   MoreHorizontal,
   X,
-  Filter
+  Filter,
+  Upload
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -260,14 +261,13 @@ export default function Dashboard() {
     return products.filter((p: any) => (p.quantity ?? 0) <= 30).slice(0, 5);
   }, [products]);
 
-  // Unique categories list from products
+  // Unique inventory tags, including a category fallback for records not yet edited.
   const stockCategories = useMemo(() => {
     if (!products || products.length === 0) return [];
     const cats = new Set<string>();
     products.forEach((p: any) => {
-      if (p.category && typeof p.category === "string" && p.category.trim()) {
-        cats.add(p.category.trim());
-      }
+      const tags = Array.isArray(p.tags) && p.tags.length ? p.tags : p.category ? [p.category] : [];
+      tags.forEach((tag: string) => { if (tag.trim()) cats.add(tag.trim()); });
     });
     return Array.from(cats).sort();
   }, [products]);
@@ -278,20 +278,23 @@ export default function Dashboard() {
 
     let filtered = [...products];
 
-    // Keyword search (filters item name or category)
+    // Keyword search (filters item name or tag)
     if (stockSearchTerm.trim()) {
       const q = stockSearchTerm.toLowerCase().trim();
       filtered = filtered.filter((p: any) => {
         const nameMatch = (p.name || "").toLowerCase().includes(q);
-        const catMatch = (p.category || "").toLowerCase().includes(q);
-        return nameMatch || catMatch;
+        const tags = Array.isArray(p.tags) && p.tags.length ? p.tags : p.category ? [p.category] : [];
+        return nameMatch || tags.some((tag: string) => tag.toLowerCase().includes(q));
       });
     }
 
-    // Category dropdown filter
+    // Tag dropdown filter
     if (stockCategoryFilter !== "All") {
       filtered = filtered.filter(
-        (p: any) => (p.category || "").toLowerCase() === stockCategoryFilter.toLowerCase()
+        (p: any) => {
+          const tags = Array.isArray(p.tags) && p.tags.length ? p.tags : p.category ? [p.category] : [];
+          return tags.some((tag: string) => tag.toLowerCase() === stockCategoryFilter.toLowerCase());
+        }
       );
     }
 
@@ -330,7 +333,7 @@ export default function Dashboard() {
         name: p.name && p.name.length > 14 ? `${p.name.slice(0, 12)}…` : p.name || "Item",
         fullName: p.name || "Item",
         quantity: qty,
-        category: p.category || "General",
+        category: (Array.isArray(p.tags) && p.tags.length ? p.tags : p.category ? [p.category] : ["No tags"]).join(", "),
         price: p.price || 0,
         status,
         color,
@@ -847,7 +850,13 @@ export default function Dashboard() {
                   <Plus size={13} className="text-slate-500" />
                   <span className="truncate">New Invoice</span>
                 </Link>
-
+                  <Link
+                  to="/import"
+                  className="flex items-center gap-1.5 p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors"
+                >
+                  <Upload size={13} className="text-slate-500" />
+                  <span className="truncate">Import Data</span>
+                </Link>
                 <Link
                   to="/accounting/financial-reports"
                   className="flex items-center gap-1.5 p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors"

@@ -128,11 +128,11 @@ export default function QuickCreatePage() {
                 <input name="name" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Email</label>
-                <input name="email" type="email" required onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                <label className="text-sm font-medium text-slate-300">Email (Optional)</label>
+                <input name="email" type="email" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Phone</label>
+                <label className="text-sm font-medium text-slate-300">Phone (Optional)</label>
                 <input name="phone" type="tel" onChange={handleInputChange} className="w-full rounded-md border p-2 focus:ring-2 focus:ring-emerald-500 outline-none" />
               </div>
             </div>

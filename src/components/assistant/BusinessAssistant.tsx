@@ -9,6 +9,7 @@ import {
   Users,
   Wallet,
   ArrowDown,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +20,7 @@ import { toast } from "@/utils/notify";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {ChatMessage , Snapshot,ChatRole} from "../../../types/businessassistant.types"
+import { useAuth } from "@/context/AuthContext";
 const API_BASE = import.meta.env.VITE_API_URL||"";
 
 
@@ -40,6 +42,12 @@ const quickPrompts = [
   "Predict stock shortages",
   "Find slow-moving inventory",
 ];
+
+const AI_PLANS = {
+  basic: { name: "Basic", monthlyPrice: 2000, requests: 50 },
+  pro: { name: "Pro", monthlyPrice: 5000, requests: 200 },
+  premium: { name: "Premium", monthlyPrice: 10000, requests: 500 },
+};
 
 const metricCardClass =
   "rounded-2xl border border-white/10 bg-white/5 p-3 text-white/90 shadow-[0_18px_50px_rgba(15,23,42,0.22)]";
@@ -77,6 +85,7 @@ const metricTiles = (snapshot?: Snapshot) => [
 const AUTO_SCROLL_THRESHOLD = 80;
 
 export function BusinessAssistant() {
+  const { user, loading: loadingUser } = useAuth();
   const [open, setOpen] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [sending, setSending] = useState(false);
@@ -84,8 +93,18 @@ export function BusinessAssistant() {
   const [streamStarted, setStreamStarted] = useState(false); // Track if streaming has begun
   const [input, setInput] = useState("");
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+  const [usage, setUsage] = useState<{ remaining: number; monthlyLimit: number; resetsAt: string; isTrial?: boolean; trialEndsAt?: string | null } | null>(null);
+  const [moduleStatus, setModuleStatus] = useState<"loading" | "active" | "inactive">("loading");
+  const [purchasePlan, setPurchasePlan] = useState("basic");
+  const [purchaseCycle, setPurchaseCycle] = useState<"monthly" | "yearly">("monthly");
+  const [purchasing, setPurchasing] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(starterMessages);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+
+  const selectedAiPlan = AI_PLANS[purchasePlan as keyof typeof AI_PLANS];
+  const aiModulePrice = purchaseCycle === "yearly"
+    ? selectedAiPlan.monthlyPrice * 12 * 0.85
+    : selectedAiPlan.monthlyPrice;
 
   const scrollAnchorRef = useRef<HTMLDivElement | null>(null);
   // Direct ref to the native scrollable element -- no querySelector,
@@ -103,6 +122,47 @@ export function BusinessAssistant() {
       minute: "2-digit",
     })}`;
   }, [snapshot]);
+
+  const loadUsage = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/insights/usage`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        setUsage(null);
+        setModuleStatus("inactive");
+        return;
+      }
+      const data = await response.json();
+      setUsage(data.usage || null);
+      setModuleStatus("active");
+    } catch {
+      setModuleStatus("inactive");
+    }
+  };
+
+  useEffect(() => {
+    if (!loadingUser && user?.role === "admin") void loadUsage();
+  }, [loadingUser, user?.role]);
+
+  const buyAiModule = async () => {
+    setPurchasing(true);
+    try {
+      const response = await fetch(`${API_BASE}/api/initiate-payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ plan: purchasePlan, billingCycle: purchaseCycle }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.paymentUrl) throw new Error(data.message || "Could not start payment");
+      window.location.assign(data.paymentUrl);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not start payment");
+      setPurchasing(false);
+    }
+  };
 
   // Only auto-scroll to the bottom when the user is already near it.
   // This runs on every message update (including streamed chunks), but
@@ -152,6 +212,8 @@ export function BusinessAssistant() {
 
       const data = await summaryResponse.json();
       setSnapshot(data.snapshot || null);
+
+      await loadUsage();
       
       // Fetch chat history so messages persist even if they close the sidebar or refresh
       try {
@@ -190,14 +252,16 @@ export function BusinessAssistant() {
   // Load the snapshot only when the sheet is opened.
   // Reset the "loaded" flag on close so reopening fetches fresh data.
   useEffect(() => {
-    if (open) {
+    if (open && moduleStatus === "active") {
       shouldAutoScrollRef.current = true;
       setShowJumpToLatest(false);
       loadSnapshot();
     } else {
       snapshotLoadedRef.current = false;
     }
-  }, [open]);
+  }, [open, moduleStatus]);
+
+  if (loadingUser || user?.role !== "admin") return null;
 
   const sendMessage = async (prompt?: string) => {
     const content = (prompt ?? input).trim();
@@ -235,7 +299,8 @@ export function BusinessAssistant() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to generate insight");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to generate insight");
       }
 
       // Handle streaming response with typing effect
@@ -277,6 +342,8 @@ export function BusinessAssistant() {
                 // Stream finished, update snapshot
                 setSnapshot(data.snapshot || snapshot);
                 snapshotLoadedRef.current = true;
+              } else if (data.type === "usage") {
+                setUsage(data.usage || null);
               } else if (data.type === "error") {
                 toast.error(data.error || "Stream error");
               }
@@ -287,7 +354,7 @@ export function BusinessAssistant() {
         }
       }
     } catch (error) {
-      toast.error("Chatbot could not reach business data");
+      toast.error(error instanceof Error ? error.message : "Chatbot could not reach business data");
       setMessages((current) => {
         const updated = [...current];
         const lastMessage = updated[updated.length - 1];
@@ -308,8 +375,8 @@ export function BusinessAssistant() {
       <SheetTrigger asChild>
         <Button className=" z-[60] h-10 rounded-full bg-slate-950 px-2 text-white shadow-[0_20px_60px_rgba(15,23,42,0.35)] hover:bg-slate-800">
           <Bot className="h-5 w-5" />
-          Ask AI
-          <Sparkles className="h-4 w-4 text-amber-300" />
+          {moduleStatus === "inactive" ? "Buy AI module" : moduleStatus === "loading" ? "Checking AI" : "Ask AI"}
+          {moduleStatus === "inactive" ? <CreditCard className="h-4 w-4 text-amber-300" /> : <Sparkles className="h-4 w-4 text-amber-300" />}
         </Button>
       </SheetTrigger>
 
@@ -322,12 +389,40 @@ export function BusinessAssistant() {
                   <Sparkles className="h-3.5 w-3.5 text-amber-300" />
                   Live business assistant
                 </div>
+                {usage && (
+                  <p className="text-xs text-emerald-200">
+                    {usage.remaining} of {usage.monthlyLimit} AI requests remaining this month
+                  </p>
+                )}
+                {usage?.isTrial && usage.trialEndsAt && (
+                  <p className="text-xs text-amber-200">Free AI trial ends {new Date(usage.trialEndsAt).toLocaleDateString()}</p>
+                )}
                 {/* <SheetTitle className="text-2xl font-semibold tracking-tight text-white">Ask the numbers</SheetTitle> */}
               </div>
             </div>
           </SheetHeader>
 
-          <div className="relative flex-1 overflow-hidden px-2 py-2 sm:px-3">
+          {moduleStatus === "inactive" ? (
+            <div className="flex flex-1 flex-col justify-center px-6 py-8">
+              <div className="mx-auto w-full max-w-md rounded-3xl border border-amber-300/20 bg-white/5 p-6 text-center">
+                <CreditCard className="mx-auto h-10 w-10 text-amber-300" />
+                <SheetTitle className="mt-4 text-xl text-white">Unlock the AI business assistant</SheetTitle>
+                <SheetDescription className="mt-2 text-slate-300">AI is a separate module. Choose a plan to ask questions from your live business data.</SheetDescription>
+                <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-slate-300">{purchaseCycle === "yearly" ? "Yearly plans — 15% discount included" : "Monthly plans"}</p>
+                <select value={purchasePlan} onChange={(event) => setPurchasePlan(event.target.value)} className="mt-5 w-full rounded-lg border border-white/10 bg-slate-900 p-3 text-sm text-white">
+                  {Object.entries(AI_PLANS).map(([id, plan]) => <option key={id} value={id}>{plan.name} — NPR {plan.monthlyPrice.toLocaleString()}/month — {plan.requests} requests</option>)}
+                </select>
+                <div className="mt-3 flex justify-center gap-4 text-sm text-slate-200">
+                  <label><input type="radio" checked={purchaseCycle === "monthly"} onChange={() => setPurchaseCycle("monthly")} /> Monthly</label>
+                  <label className="text-emerald-300"><input type="radio" checked={purchaseCycle === "yearly"} onChange={() => setPurchaseCycle("yearly")} /> Yearly — save 15%</label>
+                </div>
+                <p className="mt-4 text-2xl font-bold text-white">NPR {aiModulePrice.toLocaleString()}<span className="ml-1 text-sm font-normal text-slate-300">{purchaseCycle === "yearly" ? "for 12 months (15% off)" : "per month"}</span></p>
+                <Button onClick={() => void buyAiModule()} disabled={purchasing} className="mt-5 w-full rounded-full bg-amber-300 text-slate-950 hover:bg-amber-200">
+                  {purchasing ? "Starting payment..." : "Buy AI module"}
+                </Button>
+              </div>
+            </div>
+          ) : <div className="relative flex-1 overflow-hidden px-2 py-2 sm:px-3">
             {/* Plain native scroll container -- we own scrollTop directly via
                 viewportRef, so there's no dependency on Radix's internal
                 viewport element or mount timing. */}
@@ -408,9 +503,9 @@ export function BusinessAssistant() {
                 Jump to latest
               </Button>
             )}
-          </div>
+          </div>}
 
-          <div className="border-t border-white/10 bg-slate-950/70 px-4 py-4 backdrop-blur sm:px-4">
+          {moduleStatus === "active" && <div className="border-t border-white/10 bg-slate-950/70 px-4 py-4 backdrop-blur sm:px-4">
             <div className="mb-3 flex flex-wrap gap-2">
               {quickPrompts.map((prompt) => (
                 <Button
@@ -452,7 +547,7 @@ export function BusinessAssistant() {
                 </Button>
               </div>
             </div>
-          </div>
+          </div>}
         </div>
       </SheetContent>
     </Sheet>

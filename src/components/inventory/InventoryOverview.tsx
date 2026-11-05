@@ -23,6 +23,7 @@ import { useAuth } from "@/context/AuthContext";
 import { formatCurrencyValue } from "@/functions/formatcurrencyvalue";
 import { CurrencyUtil } from "@/utils/currency.util";
 import { InventorySkeleton } from "@/skeleton/inventorySkeleton/inventorySkeleton";
+import { InventoryHistoryDialog } from "./InventoryHistoryDialog";
 
 const Api = import.meta.env.VITE_API_URL || "";
 
@@ -44,8 +45,9 @@ export function InventoryOverview() {
 
   // Search & Filter state
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [historyItem, setHistoryItem] = useState<Product | null>(null);
 
   const calculateProductStatus = (
     quantity: number
@@ -95,6 +97,10 @@ export function InventoryOverview() {
       const data = await response.json();
       const inventoryData = (data.inventory || []).map((product: Product) => ({
         ...product,
+        // Old records only have category; show it as a tag until they are next edited.
+        tags: Array.isArray(product.tags) && product.tags.length > 0
+          ? product.tags
+          : product.category ? [product.category] : [],
         status: calculateProductStatus(product.quantity),
         maxStock: product.maxStock || 1000,
       }));
@@ -233,9 +239,9 @@ export function InventoryOverview() {
     return "bg-emerald-600";
   };
 
-  // Derive filter categories
-  const categoriesList = Array.from(
-    new Set(products.map((p) => p.category).filter(Boolean))
+  // Derive filter tags
+  const tagsList = Array.from(
+    new Set(products.flatMap((p) => p.tags || []).filter(Boolean))
   );
 
   // Filter products
@@ -243,11 +249,10 @@ export function InventoryOverview() {
     const matchesSearch =
       !searchTerm ||
       product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.tags?.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
       product._id?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCategory =
-      !selectedCategory || product.category === selectedCategory;
+    const matchesTag = !selectedTag || product.tags?.includes(selectedTag);
 
     const matchesStatus =
       !selectedStatus ||
@@ -255,7 +260,7 @@ export function InventoryOverview() {
       (selectedStatus === "low-stock" && product.quantity > 0 && product.quantity < 30) ||
       (selectedStatus === "in-stock" && product.quantity >= 30);
 
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesTag && matchesStatus;
   });
 
   if (loading) {
@@ -305,8 +310,8 @@ export function InventoryOverview() {
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-medium">
-            <span>Categories</span>
-            <span className="font-bold text-slate-900">{categoriesList.length} Types</span>
+            <span>Tags</span>
+            <span className="font-bold text-slate-900">{tagsList.length} Types</span>
           </div>
         </div>
 
@@ -470,7 +475,7 @@ export function InventoryOverview() {
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search by product name, category, or ID..."
+                placeholder="Search by product name, tag, or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-slate-50/50"
@@ -485,18 +490,18 @@ export function InventoryOverview() {
               )}
             </div>
 
-            {/* Category Filter */}
-            {categoriesList.length > 0 && (
+            {/* Tag Filter */}
+            {tagsList.length > 0 && (
               <div className="w-full sm:w-48">
                 <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  value={selectedTag}
+                  onChange={(e) => setSelectedTag(e.target.value)}
                   className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-slate-50/50 font-medium text-slate-700"
                 >
-                  <option value="">All Categories</option>
-                  {categoriesList.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
+                  <option value="">All Tags</option>
+                  {tagsList.map((tag) => (
+                    <option key={tag} value={tag}>
+                      {tag}
                     </option>
                   ))}
                 </select>
@@ -527,15 +532,15 @@ export function InventoryOverview() {
             </div>
             <h4 className="text-sm font-bold text-slate-800">No matching products found</h4>
             <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
-              {searchTerm || selectedCategory || selectedStatus
+              {searchTerm || selectedTag || selectedStatus
                 ? "No inventory items match your current search and filter selections."
                 : "No products in stock catalog. Click 'Add Inventory' to create your first item!"}
             </p>
-            {(searchTerm || selectedCategory || selectedStatus) && (
+            {(searchTerm || selectedTag || selectedStatus) && (
               <button
                 onClick={() => {
                   setSearchTerm("");
-                  setSelectedCategory("");
+                  setSelectedTag("");
                   setSelectedStatus("");
                 }}
                 className="text-xs font-semibold text-slate-900 hover:underline"
@@ -550,7 +555,7 @@ export function InventoryOverview() {
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                   <th className="py-3 px-4">Product</th>
-                  <th className="py-3 px-4">Category</th>
+                  <th className="py-3 px-4">Tags</th>
                   <th className="py-3 px-4">Unit Price</th>
                   <th className="py-3 px-4 min-w-[180px]">Stock Level & Capacity</th>
                   <th className="py-3 px-4">Status</th>
@@ -566,7 +571,12 @@ export function InventoryOverview() {
                   const progressColor = getProgressColor(stockPct);
 
                   return (
-                    <tr key={product._id} className="hover:bg-slate-50/60 transition-colors group">
+                    <tr
+                      key={product._id}
+                      onClick={() => setHistoryItem(product)}
+                      className="hover:bg-slate-50/60 transition-colors group cursor-pointer"
+                      title="Click to view item history"
+                    >
                       {/* Product details */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
@@ -584,11 +594,13 @@ export function InventoryOverview() {
                         </div>
                       </td>
 
-                      {/* Category */}
+                      {/* Tags */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                          {product.category || "General"}
-                        </span>
+                        <div className="flex flex-wrap gap-1 max-w-48">
+                          {product.tags?.length ? product.tags.map((tag) => (
+                            <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">#{tag}</span>
+                          )) : <span className="text-slate-400">No tags</span>}
+                        </div>
                       </td>
 
                       {/* Unit price */}
@@ -601,7 +613,7 @@ export function InventoryOverview() {
                         <div className="space-y-1.5 max-w-[200px]">
                           <div className="flex items-center justify-between text-[11px] font-medium text-slate-700">
                             <span>
-                              <strong className="text-slate-900">{product.quantity}</strong> / {maxCap} units
+                              <strong className="text-slate-900">{product.quantity}</strong> / {maxCap} {product.baseUnit || "PCS"}
                             </span>
                             <span className="text-slate-500 font-semibold">{stockPct}%</span>
                           </div>
@@ -621,12 +633,12 @@ export function InventoryOverview() {
 
                       {/* Admin Actions */}
                       {user?.role === "admin" && (
-                        <td className="py-3.5 px-4 whitespace-nowrap text-right">
+                        <td className="py-3.5 px-4 whitespace-nowrap text-right" onClick={(event) => event.stopPropagation()}>
                           <div className="flex items-center justify-end gap-1.5">
                             <UpdateInventory
                               productId={product._id}
                               productName={product.name}
-                              productCategory={product.category}
+                              productTags={product.tags || []}
                               productPrice={product.price}
                               productQuantity={product.quantity}
                               onUpdate={(updatedProduct) => {
@@ -659,6 +671,11 @@ export function InventoryOverview() {
           </div>
         )}
       </div>
+      <InventoryHistoryDialog
+        item={historyItem}
+        open={Boolean(historyItem)}
+        onOpenChange={(open) => { if (!open) setHistoryItem(null); }}
+      />
     </div>
   );
 }

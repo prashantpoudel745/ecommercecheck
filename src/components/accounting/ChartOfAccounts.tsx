@@ -27,6 +27,7 @@ import {
   CardTitle,
   CardDescription 
 } from "@/components/ui/card";
+import { AccountLedgerDialog } from "./AccountLedgerDialog";
 
 export default function ChartOfAccounts() {
   const [accounts, setAccounts] = useState([]);
@@ -36,12 +37,16 @@ export default function ChartOfAccounts() {
   const [showGroupForm, setShowGroupForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [groupFilter, setGroupFilter] = useState("all");
+  const [selectedLedger, setSelectedLedger] = useState<any | null>(null);
   const [newAccount, setNewAccount] = useState({
     code: "",
     name: "",
     accountGroup: "",
     openingBalance: 0,
-    description: ""
+    description: "",
+    email: "",
+    phone: "",
+    panNumber: ""
   });
   const [newGroup, setNewGroup] = useState({
     name: "",
@@ -87,7 +92,7 @@ export default function ChartOfAccounts() {
       await createAccount(newAccount);
       fetchData();
       setShowForm(false);
-      setNewAccount({ code: "", name: "", accountGroup: "", openingBalance: 0, description: "" });
+      setNewAccount({ code: "", name: "", accountGroup: "", openingBalance: 0, description: "", email: "", phone: "", panNumber: "" });
     } catch (error) {
       console.error("Failed to create account", error);
     }
@@ -263,6 +268,18 @@ export default function ChartOfAccounts() {
                 <Label>Opening Bal</Label>
                 <Input type="number" value={newAccount.openingBalance} onChange={e => setNewAccount({...newAccount, openingBalance: e.target.value ? CurrencyUtil.parse(e.target.value).toNumber() : 0})} placeholder="0.00" />
               </div>
+              <div className="space-y-2">
+                <Label>Email (Optional)</Label>
+                <Input type="email" value={newAccount.email} onChange={e => setNewAccount({...newAccount, email: e.target.value})} placeholder="contact@example.com" />
+              </div>
+              <div className="space-y-2">
+                <Label>Phone (Optional)</Label>
+                <Input type="tel" value={newAccount.phone} onChange={e => setNewAccount({...newAccount, phone: e.target.value})} placeholder="e.g. 98XXXXXXXX" />
+              </div>
+              <div className="space-y-2">
+                <Label>PAN / VAT (Optional)</Label>
+                <Input value={newAccount.panNumber} maxLength={9} onChange={e => setNewAccount({...newAccount, panNumber: e.target.value})} placeholder="9-digit PAN" />
+              </div>
               {newAccount.accountGroup && (
                 <div className="lg:col-span-1 flex items-end pb-2">
                   <div className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100 flex items-center gap-1">
@@ -338,7 +355,7 @@ export default function ChartOfAccounts() {
                     </tr>
                   ) : (
                     filteredAccounts.map((account) => (
-                      <tr key={account._id} className="hover:bg-blue-50/30 transition-colors group">
+                      <tr key={account._id} onClick={() => setSelectedLedger(account)} className="hover:bg-blue-50/30 transition-colors group cursor-pointer" title="Click to view ledger history">
                         <td className="px-4 py-4 font-mono text-xs text-blue-600 bg-blue-50/10">{account.code}</td>
                         <td className="px-4 py-4 font-medium text-gray-900">{account.name}</td>
                         <td className="px-4 py-4">
@@ -367,6 +384,8 @@ export default function ChartOfAccounts() {
           </div>
         </CardContent>
       </Card>
+
+      <AccountLedgerDialog account={selectedLedger} open={Boolean(selectedLedger)} onOpenChange={(open) => { if (!open) setSelectedLedger(null); }} />
 
       <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-xl flex gap-3 items-start">
         <Info className="w-5 h-5 text-blue-500 mt-0.5" />

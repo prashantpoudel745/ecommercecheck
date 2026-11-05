@@ -8,7 +8,7 @@ const DownloadInventoryCSVButton = ({ products }) => {
     const headers = [
       "Product Name",
       "ID",
-      "Category",
+      "Tags",
       "Price",
       "Quantity",
       "Max Stock",
@@ -30,7 +30,7 @@ const DownloadInventoryCSVButton = ({ products }) => {
       return [
         product.name || "",
         product._id || "",
-        product.category || "",
+        (product.tags || product.category ? (product.tags || [product.category]).join(", ") : ""),
         product.price ? `${CURRENCY_SYMBOL}${formatCurrencyValue(product.price)}` : "",
         product.quantity || 0,
         product.maxStock || 0,

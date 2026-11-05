@@ -29,6 +29,7 @@ export default function InvoicesPage() {
     queryFn: fetchInvoices,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    refetchOnMount: "always",
   });
 
   const data = (response?.data || []) as InvoiceRow[];

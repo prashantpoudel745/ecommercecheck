@@ -84,7 +84,8 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       id: "purchase",
       subItems: [
         { label: "Purchase Order",   path: "/purchase/orders",          canCreate: true },
-        { label: "Purchase Bills",   path: "/purchase/bills",           canCreate: true },
+        { label: "Purchase Proformas", path: "/purchase/proformas",      canCreate: true },
+        { label: "Purchase Invoice", path: "/purchase/bills",           canCreate: true },
         { label: "Supplier Payment", path: "/purchase/supplier-payment",canCreate: true },
         { label: "Expenses",         path: "/purchase/expenses",        canCreate: true },
         { label: "Suppliers",        path: "/purchase/suppliers",       canCreate: true },
@@ -137,7 +138,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       icon: <Settings size={20} />,
       id: "settings",
       subItems: [
-        { label: "Company Profile (IRD)", path: "/settings/company" },
+        { label: "Company Profile", path: "/settings/company" },
         // { label: "Backup & Restore ",   path: "/settings/backup"  },
       ],
     },

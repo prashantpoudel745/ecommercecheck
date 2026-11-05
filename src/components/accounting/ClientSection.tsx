@@ -44,7 +44,10 @@ export default function ClientSection() {
     name: "",
     accountGroup: "",
     openingBalance: 0,
-    description: ""
+    description: "",
+    email: "",
+    phone: "",
+    panNumber: ""
   });
 
   useEffect(() => {
@@ -66,7 +69,7 @@ export default function ClientSection() {
       await createAccount(newParty);
       toast.success("Party created successfully");
       setShowForm(false);
-      setNewParty({ code: "", name: "", accountGroup: "", openingBalance: 0, description: "" });
+      setNewParty({ code: "", name: "", accountGroup: "", openingBalance: 0, description: "", email: "", phone: "", panNumber: "" });
       if (refresh) refresh();
     } catch (error) {
       toast.error("Failed to create party");
@@ -406,6 +409,39 @@ export default function ClientSection() {
                   value={newParty.openingBalance} 
                   onChange={e => setNewParty({...newParty, openingBalance: e.target.value ? CurrencyUtil.parse(e.target.value).toNumber() : 0})} 
                   placeholder="0.00" 
+                  disabled={isSubmitting}
+                  className="bg-white border-slate-200 focus-visible:ring-indigo-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-slate-600 font-semibold">Email (Optional)</Label>
+                <Input 
+                  type="email" 
+                  value={newParty.email} 
+                  onChange={e => setNewParty({...newParty, email: e.target.value})} 
+                  placeholder="contact@example.com" 
+                  disabled={isSubmitting}
+                  className="bg-white border-slate-200 focus-visible:ring-indigo-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-slate-600 font-semibold">Phone (Optional)</Label>
+                <Input 
+                  type="tel" 
+                  value={newParty.phone} 
+                  onChange={e => setNewParty({...newParty, phone: e.target.value})} 
+                  placeholder="e.g. 98XXXXXXXX" 
+                  disabled={isSubmitting}
+                  className="bg-white border-slate-200 focus-visible:ring-indigo-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-slate-600 font-semibold">PAN / VAT (Optional)</Label>
+                <Input 
+                  value={newParty.panNumber} 
+                  maxLength={9} 
+                  onChange={e => setNewParty({...newParty, panNumber: e.target.value})} 
+                  placeholder="9-digit PAN" 
                   disabled={isSubmitting}
                   className="bg-white border-slate-200 focus-visible:ring-indigo-500"
                 />

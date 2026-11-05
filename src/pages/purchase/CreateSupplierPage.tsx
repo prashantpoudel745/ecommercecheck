@@ -101,17 +101,23 @@ export default function CreateSupplierPage() {
               <input name="contactPerson" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="Primary contact" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Email Address</label>
+              <label className="text-sm font-medium text-slate-700">
+                Email Address
+                <span className="ml-1 text-xs text-slate-500 font-normal">(optional)</span>
+              </label>
               <input name="email" type="email" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="vendor@example.com" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Phone Number</label>
+              <label className="text-sm font-medium text-slate-700">
+                Phone Number
+                <span className="ml-1 text-xs text-slate-500 font-normal">(optional)</span>
+              </label>
               <input name="phone" type="tel" onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="e.g. 977-01-1234567" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">
                 PAN / VAT Number
-                <span className="ml-1 text-xs text-amber-600 font-normal">(9 digits — IRD Required)</span>
+                <span className="ml-1 text-xs text-slate-500 font-normal">(optional; 9 digits if entered)</span>
               </label>
               <input
                 name="taxNumber"

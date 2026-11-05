@@ -32,6 +32,7 @@ export default function QuotationsPage() {
     queryFn: fetchQuotations,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    refetchOnMount: "always",
   });
 
   const data = (response?.data || []) as QuotationRow[];

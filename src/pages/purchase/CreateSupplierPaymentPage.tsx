@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
-import { createSupplierPayment } from "@/services/purchase.service";
+import { createSupplierPayment, fetchSuppliers } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
 
 type SupplierPaymentRow = {
@@ -21,6 +21,16 @@ export default function CreateSupplierPaymentPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<any>({ paymentMethod: "BANK_TRANSFER" });
   const [accounts, setAccounts] = useState<any[]>([]);
+  const [suppliers, setSuppliers] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchSuppliers()
+      .then((res) => {
+        const list = res?.data || res || [];
+        setSuppliers(Array.isArray(list) ? list : []);
+      })
+      .catch(() => setSuppliers([]));
+  }, []);
 
   useEffect(() => {
     getAccounts()
@@ -106,8 +116,32 @@ export default function CreateSupplierPaymentPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Supplier Name</label>
-              <input name="supplierName" required onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100" placeholder="Enter supplier name" />
+              <label className="text-sm font-medium text-slate-700">Supplier Name *</label>
+              <select
+                name="supplierName"
+                required
+                value={formData.supplierName || ""}
+                onChange={(e) => {
+                  setFormData({ ...formData, supplierName: e.target.value });
+                }}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
+              >
+                <option value="">Select Supplier / Ledger...</option>
+                {suppliers.map((s: any) => {
+                  const name = s.companyName || s.name || s.supplierName;
+                  return (
+                    <option key={s._id} value={name}>
+                      {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                    </option>
+                  );
+                })}
+              </select>
+              <p className="text-[11px] text-slate-500">
+                New suppliers must be created as a ledger in{" "}
+                <a href="/accounting" target="_blank" rel="noreferrer" className="text-emerald-600 underline font-medium">
+                  Chart of Accounts
+                </a>.
+              </p>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Amount Paid</label>

@@ -55,6 +55,11 @@ export const createAccount = async (data: Partial<Account>) => {
   return response.data;
 };
 
+export const getAccountLedger = async (id: string) => {
+  const response = await api.get(`/erp/accounts/${id}/ledger`);
+  return response.data;
+};
+
 // Customers/Clients
 export const getCustomers = async (): Promise<any[]> => {
   const response = await api.get("/customer");

@@ -122,16 +122,6 @@ export default function CompanySettingsPage() {
     e.preventDefault();
     if (panError) return;
 
-    if (
-      !profile?.address?.province ||
-      !profile?.address?.district ||
-      !profile?.address?.localBody ||
-      !profile?.address?.street
-    ) {
-      setMsg({ text: "Please complete all required address fields.", type: "error" });
-      return;
-    }
-
     setSaving(true);
     setMsg({ text: "", type: "" });
     try {
@@ -219,11 +209,11 @@ export default function CompanySettingsPage() {
               </h1>
               <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-amber-200">
                 <ShieldCheck size={13} className="text-amber-700" />
-                IRD Required
+                Optional IRD setup
               </span>
             </div>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Statutory company details, PAN/VAT registration, tax masters, and official address for tax invoice printing.
+              PAN/VAT, IRD registration, and address details are optional. Add them when you need statutory invoice printing or CBMS sync.
             </p>
           </div>
 
@@ -297,8 +287,8 @@ export default function CompanySettingsPage() {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  PAN Number <span className="text-rose-600">*</span>
-                  <span className="ml-2 text-[11px] font-normal text-amber-700 normal-case">(9 numeric digits)</span>
+                  PAN Number
+                  <span className="ml-2 text-[11px] font-normal text-slate-500 normal-case">(optional; 9 numeric digits if entered)</span>
                 </label>
                 <input
                   value={profile?.pan || ""}
@@ -306,21 +296,19 @@ export default function CompanySettingsPage() {
                   className={`w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all shadow-2xs ${panError ? "border-rose-500" : "border-slate-300"}`}
                   placeholder="123456789"
                   maxLength={9}
-                  required
                 />
                 {panError && <p className="text-rose-600 text-xs font-semibold mt-1">{panError}</p>}
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  VAT Number <span className="text-rose-600">*</span>
+                  VAT Number <span className="ml-2 text-[11px] font-normal text-slate-500 normal-case">(optional)</span>
                 </label>
                 <input
                   value={profile?.vatNo || ""}
                   onChange={(e) => handleChange("vatNo", e.target.value)}
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all shadow-2xs"
                   placeholder="Same as PAN for most businesses"
-                  required
                 />
               </div>
 
@@ -396,14 +384,13 @@ export default function CompanySettingsPage() {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  IRD Registration / Certificate No. <span className="text-rose-600">*</span>
+                  IRD Registration / Certificate No. <span className="ml-2 text-[11px] font-normal text-slate-500 normal-case">(optional)</span>
                 </label>
                 <input
                   value={profile?.irdRegistrationNo || ""}
                   onChange={(e) => handleChange("irdRegistrationNo", e.target.value)}
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all shadow-2xs"
                   placeholder="Billing software certificate number"
-                  required
                 />
               </div>
             </div>
@@ -549,13 +536,12 @@ export default function CompanySettingsPage() {
               {/* Province */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  Province <span className="text-rose-600">*</span>
+                  Province <span className="ml-2 text-[11px] font-normal text-slate-500 normal-case">(optional)</span>
                 </label>
                 <select
                   value={selectedProvinceId}
                   onChange={handleProvinceChange}
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all shadow-2xs"
-                  required
                 >
                   <option value="">Select Province</option>
                   {PROVINCES_WITH_DISTRICTS.map((p: any) => (
@@ -567,14 +553,13 @@ export default function CompanySettingsPage() {
               {/* District */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  District <span className="text-rose-600">*</span>
+                  District <span className="ml-2 text-[11px] font-normal text-slate-500 normal-case">(optional)</span>
                 </label>
                 <select
                   value={selectedDistrictId}
                   onChange={handleDistrictChange}
                   disabled={!selectedProvinceId}
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all shadow-2xs disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed"
-                  required
                 >
                   <option value="">Select District</option>
                   {districtsForProvince.map((d: any) => (
@@ -589,7 +574,7 @@ export default function CompanySettingsPage() {
               {/* Municipality / Local Body */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  Municipality / Local Body <span className="text-rose-600">*</span>
+                  Municipality / Local Body <span className="ml-2 text-[11px] font-normal text-slate-500 normal-case">(optional)</span>
                 </label>
                 <select
                   value={
@@ -600,7 +585,6 @@ export default function CompanySettingsPage() {
                   onChange={handleLocalBodyChange}
                   disabled={!selectedDistrictId}
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all shadow-2xs disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed"
-                  required
                 >
                   <option value="">Select Municipality</option>
                   {municipalitiesForDistrict.map((m: any) => (
@@ -615,14 +599,13 @@ export default function CompanySettingsPage() {
               {/* Street Address / Ward */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  Street Address / Ward <span className="text-rose-600">*</span>
+                  Street Address / Ward <span className="ml-2 text-[11px] font-normal text-slate-500 normal-case">(optional)</span>
                 </label>
                 <input
                   value={profile?.address?.street || ""}
                   onChange={(e) => handleAddressChange("street", e.target.value)}
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all shadow-2xs"
                   placeholder="Ward No. 3, New Baneshwor"
-                  required
                 />
               </div>
 

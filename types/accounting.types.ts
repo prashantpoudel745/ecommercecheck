@@ -37,9 +37,13 @@ export interface Account {
   accountGroup: AccountGroup | string;
   type: string;
   openingBalance: DecimalValue;
+  openingBalanceType?: "DEBIT" | "CREDIT";
   currentBalance: DecimalValue;
   currency: string;
   description?: string;
+  email?: string;
+  phone?: string;
+  panNumber?: string;
 }
 
 export interface VoucherEntry {
@@ -231,6 +235,9 @@ export interface TransactionFormData {
     price: number;
     amount: number;
     productCategory: string;
+    unit?: string;
+    conversionFactor?: number;
+    baseQuantity?: number;
     vatExempt?: boolean;
   }[];
 }
