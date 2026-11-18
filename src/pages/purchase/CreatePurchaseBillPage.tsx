@@ -3,10 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
-import { createPurchaseBill, fetchPurchaseProforma, fetchSuppliers } from "@/services/purchase.service";
+import { createPurchaseBill, fetchPurchaseProforma, fetchSupplierLedgers, fetchSuppliers } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
 import { Plus, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { buildSupplierOptions } from "@/utils/supplierOptions";
 
 type PurchaseBillRow = {
   _id: string;
@@ -41,6 +42,7 @@ export default function CreatePurchaseBillPage() {
   });
 
   const [accounts, setAccounts] = useState<any[]>([]);
+  const [ledgerAccounts, setLedgerAccounts] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
 
   useEffect(() => {
@@ -50,6 +52,12 @@ export default function CreatePurchaseBillPage() {
         setSuppliers(Array.isArray(list) ? list : []);
       })
       .catch(() => setSuppliers([]));
+  }, []);
+
+  useEffect(() => {
+    fetchSupplierLedgers()
+      .then((res) => setLedgerAccounts(Array.isArray(res?.data) ? res.data : []))
+      .catch(() => setLedgerAccounts([]));
   }, []);
 
   useEffect(() => {
@@ -91,6 +99,11 @@ export default function CreatePurchaseBillPage() {
         );
       }),
     [accounts]
+  );
+
+  const supplierOptions = useMemo(
+    () => buildSupplierOptions(suppliers, ledgerAccounts),
+    [suppliers, ledgerAccounts]
   );
 
   const handleInputChange = (e: any) => {
@@ -216,7 +229,7 @@ export default function CreatePurchaseBillPage() {
                   value={formData.supplierName}
                   onChange={(e) => {
                     const name = e.target.value;
-                    const selected = suppliers.find((s) => (s.companyName || s.name || s.supplierName) === name);
+                    const selected = supplierOptions.find((s) => (s.companyName || s.name || s.supplierName) === name);
                     setFormData((prev: any) => ({
                       ...prev,
                       supplierName: name,
@@ -227,11 +240,11 @@ export default function CreatePurchaseBillPage() {
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
                 >
                   <option value="">Select Supplier / Ledger...</option>
-                  {suppliers.map((s: any) => {
+                  {supplierOptions.map((s: any) => {
                     const name = s.companyName || s.name || s.supplierName;
                     return (
                       <option key={s._id} value={name}>
-                        {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                        {s.displayName || `${name}${s.accountGroup ? ` (${s.accountGroup})` : ""}`}
                       </option>
                     );
                   })}

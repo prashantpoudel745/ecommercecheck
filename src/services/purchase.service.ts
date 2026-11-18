@@ -83,6 +83,11 @@ export const fetchSuppliers = async () => {
   return response.data;
 };
 
+export const fetchSupplierLedgers = async () => {
+  const response = await api.get("/purchase/supplier-ledgers");
+  return response.data;
+};
+
 export const createSupplier = async (data: ApiPayload) => {
   const response = await api.post("/purchase/suppliers", data);
   return response.data;

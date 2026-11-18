@@ -230,7 +230,7 @@ export default function CreateInvoicePage() {
       }
 
       resetForm();
-      navigate("/sales/invoices");
+      navigate("/sales/invoice");
     } catch (error) {
       toast.error(error);
     } finally {

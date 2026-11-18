@@ -31,8 +31,13 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CURRENCY_SYMBOL } from "@/utils/formatCurrency";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
-import { DialogHeader } from "../ui/dialog";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
 
 export default function VoucherBook() {
   const { 
@@ -83,18 +88,39 @@ export default function VoucherBook() {
     }
   };
 
+  const getDueAmount = (v: Voucher) => {
+    if (v.amountDue != null && Number(v.amountDue) > 0) {
+      return Number(v.amountDue);
+    }
+    const total = Number(v.totalAmount || 0);
+    const paid = Number(v.amountPaid || 0);
+    const rem = total - paid;
+    return rem > 0 ? rem : total;
+  };
+
+  const isSettleable = (v: Voucher) => {
+    if (v.status !== "POSTED") return false;
+    const due = getDueAmount(v);
+    const isPaid = v.paymentStatus === "PAID" && due <= 0;
+    return !isPaid;
+  };
+
   const openPaymentModal = (voucher: Voucher) => {
     setPaymentVoucher(voucher);
     setPaymentType("COMPLETE");
     
     const cashAcc = accounts.find(a => a.type === "ASSET" && /Cash|Bank/i.test(a.name));
+    const fallbackAcc = cashAcc ? cashAcc._id : (cashBankAccounts[0]?._id || accounts[0]?._id || "");
+    const due = getDueAmount(voucher);
+
+    const isClient = voucher.type === "SALES" || voucher.type === "RECEIPT";
     
     setPaymentData({
-      amount: Number(voucher.amountDue) || 0,
-      paymentMethod: "Cash",
-      paymentAccountId: cashAcc ? cashAcc._id : "",
+      amount: due,
+      paymentMethod: "Cash in Hand",
+      paymentAccountId: fallbackAcc,
       transactionId: "",
-      narration: `Payment for ${voucher.voucherNumber}`,
+      narration: `${isClient ? "Receipt" : "Payment"} for ${voucher.voucherNumber} (${voucher.partyName || "Party"})`,
       title: "",
       description: "",
     });
@@ -103,12 +129,19 @@ export default function VoucherBook() {
 
   const handleRecordPayment = async () => {
     if (!paymentVoucher) return;
-    if (!paymentData.paymentAccountId) return;
+    if (!paymentData.paymentAccountId) {
+      toast.error("Please select a Cash or Bank account to settle this voucher");
+      return;
+    }
+    if (!paymentData.amount || paymentData.amount <= 0) {
+      toast.error("Please enter a valid amount greater than 0");
+      return;
+    }
 
     setPaymentLoading(true);
     try {
       await recordPayment(paymentVoucher._id, {
-        amount: paymentData.amount,
+        amount: Number(paymentData.amount),
         paymentAccountId: paymentData.paymentAccountId,
         paymentMethod: paymentData.paymentMethod,
         transactionId: paymentData.transactionId,
@@ -116,11 +149,17 @@ export default function VoucherBook() {
         title: paymentData.title,
         description: paymentData.description,
       });
+      const isClient = paymentVoucher.type === "SALES" || paymentVoucher.type === "RECEIPT";
+      toast.success(
+        isClient
+          ? `Receipt of ${CURRENCY_SYMBOL}${paymentData.amount} recorded! Client receivables updated.`
+          : `Payment of ${CURRENCY_SYMBOL}${paymentData.amount} recorded! Supplier payables updated.`
+      );
       setShowPaymentModal(false);
       setPaymentVoucher(null);
       refresh();
-    } catch (err) {
-      // console.error(err);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || err.message || "Failed to record payment");
     } finally {
       setPaymentLoading(false);
     }
@@ -301,13 +340,13 @@ export default function VoucherBook() {
               <tbody className="divide-y divide-gray-100">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-4 text-center text-gray-400 italic">
+                    <td colSpan={7} className="px-4 py-8 text-center text-gray-400 italic">
                       Loading your financial history...
                     </td>
                   </tr>
                 ) : filteredVouchers.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-4 text-center text-gray-400 italic">
+                    <td colSpan={7} className="px-4 py-8 text-center text-gray-400 italic">
                       No vouchers found.
                     </td>
                   </tr>
@@ -320,16 +359,6 @@ export default function VoucherBook() {
                           <span className="text-gray-900 font-medium">
                             {new Date(voucher.date).toLocaleDateString()}
                           </span>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="h-8 px-2 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
-                          onClick={() => openPaymentModal(voucher)}
-                          title="Record Payment"
-                        >
-                          <DollarSign className="w-3.5 h-3.5 mr-1" />
-                          Pay
-                        </Button>
                         </div>
                       </td>
                       <td className="px-4 py-4">
@@ -355,9 +384,25 @@ export default function VoucherBook() {
                         </span>
                       </td>
                       <td className="px-4 py-4 text-center">
-                        <div className="flex justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-center gap-1.5">
+                          {isSettleable(voucher) && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="h-8 px-2.5 border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold shadow-xs"
+                              onClick={() => openPaymentModal(voucher)}
+                              title={
+                                voucher.type === "SALES" || voucher.type === "RECEIPT"
+                                  ? "Receive Client Payment (Update Receivables)"
+                                  : "Pay Supplier (Update Payables)"
+                              }
+                            >
+                              <DollarSign className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                              {voucher.type === "SALES" || voucher.type === "RECEIPT" ? "Receive" : "Pay"}
+                            </Button>
+                          )}
                           <Button variant="ghost" size="icon" onClick={() => setSelectedVoucher(voucher)}>
-                            <Eye className="w-4 h-4 text-blue-600" title="View" />
+                            <Eye className="w-4 h-4 text-blue-600" title="View Voucher" />
                           </Button>
                           {voucher.status === "DRAFT" && (
                             <>
@@ -372,11 +417,6 @@ export default function VoucherBook() {
                           {voucher.status === "POSTED" && (
                             <Button variant="ghost" size="icon" onClick={() => handleCancel(voucher._id, voucher.status)}>
                               <Undo2 className="w-4 h-4 text-rose-600" title="Reverse Voucher" />
-                            </Button>
-                          )}
-                          {voucher.paymentStatus !== "PAID" && voucher.status === "POSTED" && (
-                            <Button variant="ghost" size="icon" onClick={() => openPaymentModal(voucher)}>
-                              <DollarSign className="w-4 h-4 text-green-600" title="Record Payment" />
                             </Button>
                           )}
                         </div>
@@ -504,18 +544,29 @@ export default function VoucherBook() {
       <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
         <DialogContent className="sm:max-w-[700px]">
           <DialogHeader>
-            <DialogTitle>Record Payment</DialogTitle>
+            <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+              <DollarSign className="w-5 h-5 text-emerald-600" />
+              {paymentVoucher?.type === "SALES" || paymentVoucher?.type === "RECEIPT"
+                ? "Receive Client Payment (Update Receivables)"
+                : "Pay Supplier (Update Payables)"}
+            </DialogTitle>
             <DialogDescription>
-              Record a payment for {paymentVoucher?.partyName} (Voucher {paymentVoucher?.voucherNumber})
+              Record a payment for <strong>{paymentVoucher?.partyName}</strong> (Voucher {paymentVoucher?.voucherNumber})
             </DialogDescription>
           </DialogHeader>
           
           {paymentVoucher && (
             <div className="space-y-4 py-4">
-              <div className="p-4 bg-indigo-50/50 rounded-xl text-indigo-900 text-sm">
-                <div className="flex justify-between font-bold">
-                  <span>Total Due:</span> 
-                  <span>{CURRENCY_SYMBOL}{CurrencyUtil.format(paymentVoucher.amountDue)}</span>
+              <div className="p-4 bg-indigo-50/70 border border-indigo-100 rounded-xl text-indigo-950 text-sm">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-semibold text-slate-600">Total Voucher Amount:</span>{" "}
+                    <span className="font-bold">{CURRENCY_SYMBOL}{CurrencyUtil.format(paymentVoucher.totalAmount)}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-semibold text-slate-600">Outstanding Due:</span>{" "}
+                    <span className="font-black text-rose-600 text-base">{CURRENCY_SYMBOL}{CurrencyUtil.format(getDueAmount(paymentVoucher))}</span>
+                  </div>
                 </div>
               </div>
 
@@ -524,79 +575,86 @@ export default function VoucherBook() {
                   <Button 
                     type="button"
                     variant={paymentType === "COMPLETE" ? "default" : "outline"}
-                    className={paymentType === "COMPLETE" ? "w-1/2 bg-emerald-500 hover:bg-emerald-600" : "w-1/2"}
+                    className={paymentType === "COMPLETE" ? "w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold" : "w-1/2"}
                     onClick={() => {
                       setPaymentType("COMPLETE");
-                      setPaymentData({...paymentData, amount: Number(paymentVoucher?.amountDue) || 0});
+                      setPaymentData({...paymentData, amount: getDueAmount(paymentVoucher)});
                     }}
                   >
-                    Complete Pay
+                    Complete Settle ({CURRENCY_SYMBOL}{CurrencyUtil.format(getDueAmount(paymentVoucher))})
                   </Button>
                   <Button 
                     type="button"
                     variant={paymentType === "PARTIAL" ? "default" : "outline"}
-                    className={paymentType === "PARTIAL" ? "w-1/2 bg-amber-500 hover:bg-amber-600" : "w-1/2"}
+                    className={paymentType === "PARTIAL" ? "w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold" : "w-1/2"}
                     onClick={() => setPaymentType("PARTIAL")}
                   >
-                    Partial Pay
+                    Partial Payment
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="amount">Amount</Label>
+                    <Label htmlFor="amount" className="font-semibold text-slate-700">Amount ({CURRENCY_SYMBOL})</Label>
                     <Input
                       id="amount"
                       type="number"
-                      min="0"
+                      min="0.01"
                       step="0.01"
                       disabled={paymentType === "COMPLETE"}
                       value={paymentData.amount}
                       onChange={(e) => setPaymentData({...paymentData, amount: Number(e.target.value)})}
+                      className="font-mono text-base"
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label>Method</Label>
+                    <Label className="font-semibold text-slate-700">Payment Method</Label>
                     <select
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       value={paymentData.paymentMethod}
                       onChange={(e) => setPaymentData({...paymentData, paymentMethod: e.target.value})}
                     >
-                      <option value="Cash">Cash</option>
+                      <option value="Cash in Hand">Cash in Hand</option>
                       <option value="Bank Transfer">Bank Transfer</option>
                       <option value="Cheque">Cheque</option>
-                      <option value="Digital Wallet">Digital Wallet</option>
+                      <option value="Digital Wallet">Digital Wallet (eSewa / Khalti)</option>
                     </select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="account">Pay From/To</Label>
+                    <Label htmlFor="account" className="font-semibold text-slate-700">
+                      {paymentVoucher?.type === "SALES" || paymentVoucher?.type === "RECEIPT"
+                        ? "Deposit Into (Asset Account)"
+                        : "Pay From (Asset Account)"}
+                    </Label>
                     <select
                       id="account"
                       className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       value={paymentData.paymentAccountId}
                       onChange={(e) => setPaymentData({...paymentData, paymentAccountId: e.target.value})}
                     >
-                      <option value="">Select Account</option>
+                      <option value="">Select Cash / Bank Account</option>
                       {cashBankAccounts.map((a: any) => (
-                        <option key={a._id} value={a._id}>{a.name}</option>
+                        <option key={a._id} value={a._id}>{a.name} ({a.code})</option>
                       ))}
                     </select>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="transactionId">Tx ID (Optional)</Label>
+                    <Label htmlFor="transactionId" className="font-semibold text-slate-700">
+                      {paymentData.paymentMethod === "Cheque" ? "Cheque Number" : "Tx / Ref ID (Optional)"}
+                    </Label>
                     <Input
                       id="transactionId"
-                      placeholder="e.g. TXN-12345"
+                      placeholder={paymentData.paymentMethod === "Cheque" ? "e.g. CHQ-981245" : "e.g. TXN-12345"}
                       value={paymentData.transactionId}
                       onChange={(e) => setPaymentData({...paymentData, transactionId: e.target.value})}
                     />
                   </div>
 
                   <div className="space-y-2 col-span-2">
-                    <Label htmlFor="narration">Narration / Remarks</Label>
+                    <Label htmlFor="narration" className="font-semibold text-slate-700">Narration / Remarks</Label>
                     <Input
                       id="narration"
                       value={paymentData.narration}
@@ -610,8 +668,12 @@ export default function VoucherBook() {
           
           <div className="flex justify-end gap-3 mt-4">
             <Button variant="ghost" onClick={() => setShowPaymentModal(false)}>Cancel</Button>
-            <Button onClick={handleRecordPayment} disabled={paymentLoading || !paymentData.paymentAccountId} className="font-bold px-4">
-              {paymentLoading ? "Saving..." : "Confirm & Pay Now"}
+            <Button 
+              onClick={handleRecordPayment} 
+              disabled={paymentLoading || !paymentData.paymentAccountId || !paymentData.amount || paymentData.amount <= 0} 
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5"
+            >
+              {paymentLoading ? "Saving Payment..." : "Confirm & Settle Now"}
             </Button>
           </div>
         </DialogContent>

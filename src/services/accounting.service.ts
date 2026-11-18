@@ -45,8 +45,8 @@ export const createAccountGroup = async (data: Partial<AccountGroup>) => {
 };
 
 // Accounts
-export const getAccounts = async (): Promise<Account[]> => {
-  const response = await api.get("/erp/accounts");
+export const getAccounts = async (params?: { groupId?: string; group?: string }): Promise<Account[]> => {
+  const response = await api.get("/erp/accounts", { params });
   return response.data?.accounts ?? response.data ?? [];
 };
 

@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getAccounts } from "@/services/accounting.service";
 import { Account } from "../../../types/accounting.types";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
-import { createPurchaseOrder, fetchSuppliers } from "@/services/purchase.service";
+import { createPurchaseOrder, fetchSupplierLedgers, fetchSuppliers } from "@/services/purchase.service";
 import { Plus, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { buildSupplierOptions } from "@/utils/supplierOptions";
 
 type PurchaseOrderRow = {
   _id: string;
@@ -33,6 +34,7 @@ export default function CreatePurchaseOrderPage() {
   const [paymentAccountId, setPaymentAccountId] = useState("");
   const [transactionId, setTransactionId] = useState("");
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [ledgerAccounts, setLedgerAccounts] = useState<Account[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
 
   useEffect(() => {
@@ -43,7 +45,12 @@ export default function CreatePurchaseOrderPage() {
       })
       .catch(() => setSuppliers([]));
   }, []);
-console.log(supplierName);
+
+  useEffect(() => {
+    fetchSupplierLedgers()
+      .then((res) => setLedgerAccounts(Array.isArray(res?.data) ? res.data : []))
+      .catch(() => setLedgerAccounts([]));
+  }, []);
   useEffect(() => {
     getAccounts()
       .then((accountsList) => {
@@ -64,6 +71,11 @@ console.log(supplierName);
       })
       .catch(console.error);
   }, [paymentAccountId]);
+
+  const supplierOptions = useMemo(
+    () => buildSupplierOptions(suppliers, ledgerAccounts),
+    [suppliers, ledgerAccounts]
+  );
 
   const [items, setItems] = useState([{ itemName: "", unit: "pcs", quantity: 0, price: 0, amount: 0 }]);
   const [taxRate, setTaxRate] = useState(15);
@@ -202,7 +214,7 @@ console.log(supplierName);
                   onChange={(e) => {
                     const name = e.target.value;
                     setSupplierName(name);
-                    const selected = suppliers.find((s) => (s.companyName || s.name || s.supplierName) === name);
+                    const selected = supplierOptions.find((s) => (s.companyName || s.name || s.supplierName) === name);
                     if (selected) {
                       if (selected.email) setSupplierEmail(selected.email);
                       if (selected.phone) setSupplierPhone(selected.phone);
@@ -212,11 +224,11 @@ console.log(supplierName);
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
                 >
                   <option value="">Select Supplier / Ledger...</option>
-                  {suppliers.map((s: any) => {
+                  {supplierOptions.map((s: any) => {
                     const name = s.companyName || s.name || s.supplierName;
                     return (
                       <option key={s._id} value={name}>
-                        {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                        {s.displayName || `${name}${s.accountGroup ? ` (${s.accountGroup})` : ""}`}
                       </option>
                     );
                   })}

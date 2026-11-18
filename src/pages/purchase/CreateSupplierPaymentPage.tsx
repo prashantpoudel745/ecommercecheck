@@ -3,8 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
-import { createSupplierPayment, fetchSuppliers } from "@/services/purchase.service";
+import { createSupplierPayment, fetchSupplierLedgers, fetchSuppliers } from "@/services/purchase.service";
 import { getAccounts } from "@/services/accounting.service";
+import { buildSupplierOptions } from "@/utils/supplierOptions";
 
 type SupplierPaymentRow = {
   _id: string;
@@ -21,6 +22,7 @@ export default function CreateSupplierPaymentPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<any>({ paymentMethod: "BANK_TRANSFER" });
   const [accounts, setAccounts] = useState<any[]>([]);
+  const [ledgerAccounts, setLedgerAccounts] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
 
   useEffect(() => {
@@ -30,6 +32,12 @@ export default function CreateSupplierPaymentPage() {
         setSuppliers(Array.isArray(list) ? list : []);
       })
       .catch(() => setSuppliers([]));
+  }, []);
+
+  useEffect(() => {
+    fetchSupplierLedgers()
+      .then((res) => setLedgerAccounts(Array.isArray(res?.data) ? res.data : []))
+      .catch(() => setLedgerAccounts([]));
   }, []);
 
   useEffect(() => {
@@ -55,6 +63,11 @@ export default function CreateSupplierPaymentPage() {
         );
       }),
     [accounts]
+  );
+
+  const supplierOptions = useMemo(
+    () => buildSupplierOptions(suppliers, ledgerAccounts),
+    [suppliers, ledgerAccounts]
   );
 
   const resetForm = () => setFormData({ paymentMethod: "BANK_TRANSFER" });
@@ -127,11 +140,11 @@ export default function CreateSupplierPaymentPage() {
                 className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
               >
                 <option value="">Select Supplier / Ledger...</option>
-                {suppliers.map((s: any) => {
+                {supplierOptions.map((s: any) => {
                   const name = s.companyName || s.name || s.supplierName;
                   return (
                     <option key={s._id} value={name}>
-                      {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                      {s.displayName || `${name}${s.accountGroup ? ` (${s.accountGroup})` : ""}`}
                     </option>
                   );
                 })}

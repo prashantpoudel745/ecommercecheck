@@ -140,7 +140,7 @@ export default function CreateDebitNotePage() {
                     const name = s.companyName || s.name || s.supplierName;
                     return (
                       <option key={s._id} value={name}>
-                        {name} {s.isLedger ? `(Ledger${s.accountCode ? ` - ${s.accountCode}` : ''})` : ''}
+                        {s.displayName || `${name}${s.accountGroup ? ` (${s.accountGroup})` : ""}`}
                       </option>
                     );
                   })}
