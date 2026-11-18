@@ -88,21 +88,59 @@ export default function VoucherBook() {
     }
   };
 
-  const getDueAmount = (v: Voucher) => {
-    if (v.amountDue != null && Number(v.amountDue) > 0) {
-      return Number(v.amountDue);
+  const parseVal = (val: any): number => {
+    if (val == null) return 0;
+    if (typeof val === "number") return isNaN(val) ? 0 : val;
+    if (typeof val === "object" && "$numberDecimal" in val) {
+      const parsed = parseFloat(val.$numberDecimal);
+      return isNaN(parsed) ? 0 : parsed;
     }
-    const total = Number(v.totalAmount || 0);
-    const paid = Number(v.amountPaid || 0);
-    const rem = total - paid;
-    return rem > 0 ? rem : total;
+    if (typeof val === "object" && typeof val.toString === "function") {
+      const s = val.toString();
+      if (s !== "[object Object]") {
+        const parsed = parseFloat(s);
+        return isNaN(parsed) ? 0 : parsed;
+      }
+    }
+    const parsed = parseFloat(String(val));
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const getDueAmount = (v: Voucher): number => {
+    if (!v) return 0;
+    const total = parseVal(v.totalAmount);
+    const paid = parseVal(v.amountPaid);
+    const dueExplicit = v.amountDue != null ? parseVal(v.amountDue) : null;
+
+    // 1. If explicit amountDue is positive, use it
+    if (dueExplicit != null && dueExplicit > 0) {
+      return dueExplicit;
+    }
+
+    // 2. If voucher is marked PAID and total was settled (paid >= total), due is 0
+    if (v.paymentStatus === "PAID" && (paid >= total || total === 0)) {
+      return 0;
+    }
+
+    // 3. Otherwise calculate remaining due: total - paid
+    const remaining = total - paid;
+    if (remaining > 0) {
+      return remaining;
+    }
+
+    // 4. If paid is 0 and paymentStatus is not PAID, the entire total is due
+    if (v.paymentStatus !== "PAID" && total > 0) {
+      return total;
+    }
+
+    return 0;
   };
 
   const isSettleable = (v: Voucher) => {
     if (v.status !== "POSTED") return false;
     const due = getDueAmount(v);
     const isPaid = v.paymentStatus === "PAID" && due <= 0;
-    return !isPaid;
+    return !isPaid && due > 0;
   };
 
   const openPaymentModal = (voucher: Voucher) => {
@@ -602,7 +640,7 @@ export default function VoucherBook() {
                       min="0.01"
                       step="0.01"
                       disabled={paymentType === "COMPLETE"}
-                      value={paymentData.amount}
+                      value={paymentData.amount || ""}
                       onChange={(e) => setPaymentData({...paymentData, amount: Number(e.target.value)})}
                       className="font-mono text-base"
                     />

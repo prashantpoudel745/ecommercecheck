@@ -234,7 +234,7 @@ export default function CreatePurchaseOrderPage() {
                   })}
                 </select>
                 <p className="text-[11px] text-slate-500">
-                  New suppliers must be created as a ledger in{" "}
+                  New suppliers must be created as a ledger under Sundry Creditors in{" "}
                   <a href="/accounting" target="_blank" rel="noreferrer" className="text-emerald-600 underline font-medium">
                     Chart of Accounts
                   </a>.
