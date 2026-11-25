@@ -41,6 +41,12 @@ export default function LoginPage() {
 
       const data = await response.json();
 
+      if (data.requiresVerification) {
+        toast.error(data.message || "Please verify your email address before logging in.");
+        navigate("/verify-email", { state: { email: data.email || email } });
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
