@@ -56,12 +56,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  const login = (userData: User, token?: string) => {
+  const login = useCallback((userData: User, token?: string) => {
     if (token) {
       setAuthToken(token); // No-op now, retains interface signature
     }
     setAuthUser(userData);
-  };
+  }, [setAuthUser]);
 
   const logout = async () => {
     try {

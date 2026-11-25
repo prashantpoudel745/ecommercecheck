@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Mail, CheckCircle2, AlertCircle, Loader2, ArrowRight, RefreshCw } from "lucide-react";
 import Authsidebar from "@/components/authcomponents/authsidebar";
@@ -28,9 +28,11 @@ export default function VerifyEmailPage() {
       : "We sent a confirmation link to your email address. Please click the link to verify your account."
   );
   const [resending, setResending] = useState(false);
+  const attemptedTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!tokenFromUrl) return;
+    if (!tokenFromUrl || attemptedTokenRef.current === tokenFromUrl) return;
+    attemptedTokenRef.current = tokenFromUrl;
 
     let cancelled = false;
     const verify = async () => {
@@ -54,12 +56,14 @@ export default function VerifyEmailPage() {
         setMessage(data.message || "Your email has been verified!");
         toast.success("Email verified! Redirecting to your dashboard...");
 
-        if (data.user && (data.user._id || data.user.id)) {
-          login(data.user);
-          setTimeout(() => navigate("/dashboard", { replace: true }), 1500);
-        } else {
-          setTimeout(() => navigate("/login", { replace: true }), 1500);
-        }
+        setTimeout(() => {
+          if (data.user && (data.user._id || data.user.id)) {
+            login(data.user);
+            navigate("/dashboard", { replace: true });
+          } else {
+            navigate("/login", { replace: true });
+          }
+        }, 1200);
       } catch {
         if (cancelled) return;
         setStatus("error");
