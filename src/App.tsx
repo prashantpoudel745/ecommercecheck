@@ -9,6 +9,7 @@ import { PublicRoute } from "./functions/FunctionalComponent/PublicRoute";
 import { GlobalDataStoreProvider } from "./store/GlobalDataStore";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedKeepAliveRouter } from "./components/layout/ProtectedKeepAliveRouter";
+import Home from "./pages/Home";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Insights = lazy(() => import("./pages/Insights"));
@@ -80,7 +81,6 @@ const AdminLoginPage = lazy(() => import("./pages/SuperadminLogin"));
 const AdminSignupPage = lazy(() => import("./pages/Superadmincreate"));
 const AdminStatusManager = lazy(() => import("./pages/superAdminaccess"));
 const Prediction = lazy(() => import("./pages/Prediction"));
-const Home = lazy(() => import("./pages/Home"));
 const Sales = lazy(() => import("./pages/Sales"));
 const queryClient = new QueryClient();
 
