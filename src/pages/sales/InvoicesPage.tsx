@@ -27,8 +27,8 @@ export default function InvoicesPage() {
   const { data: response, isLoading: loading } = useQuery({
     queryKey: ["sales", "invoices"],
     queryFn: fetchInvoices,
-    staleTime: 30_000,
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     refetchOnMount: "always",
   });
 
@@ -42,7 +42,11 @@ export default function InvoicesPage() {
   };
 
   const totalSalesVal = data.reduce((acc, cur) => acc + parseMoney(cur.totalAmount), 0);
-  const totalDueVal = data.reduce((acc, cur) => acc + parseMoney(cur.amountDue), 0);
+  const totalDueVal = data.reduce((acc, cur) => {
+    const isPaid = cur.paymentStatus === "paid" || cur.status === "PAID";
+    if (isPaid) return acc;
+    return acc + parseMoney(cur.amountDue);
+  }, 0);
 
   return (
     <div className="mx-auto max-w-[1600px] space-y-4 p-2 sm:p-4 text-slate-900">
@@ -132,9 +136,29 @@ export default function InvoicesPage() {
               ) : (
                 data.map((item) => {
                   const totalAmount = parseMoney(item.totalAmount);
-                  const amountDue = parseMoney(item.amountDue);
-                  const canPay = amountDue > 0;
+                  const amountPaid = parseMoney(item.amountPaid);
+                  const rawAmountDue = parseMoney(item.amountDue);
                   const isVoid = item.status === "VOID";
+
+                  const isPaid =
+                    item.paymentStatus === "paid" ||
+                    item.status === "PAID" ||
+                    (totalAmount > 0 && amountPaid >= totalAmount) ||
+                    (rawAmountDue <= 0 && amountPaid > 0);
+
+                  const effectivePaymentStatus = isPaid
+                    ? "paid"
+                    : item.paymentStatus === "partial" || amountPaid > 0
+                    ? "partial"
+                    : "due";
+
+                  const effectiveAmountDue = isPaid
+                    ? 0
+                    : rawAmountDue > 0
+                    ? rawAmountDue
+                    : Math.max(0, totalAmount - amountPaid);
+
+                  const canPay = !isPaid && !isVoid && effectiveAmountDue > 0;
 
                   return (
                     <tr
@@ -196,25 +220,25 @@ export default function InvoicesPage() {
                       <td className="px-4 py-3.5 space-y-0.5">
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                            item.paymentStatus === "paid"
+                            effectivePaymentStatus === "paid"
                               ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
-                              : item.paymentStatus === "partial"
+                              : effectivePaymentStatus === "partial"
                               ? "bg-amber-50 text-amber-700 border border-amber-200/60"
                               : "bg-slate-100 text-slate-600 border border-slate-200"
                           }`}
                         >
-                          {item.paymentStatus || "due"}
+                          {effectivePaymentStatus}
                         </span>
                         {canPay && (
                           <div className="text-[11px] text-slate-500 tabular-nums">
-                            Due: {formatCurrency(amountDue)}
+                            Due: {formatCurrency(effectiveAmountDue)}
                           </div>
                         )}
                       </td>
 
                       {/* Actions */}
                       <td className="px-4 py-3.5 text-center">
-                        {canPay && !isVoid ? (
+                        {canPay ? (
                           <Link
                             to={`/sales/client-payment/new?invoiceId=${item._id}`}
                             state={{ invoice: item }}
@@ -226,7 +250,7 @@ export default function InvoicesPage() {
                           </Link>
                         ) : (
                           <span className="text-[11px] font-medium text-slate-400">
-                            Settled
+                            {isVoid ? "Voided" : "Settled"}
                           </span>
                         )}
                       </td>

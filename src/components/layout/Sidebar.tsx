@@ -129,7 +129,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       roles: ["admin", "hr", "employee", "superadmin"],
     },
     {
-      label: t("navigation.employees", "Employees"),
+      label: t("HRM", "HRM"),
       icon: <UserPlus size={20} />,
       path: "/employees",
     },

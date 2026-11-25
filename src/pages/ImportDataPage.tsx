@@ -11,6 +11,7 @@ const MODULES = [
     description: "Upload your product catalog, quantities, and prices.",
     uploadUrl: "/inventory/bulk-upload",
     templateHeaders: "name,category,quantity,price",
+    templateSample: "Sample Product,General,10,500",
     templateFileName: "inventory_template.csv",
   },
   {
@@ -18,7 +19,8 @@ const MODULES = [
     title: "Import Sales (Invoices)",
     description: "Upload sales invoices. Rows with the same invoiceNumber are grouped.",
     uploadUrl: "/sales/invoices/bulk-upload",
-    templateHeaders: "invoiceNumber,customerName,customerEmail,itemName,quantity,price,taxRate,paymentStatus",
+    templateHeaders: "invoiceNumber,customerName,customerEmail,itemName,quantity,price,taxRate,taxIncluded,paymentStatus,amountPaid,vatExempt",
+    templateSample: "INV-001,Acme Corp,billing@acme.com,Consulting Service,1,1000,13,false,due,0,false",
     templateFileName: "sales_template.csv",
   },
   {
@@ -26,7 +28,8 @@ const MODULES = [
     title: "Import Expenses (Purchase Bills)",
     description: "Upload purchase bills. Rows with the same billNumber are grouped.",
     uploadUrl: "/purchase/bills/bulk-upload",
-    templateHeaders: "billNumber,supplierName,category,itemName,quantity,price,paymentStatus",
+    templateHeaders: "billNumber,supplierName,supplierBillNumber,category,itemName,quantity,price,taxRate,paymentStatus,amountPaid,vatExempt",
+    templateSample: "BILL-001,Global Suppliers,SUP-901,purchase,Office Supplies,5,200,13,due,0,false",
     templateFileName: "purchase_template.csv",
   },
   {
@@ -35,17 +38,26 @@ const MODULES = [
     description: "Upload manual journal entries, receipts, or payments.",
     uploadUrl: "/erp/vouchers/bulk-upload",
     templateHeaders: "date,voucherType,narration,debitAccountCode,creditAccountCode,amount,referenceNumber",
+    templateSample: "2026-01-15,JOURNAL,Office rent payment,Rent Expense,Cash Account,5000,REF-001",
     templateFileName: "accounting_template.csv",
   },
 ];
+
+interface ImportReport {
+  moduleTitle: string;
+  successCount: number;
+  failed: Array<{ row?: number; importReference?: string; error: string }>;
+}
 
 export default function ImportDataPage() {
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedModule, setSelectedModule] = useState<typeof MODULES[0] | null>(null);
+  const [lastReport, setLastReport] = useState<ImportReport | null>(null);
 
-  const downloadTemplate = (headers: string, filename: string) => {
-    const blob = new Blob([headers], { type: "text/csv;charset=utf-8;" });
+  const downloadTemplate = (headers: string, sample: string, filename: string) => {
+    const csvContent = `${headers}\n${sample}\n`;
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
@@ -65,12 +77,14 @@ export default function ImportDataPage() {
     const file = event.target.files?.[0];
     if (!file || !selectedModule) return;
 
-    if (!file.name.endsWith(".csv") && !file.name.endsWith(".xlsx")) {
+    const lowerName = file.name.toLowerCase();
+    if (!lowerName.endsWith(".csv") && !lowerName.endsWith(".xlsx") && !lowerName.endsWith(".xls")) {
       toast.error("Please upload a valid CSV or Excel file.");
       return;
     }
 
     setLoadingId(selectedModule.id);
+    setLastReport(null);
     const formData = new FormData();
     formData.append("file", file);
 
@@ -78,13 +92,21 @@ export default function ImportDataPage() {
       const res = await api.post(selectedModule.uploadUrl, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      
-      const { results } = res.data;
-      if (results?.failed?.length > 0) {
-        toast.warning(`Upload completed with some errors. Succeeded: ${results.success.length}, Failed: ${results.failed.length}`);
-        console.warn("Failed rows:", results.failed);
+
+      const results = res.data?.results;
+      const successCount = results?.success?.length ?? 0;
+      const failed = results?.failed ?? [];
+
+      setLastReport({
+        moduleTitle: selectedModule.title,
+        successCount,
+        failed,
+      });
+
+      if (failed.length > 0) {
+        toast.warn(`Upload completed with some errors. Succeeded: ${successCount}, Failed: ${failed.length}`);
       } else {
-        toast.success(res.data.message || "Data imported successfully!");
+        toast.success(res.data.message || `Imported ${successCount} record(s) successfully!`);
       }
     } catch (error: any) {
       toast.error(`Upload failed: ${error.response?.data?.message || error.message}`);
@@ -141,7 +163,7 @@ export default function ImportDataPage() {
               <Button
                 variant="outline"
                 className="flex-1 border-slate-300 text-slate-700"
-                onClick={() => downloadTemplate(mod.templateHeaders, mod.templateFileName)}
+                onClick={() => downloadTemplate(mod.templateHeaders, mod.templateSample, mod.templateFileName)}
                 disabled={loadingId !== null}
               >
                 <Download size={16} className="mr-2" />
@@ -168,6 +190,35 @@ export default function ImportDataPage() {
           </div>
         ))}
       </div>
+
+      {lastReport && (
+        <div className="mt-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
+              {lastReport.failed.length > 0 ? (
+                <AlertCircle className="text-amber-500" size={18} />
+              ) : (
+                <CheckCircle2 className="text-emerald-500" size={18} />
+              )}
+              {lastReport.moduleTitle} — Import Summary
+            </h3>
+            <span className="text-sm text-slate-600">
+              Succeeded: <strong className="text-emerald-600">{lastReport.successCount}</strong>{" "}
+              | Failed: <strong className={lastReport.failed.length > 0 ? "text-rose-600" : "text-slate-600"}>{lastReport.failed.length}</strong>
+            </span>
+          </div>
+
+          {lastReport.failed.length > 0 && (
+            <div className="max-h-56 overflow-y-auto rounded-lg border border-rose-100 bg-rose-50/50 p-3 space-y-1.5 text-xs text-rose-800">
+              {lastReport.failed.map((item, idx) => (
+                <div key={idx} className="font-mono">
+                  {item.row ? `Row ${item.row}` : item.importReference || `Item ${idx + 1}`}: {item.error}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

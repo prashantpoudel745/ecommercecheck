@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
 import { convertInvoiceToPayment, createCustomerPayment, fetchInvoiceById } from "@/services/sales.service";
 import { getAccountGroups, getAccounts } from "@/services/accounting.service";
 import { formatCurrency } from "@/utils/formatCurrency";
 import type { Account, AccountGroup } from "../../../types/accounting.types";
-import { Building2, DollarSign, Wallet } from "lucide-react";
+import { Building2, DollarSign, Wallet, CheckCircle2 } from "lucide-react";
 
 const parseMoney = (value: any) => {
   if (value == null) return 0;
@@ -17,6 +18,7 @@ const parseMoney = (value: any) => {
 };
 
 export default function CreateClientPaymentPage() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -120,6 +122,15 @@ export default function CreateClientPaymentPage() {
   const totalAmount = invoice ? parseMoney(invoice?.totalAmount ?? 0) : 0;
   const paidAmount = invoice ? parseMoney(invoice?.amountPaid ?? 0) : 0;
 
+  const isAlreadySettled = Boolean(
+    invoice && (
+      invoice.paymentStatus === "paid" ||
+      invoice.status === "PAID" ||
+      (totalAmount > 0 && paidAmount >= totalAmount) ||
+      (dueAmount <= 0 && paidAmount > 0)
+    )
+  );
+
   // Handle group change: updates selected group and resets / re-points paymentAccountId
   const handleGroupChange = (groupId: string) => {
     setSelectedGroupId(groupId);
@@ -155,6 +166,11 @@ export default function CreateClientPaymentPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isAlreadySettled) {
+      toast.error("This invoice is already fully paid and settled.");
+      return;
+    }
+
     if (!formData.paymentAccountId) {
       toast.error("Please select a ledger account for this payment.");
       return;
@@ -180,6 +196,9 @@ export default function CreateClientPaymentPage() {
           amount: payAmount,
           customerPhone: formData.customerPhone || invoice.customerPhone || invoice.phone || "",
         });
+        await queryClient.invalidateQueries({ queryKey: ["sales", "invoices"] });
+        await queryClient.invalidateQueries({ queryKey: ["accounting"] });
+        await queryClient.invalidateQueries({ queryKey: ["sales", "customer-payments"] });
         toast.success("Invoice payment recorded successfully!");
         navigate("/sales/invoice");
       } else {
@@ -190,6 +209,9 @@ export default function CreateClientPaymentPage() {
           customerName: targetParty,
           amount: payAmount,
         });
+        await queryClient.invalidateQueries({ queryKey: ["sales", "invoices"] });
+        await queryClient.invalidateQueries({ queryKey: ["accounting"] });
+        await queryClient.invalidateQueries({ queryKey: ["sales", "customer-payments"] });
         toast.success(`Client payment for ${targetParty} recorded successfully!`);
         navigate("/sales/customer-payment");
       }
@@ -251,10 +273,35 @@ export default function CreateClientPaymentPage() {
             </div>
             <div>
               <p className="text-slate-500">Invoice Status</p>
-              <span className="inline-block mt-0.5 font-bold uppercase text-[10px] bg-slate-200 px-2 py-0.5 rounded text-slate-700">
-                {invoice.paymentStatus || "due"}
+              <span className={`inline-block mt-0.5 font-bold uppercase text-[10px] px-2 py-0.5 rounded ${
+                isAlreadySettled ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-700"
+              }`}>
+                {isAlreadySettled ? "PAID" : invoice.paymentStatus || "due"}
               </span>
             </div>
+          </div>
+        )}
+
+        {/* ALREADY SETTLED ALERT BANNER */}
+        {isAlreadySettled && (
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-sm">This Invoice is Already Fully Paid</h3>
+                <p className="text-xs text-emerald-600 mt-0.5">
+                  Total settled amount: {formatCurrency(totalAmount)}. No outstanding balance remains for this invoice.
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate("/sales/invoice")}
+              className="bg-white hover:bg-emerald-100 text-emerald-700 border-emerald-300 font-semibold text-xs whitespace-nowrap"
+            >
+              Back to Invoices
+            </Button>
           </div>
         )}
 
@@ -420,10 +467,10 @@ export default function CreateClientPaymentPage() {
           <div className="flex items-center gap-4 pt-4 border-t border-slate-200">
             <Button
               type="submit"
-              disabled={loading || !formData.paymentAccountId || (!invoice?._id && !formData.customerName)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 h-11"
+              disabled={loading || isAlreadySettled || !formData.paymentAccountId || (!invoice?._id && !formData.customerName)}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 h-11 disabled:opacity-50"
             >
-              {loading ? "Recording Payment..." : "Record Payment Now"}
+              {loading ? "Recording Payment..." : isAlreadySettled ? "Invoice Already Settled" : "Record Payment Now"}
             </Button>
             <Button
               type="button"
