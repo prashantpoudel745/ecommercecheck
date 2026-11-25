@@ -401,11 +401,17 @@ export default function SignupPage() {
               </button>
             </div>
 
-            <div className="mt-6 pt-5 border-t border-stone-100 text-center">
+            <div className="mt-1 pt-5 border-t border-stone-100 text-center">
               <p className="text-xs text-stone-600">
                 Already have an account?{" "}
                 <Link to="/login" className="font-bold text-stone-900 hover:text-stone-950 transition-colors hover:underline">
                   Log In
+                </Link>
+              </p>
+              <p className="text-xs text-stone-600">
+                Not Verified yet ?{" "}
+                <Link to="/verify-email" className="font-bold text-stone-900 hover:text-stone-950 transition-colors hover:underline">
+                  Verify email
                 </Link>
               </p>
             </div>
