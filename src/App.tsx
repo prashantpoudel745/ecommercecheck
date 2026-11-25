@@ -68,6 +68,7 @@ const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
 const Forgetpassword = lazy(() => import("./pages/Forgetpassword"));
 const ResetPassword = lazy(() => import("./pages/Resetpassword"));
+const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage"));
 const Investmentpage = lazy(() => import("./pages/Investmentpage"));
 const EmployeeLoginPage = lazy(() => import("./pages/EmployeeLoginPage"));
 const EmployeePage = lazy(() => import("./pages/Employeepage"));
@@ -286,6 +287,22 @@ const App = () => {
                       element={
                         <PublicRoute>
                           <SignupPage />
+                        </PublicRoute>
+                      }
+                    />
+                    <Route
+                      path="/verify-email"
+                      element={
+                        <PublicRoute>
+                          <VerifyEmailPage />
+                        </PublicRoute>
+                      }
+                    />
+                    <Route
+                      path="/verify-email/:token"
+                      element={
+                        <PublicRoute>
+                          <VerifyEmailPage />
                         </PublicRoute>
                       }
                     />

@@ -10,6 +10,7 @@ export const LayoutWrapper = ({ children }) => {
     location.pathname === "/forgetpasswordemployee";
 
   const isResetPasswordPage = location.pathname.startsWith("/reset-password");
+  const isVerifyEmailPage = location.pathname.startsWith("/verify-email");
   const isEmployeeLoginPage = location.pathname.startsWith("/employeelogin");
   const isEmployeeResetPassword =
     location.pathname.startsWith("/employeereset");
@@ -24,6 +25,7 @@ export const LayoutWrapper = ({ children }) => {
     isSignupPage ||
     isForgetPasswordPage ||
     isResetPasswordPage ||
+    isVerifyEmailPage ||
     isEmployeeLoginPage ||
     isEmployeeResetPassword ||
     isPaymentSuccessPage ||

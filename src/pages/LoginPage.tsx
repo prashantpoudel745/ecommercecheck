@@ -41,6 +41,12 @@ export default function LoginPage() {
 
       const data = await response.json();
 
+      if (data.requiresVerification) {
+        toast.info(data.message || "Please verify your email. A confirmation link has been sent.");
+        navigate("/verify-email", { state: { email: data.email || email } });
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }

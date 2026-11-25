@@ -133,9 +133,13 @@ export default function SignupPage() {
         return;
       }
 
-      setSuccess("User created successfully!");
+      setSuccess(signupData.message || "Account created! Please check your email to verify.");
       setIsLoading(false);
-      navigate("/login");
+      if (signupData.requiresVerification) {
+        navigate("/verify-email", { state: { email } });
+      } else {
+        navigate("/login");
+      }
     } catch (error) {
       setError(error.message || "An error occurred");
       setIsLoading(false);
