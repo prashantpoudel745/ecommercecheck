@@ -85,10 +85,10 @@ const StatusPieChart = React.memo(({ clients }: { clients: Client[] }) => {
               <Tooltip
                 formatter={(value) => [`${value} Accounts`, "Status"]}
                 contentStyle={{
-                  backgroundColor: "#0f172a",
+                  backgroundColor: "#fff",
                   borderColor: "#1e293b",
                   borderRadius: "0.75rem",
-                  color: "#fff",
+                  color: "#000000ff",
                   fontSize: "12px",
                   fontWeight: "600",
                 }}
