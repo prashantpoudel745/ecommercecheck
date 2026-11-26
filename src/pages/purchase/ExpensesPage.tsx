@@ -98,13 +98,14 @@ export default function ExpensesPage() {
               ) : (
                 data.map((item: ExpenseRow) => (
                   <tr key={item._id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-4 font-medium text-slate-900">{item.expenseReference || "-"}</td>
+                    <td className="px-4 py-4 font-medium text-emerald-600 hover:text-emerald-800">
+                      <Link to={`/purchase/expenses/view/${item._id}`} className="underline">
+                        {item.expenseReference || "View"}
+                      </Link>
+                    </td>
                     <td className="px-3 py-3 sm:px-4 sm:py-4">{item.category}</td>
                     <td className="px-3 py-3 sm:px-4 sm:py-4">{new Date(item.date || item.createdAt).toLocaleDateString()}</td>
                     <td className="px-4 py-4 font-medium text-red-500">-{formatCurrency(item.amount)}</td>
-                    <td className="px-4 py-4 font-medium text-emerald-600 hover:text-emerald-800">
-                      <Link to={`/purchase/expenses/view/${item._id}`} className="underline">{item.expenseReference || "View"}</Link>
-                    </td>
                     <td className="px-4 py-4 max-w-[200px] truncate">{item.description || "-"}</td>
                     <td className="px-3 py-3 sm:px-4 sm:py-4">
                       {item.proofImageUrl ? (

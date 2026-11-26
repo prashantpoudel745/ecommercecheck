@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Upload, Download, FileText, CheckCircle2, AlertCircle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/utils/notify";
 import api from "@/utils/api";
@@ -25,12 +26,21 @@ const MODULES = [
   },
   {
     id: "purchase",
-    title: "Import Expenses (Purchase Bills)",
-    description: "Upload purchase bills. Rows with the same billNumber are grouped.",
+    title: "Import Purchase Bills",
+    description: "Upload supplier purchase bills. Rows with the same billNumber are grouped.",
     uploadUrl: "/purchase/bills/bulk-upload",
-    templateHeaders: "billNumber,supplierName,supplierBillNumber,category,itemName,quantity,price,taxRate,paymentStatus,amountPaid,vatExempt",
-    templateSample: "BILL-001,Global Suppliers,SUP-901,purchase,Office Supplies,5,200,13,due,0,false",
+    templateHeaders: "billNumber,supplierName,supplierBillNumber,category,itemName,quantity,price,taxRate,taxIncluded,paymentStatus,amountPaid,vatExempt",
+    templateSample: "BILL-001,Global Suppliers,SUP-901,purchase,Office Supplies,5,200,13,false,due,0,false",
     templateFileName: "purchase_template.csv",
+  },
+  {
+    id: "expenses",
+    title: "Import Expenses",
+    description: "Upload company expenses (TRAVEL, UTILITIES, MEALS, SUPPLIES, OTHER, or expense).",
+    uploadUrl: "/purchase/bills/bulk-upload",
+    templateHeaders: "billNumber,supplierName,supplierBillNumber,category,itemName,quantity,price,taxRate,taxIncluded,paymentStatus,amountPaid,vatExempt",
+    templateSample: "EXP-001,Nepal Telecom,NTC-101,UTILITIES,Internet & Phone,1,2500,13,false,paid,2825,false",
+    templateFileName: "expenses_template.csv",
   },
   {
     id: "accounting",
@@ -50,6 +60,7 @@ interface ImportReport {
 }
 
 export default function ImportDataPage() {
+  const queryClient = useQueryClient();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedModule, setSelectedModule] = useState<typeof MODULES[0] | null>(null);
@@ -90,7 +101,7 @@ export default function ImportDataPage() {
 
     try {
       const res = await api.post(selectedModule.uploadUrl, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": undefined },
       });
 
       const results = res.data?.results;
@@ -102,6 +113,16 @@ export default function ImportDataPage() {
         successCount,
         failed,
       });
+
+      if (successCount > 0) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["sales"] }),
+          queryClient.invalidateQueries({ queryKey: ["purchase"] }),
+          queryClient.invalidateQueries({ queryKey: ["inventory"] }),
+          queryClient.invalidateQueries({ queryKey: ["accounting"] }),
+          queryClient.invalidateQueries({ queryKey: ["erp"] }),
+        ]);
+      }
 
       if (failed.length > 0) {
         toast.warn(`Upload completed with some errors. Succeeded: ${successCount}, Failed: ${failed.length}`);
