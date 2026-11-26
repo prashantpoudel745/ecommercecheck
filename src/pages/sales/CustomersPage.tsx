@@ -117,6 +117,22 @@ export default function CustomersPage() {
     },
   });
 
+  // Payment Follow-Up Mutation (single client or all due clients)
+  const followUpMutation = useMutation({
+    mutationFn: async (payload: { clientId?: string; force?: boolean }) => {
+      const res = await api.post("/customer/follow-up/send", payload);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data?.message || "Follow-up email sent successfully.");
+      queryClient.invalidateQueries({ queryKey: ["sales", "customers"] });
+    },
+    onError: (err: any) => {
+      const msg = err?.response?.data?.message || err?.message || "Failed to send follow-up email";
+      toast.error(msg);
+    },
+  });
+
   // Calculate live financial KPIs strictly based on database values
   const metrics = useMemo(() => {
     let totalBusiness = 0;
@@ -312,6 +328,20 @@ export default function CustomersPage() {
             <Download size={13} className="mr-1.5 text-slate-500" />
             Export CSV
           </Button>
+
+          {metrics.dueCount > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={followUpMutation.isPending}
+              onClick={() => followUpMutation.mutate({ force: false })}
+              className="h-9 px-3 text-xs font-medium border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 shadow-2xs"
+              title="Automatically runs every 3 days; click to send pending follow-ups now"
+            >
+              <Mail size={13} className="mr-1.5" />
+              {followUpMutation.isPending ? "Sending..." : "Follow Up Due"}
+            </Button>
+          )}
 
           <Link to="/sales/customers/new">
             <Button
@@ -896,7 +926,19 @@ export default function CustomersPage() {
                 Close
               </Button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {parseMoney(selectedCustomer.dueamount) > 0.01 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={followUpMutation.isPending}
+                    onClick={() => followUpMutation.mutate({ clientId: selectedCustomer._id, force: true })}
+                    className="h-8 px-3 text-xs font-semibold border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg"
+                  >
+                    <Mail size={13} className="mr-1.5" />
+                    {followUpMutation.isPending ? "Sending..." : "Send Follow-Up"}
+                  </Button>
+                )}
                 <Link
                   to="/sales/client-payment/new"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-2xs transition-colors"
